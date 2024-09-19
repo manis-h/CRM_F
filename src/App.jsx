@@ -28,7 +28,7 @@ function App() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const setLogin = useStore((state) => state.setLogin);
-  const [login, setLoginState] = useState(false); // Local state to track login
+  const [login, setLoginState] = useState(true); // Local state to track login
 
   useEffect(() => {
     const cookies = new Cookies();
