@@ -1,0 +1,110 @@
+/* Sidebar styles */
+.sidebar {
+    width: 250px; /* Default expanded width */
+    height: 100vh; /* Full viewport height */
+    color: #fff;
+    position: fixed; /* Fixed positioning to keep it on the left side */
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, width 0.3s ease; /* Smooth transition */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
+    overflow-y: auto; /* Enable vertical scrolling */
+    z-index: 0;
+}
+
+/* When sidebar is closed, move it out of view */
+.sidebar.closed {
+    transform: translateX(-250px); /* Slide it off-screen */
+    transition: transform 0.3s ease; /* Smooth transition when sliding */
+    width: 250px; /* Keep its width, just move it */
+    z-index: -1;
+}
+
+/* Sidebar logo styles */
+/* .sidebar-logo {
+    margin-bottom: 30px;
+} */
+
+/* .sidebar-logo a {
+    color: #fff;
+    font-size: 1.5rem;
+    text-decoration: none;
+    font-weight: bold;
+} */
+
+/* Sidebar links styles */
+.sidebar-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: #f0a500;
+    
+}
+.sidebar-margin{
+    margin-top:60px;
+    left: 0%;
+}
+/* .sidebar-links li {
+    margin: 10px 0;
+} */
+
+.sidebar-links a {
+    background-color: none;
+    color: rgb(34, 33, 33);
+    text-decoration: none;
+    font-weight: 700; /* Bold weight */
+    font-size: 0.8rem;
+    display: block; /* Makes the link fill the list item */
+    padding: 15px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar-links a:hover {
+   font-size: 1rem;
+}
+
+/* Toggle button styles */
+.sidebar-toggle-btn {
+    position: fixed;
+    top: 10px;
+    left: 250px; /* Adjust position as needed */
+    background-color: rgb(73, 78, 90); /* Set the background color */
+    color: #fff; /* Text color */
+    border: none;
+    width: 70px;
+    height:40px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* Example shadow */
+
+    box-shadow: 5px 5px 5px;
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 20px; /* Padding inside the button */
+    font-size: 1rem; /* Font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Shadow effect */
+    z-index: 1001; /* Ensure the button is above other elements */
+    transition: background-color 0.3s, color 0.3s; /* Smooth color transition */
+}
+
+.sidebar-toggle-btn:hover {
+    background-color: rgb(50, 55, 65); /* Darker background on hover */
+    color: #f0a500; /* Change text color on hover */
+}
+
+
+/* Style each <li> in sidebar-text */
+.sidebar-text li {
+    color: #140808; /* Dark text color for better contrast */
+   
+    line-height: 0; /* Adjust the line-height to control the height */
+}
+/* Sidebar links styles */
+
+/* Remove bullets from the sidebar-text list items */
+.sidebar-text {
+    margin: -20px;
+    background-color: rgb(230, 229, 229);
+    list-style: none; /* Ensure there are no bullets */
+}
+
