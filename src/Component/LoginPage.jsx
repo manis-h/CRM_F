@@ -32,7 +32,8 @@ const LoginPage = () => {
         }
         
         setLogin(true);
-        window.location.assign('/dashboard');
+        navigate('/')
+        // window.location.assign('/');
       } else {
         setError('Invalid email or password');
       }
