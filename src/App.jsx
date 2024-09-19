@@ -23,7 +23,7 @@ import ImportCSV from './Component/ImportCSV';
 import AddBankDetails from './Component/AddBankDetails';
 import AddHolidayDetails from './Component/AddHolidayDetails';
 import LeadNew from './SubComponent/LeadNew';
-import ProtectedRoute from './Component/Protected';
+import ProtectedRoute from './Component/ProtectedRoute';
 
 function App() {
 
