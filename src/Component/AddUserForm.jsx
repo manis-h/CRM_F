@@ -2,23 +2,31 @@ import React, { useState } from 'react';
 
 const AddUserForm = () => {
     const [formData, setFormData] = useState({
-        company: '',
-        product: '',
         firstName: '',
         lastName: '',
         email: '',
         mobile: '',
+        password: '',
+        confPassword: '',
         userRole: '',
-        userBranch: '',
-        center: ''
+        id: ''
     });
+
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (error) setError(''); // Clear error when user types
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        
+        if (formData.password !== formData.confPassword) {
+            setError('Passwords do not match');
+            return;
+        }
+
         console.log('Form Data Submitted: ', formData);
         // Add logic to save the user data
     };
@@ -26,19 +34,21 @@ const AddUserForm = () => {
     return (
         <div className='add-user-form-container'>
             <form onSubmit={handleSubmit} className="add-user-form">
-            <h2 className='form-heading'>Add User</h2>
+                <h2 className='form-heading'>Add Employee</h2>
 
                 <div className="form-part">
-                <div className="form-group">
+                    <div className="form-group">
                         <label>First Name</label>
                         <input
                             type="text"
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleChange}
+                            placeholder="Enter first name"
                             required
                         />
                     </div>
+
                     <div className="form-group">
                         <label>Last Name</label>
                         <input
@@ -46,35 +56,10 @@ const AddUserForm = () => {
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleChange}
+                            placeholder="Enter last name"
                             required
                         />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Company</label>
-                        <input
-                            type="text"
-                            name="company"
-                            value={formData.company}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Product</label>
-                        <input
-                            type="text"
-                            name="product"
-                            value={formData.product}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                  
-
-                   
+                    </div>                   
 
                     <div className="form-group">
                         <label>Email</label>
@@ -83,6 +68,7 @@ const AddUserForm = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
+                            placeholder="Enter email address"
                             required
                         />
                     </div>
@@ -94,49 +80,68 @@ const AddUserForm = () => {
                             name="mobile"
                             value={formData.mobile}
                             onChange={handleChange}
+                            placeholder="Enter mobile number"
                             required
                         />
                     </div>
-                </div>
 
-                <div className="form-part">
                     <div className="form-group">
-                        <label>User Role</label>
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            placeholder="Enter password"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Confirm Password</label>
+                        <input
+                            type="password"
+                            name="confPassword"
+                            value={formData.confPassword}
+                            onChange={handleChange}
+                            placeholder="Confirm password"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Employee ID</label>
                         <input
                             type="text"
+                            name="id"
+                            value={formData.id}
+                            onChange={handleChange}
+                            placeholder="Enter Employee ID"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="userRole">Employee Role:</label>
+                        <select
+                            id="userRole"
                             name="userRole"
                             value={formData.userRole}
                             onChange={handleChange}
                             required
-                        />
+                        >
+                            <option value="">Select Role</option>
+                            <option value="admin">Admin</option>
+                            <option value="screener">Screener</option>
+                            <option value="creditManager">Credit Manager</option>
+                        </select>
                     </div>
+                </div>
 
-                    <div className="form-group">
-                        <label>User Branch</label>
-                        <input
-                            type="text"
-                            name="userBranch"
-                            value={formData.userBranch}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                {error && <div className="error-message">{error}</div>}
 
-                    <div className="form-group">
-                        <label>Center</label>
-                        <textarea
-                            name="center"
-                            value={formData.center}
-                            onChange={handleChange}
-                            required
-                            rows="3" // Adjust the number of rows as needed
-                            style={{ resize: 'vertical' }} // Allows resizing vertically
-                        />
-                    </div>
-
-                    <div className='form-button'>
-                        <button type="submit">Save</button>
-                    </div>
+                <div className='form-button'>
+                    <button type="submit">Save Employee</button>
                 </div>
             </form>
 
@@ -146,13 +151,11 @@ const AddUserForm = () => {
                     flex-direction: column;
                     align-items: center;
                     padding: 20px;
-                    margin-top:60px
+                    margin-top: 60px;
                 }
 
                 .form-heading {
                     margin-bottom: 60px;
-                   
-                    weight:100%;
                     font-size: 24px;
                     color: #333;
                     text-align: center;
@@ -186,7 +189,7 @@ const AddUserForm = () => {
                     font-weight: bold;
                 }
 
-                .form-group input, .form-group textarea {
+                .form-group input, .form-group select {
                     width: 100%;
                     padding: 8px;
                     border: 1px solid #ccc;
@@ -196,13 +199,14 @@ const AddUserForm = () => {
                 .form-button {
                     display: flex;
                     justify-content: center;
+                    margin-top: 20px;
                 }
 
                 button {
                     padding: 8px 12px;
-                    width:50px;
+                    width: auto;
                     border: none;
-                    border-radius: 40px;
+                    border-radius: 20px;
                     background-color: #007bff;
                     color: #fff;
                     font-size: 14px;
@@ -211,6 +215,12 @@ const AddUserForm = () => {
 
                 button:hover {
                     background-color: #0056b3;
+                }
+
+                .error-message {
+                    color: red;
+                    margin-top: 10px;
+                    text-align: center;
                 }
             `}</style>
         </div>

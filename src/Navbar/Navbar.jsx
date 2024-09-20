@@ -57,8 +57,8 @@ const Navbar = () => {
                     </Link>
                     
                     <ul className="dropdown-menu" aria-labelledby="settingsDropdown">
-                        <li><Link className="dropdown-item" to="/add-users">Add Users</Link></li>
-                        <li><Link className="dropdown-item" to="/view-user">View Users</Link></li>
+                        <li><Link className="dropdown-item" to="/add-users">Add Employee</Link></li>
+                        <li><Link className="dropdown-item" to="/view-user">View Employees</Link></li>
                         <li><Link className="dropdown-item" to="/import-csv">Import CSV</Link></li>
                         <li><Link className="dropdown-item" to="/add-bank-details">Add Bank Details</Link></li>
                         <li><Link className="dropdown-item" to="/add-holiday-details">Add Holiday Details</Link></li>
