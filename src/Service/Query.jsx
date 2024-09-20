@@ -10,9 +10,18 @@ export const apiQurey = createApi({
    }),
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
-    // getPokemonByName: builder.query({
-    //   query: (name) => `pokemon/${name}`,
-    // }),
+    getEmployees: builder.query({
+      query: () => `employees/`,
+    }),
+//
+    leadUpdate: builder.mutation({
+      query: (data) => ({
+
+        url: `leads/${data}`,
+        method: 'PATCH',
+        body: data,
+      }),
+    }),
 
     // POST request to send data (this should use builder.mutation)
     loginUser: builder.mutation({
@@ -29,4 +38,4 @@ export const apiQurey = createApi({
 
 // Export hooks for usage in functional components
 // Note: Mutations use `useMutation`, not `useQuery`
-export const {  useLoginUserMutation } = apiQurey;
+export const {  useLoginUserMutation,useGetEmployeesQuery, useLeadUpdateMutation} = apiQurey;
