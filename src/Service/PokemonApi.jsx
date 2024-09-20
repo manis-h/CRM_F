@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // Define a service using a base URL and expected endpoints
 export const pokemonApi = createApi({
   reducerPath: 'pokemonApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'http://192.168.0.115:4000/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://crm-backend-wui1.onrender.com/api/leads' }),
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     // getPokemonByName: builder.query({
