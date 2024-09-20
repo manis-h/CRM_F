@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
-import { useLeadUpdateMutation } from '../Service/PokemonApi';
+import { useLeadUpdateMutation } from '../Service/Query';
 
 const LeadNew = () => {
   const [leads, setLeads] = useState([]); // Stores lead details

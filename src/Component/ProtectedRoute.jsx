@@ -12,7 +12,7 @@ const ProtectedRoute = ({ children }) => {
     // Check if user is authenticated based on the cookie
     const isAuthenticated = login || authToken; 
 
-
+    
     if (!isAuthenticated) {
         return <Navigate to="/login" state={{ from: location }} />;
     }
