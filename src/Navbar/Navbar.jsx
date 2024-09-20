@@ -7,22 +7,31 @@ import useStore from '../Store';
 
 const Navbar = () => {
     const [clientRole, setClientRole] = useState('Client');
-    const setLogin = useStore((state) => state.setLogin);
+    // const setLogin = useStore((state) => state.setLogin);
     const cookies = new Cookies();
     const navigate = useNavigate();
+    const {setLogin,setEmployee} = useStore()
 
     // Logout function in frontend
-    const handleLogout = async () => {
-        try {
-            await axios.post('http://localhost:3000/api/users/logout', {}, { withCredentials: true });
-            cookies.remove('authToken', { path: '/' });
-            localStorage.removeItem('userData'); // If you use local storage
-            setLogin(false);
-            window.location.assign('/login');
-        } catch (error) {
-            console.error('Error during logout:', error);
-        }
-    };
+    // const handleLogout = async () => {
+    //     try {
+    //         await axios.post('http://localhost:3000/api/users/logout', {}, { withCredentials: true });
+    //         cookies.remove('authToken', { path: '/' });
+    //         localStorage.removeItem('userData'); // If you use local storage
+    //         setLogin(false);
+    //         window.location.assign('/login');
+    //     } catch (error) {
+    //         console.error('Error during logout:', error);
+    //     }
+    // };
+
+    const handleLogout = () => {
+        cookies.remove("authToken")
+        setLogin(false)
+        setEmployee(null)
+        
+        navigate("/login")
+    }
     
     
     

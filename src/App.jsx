@@ -8,7 +8,7 @@ import TableForm from './Component/TableForm'; // Import the new TableForm compo
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SearchForm from './Component/SearchForm';
 import ExportForm from './Component/ExportForm';
-import Navbar from './Navbar/NavBar';
+import Navbar from './Navbar/Navbar';
 import Sidebar from './Navbar/Sidebar';
 import { useEffect, useState } from 'react';
 import useStore from './Store';

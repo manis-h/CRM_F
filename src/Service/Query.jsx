@@ -1,9 +1,13 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // Define a service using a base URL and expected endpoints
-export const pokemonApi = createApi({
-  reducerPath: 'pokemonApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://crm-backend-wui1.onrender.com/api/leads' }),
+export const apiQurey = createApi({
+  reducerPath: 'apiQurey',
+  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/",
+    // 'https://crm-backend-wui1.onrender.com/api/leads'
+    // credentials:"include"
+
+   }),
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     // getPokemonByName: builder.query({
@@ -14,14 +18,15 @@ export const pokemonApi = createApi({
     loginUser: builder.mutation({
       query: (user) => ({
 
-        url: 'login',
+        url: '/employees/login',
         method: 'POST',
         body: user,
       }),
     }),
+    
   }),
 });
 
 // Export hooks for usage in functional components
 // Note: Mutations use `useMutation`, not `useQuery`
-export const {  usePostPokemonByNameMutation } = pokemonApi;
+export const {  useLoginUserMutation } = apiQurey;

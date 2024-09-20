@@ -2,10 +2,18 @@ import { create } from "zustand";
 
 const Store = (set, get) => ({
   login:false,
+  employee:null,
   setLogin: (payload) => {
     
-    set((state) => ({
+    set(() => ({
       login:payload
+    }));
+  },
+
+  setEmployee: (payload) => {
+    
+    set(() => ({
+      employee:payload
     }));
   },
 });
