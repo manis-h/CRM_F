@@ -3,19 +3,6 @@ import React, { useEffect } from 'react'
 import { useFetchAllEmployeeQuery } from '../Service/Query';
 
 const columns = [
-  // {
-  //   field: 'select',
-  //   headerName: '',
-  //   width: 50,
-  //   renderCell: (params) => (
-  //     <input
-  //     type="checkbox"
-  //     checked={selectedLeads === params.row.id}
-      
-  //     onChange={() => handleCheckboxChange(params.row.id)}
-  //     />
-  //   ),
-  // },
   { field: 'fName', headerName: 'First Name', width: 150 },
   { field: 'lName', headerName: 'Last Name', width: 150 },
   { field: 'gender', headerName: 'Gender', width: 100 },
@@ -29,9 +16,9 @@ const columns = [
 
 export default function EmployeeList() {
 
-  const {data} = useFetchAllEmployeeQuery()
+  const { data } = useFetchAllEmployeeQuery()
 
-  console.log('res',data)
+  console.log('res', data)
 
   const rows = data?.map(lead => ({
     id: lead._id, // Unique ID for each lead
@@ -46,20 +33,20 @@ export default function EmployeeList() {
     salary: lead.salary,
   }));
 
-  useEffect(() =>{
-  },[])
+  useEffect(() => {
+  }, [])
   return (
-    <div className='crm-container'> 
-<div style={{ height: 400, width: '100%', marginTop: '20px' }}>
-        <DataGrid 
+    <div className='crm-container'>
+      <div style={{ height: 400, width: '100%', marginTop: '20px' }}>
+        <DataGrid
           rows={rows}
           columns={columns}
           pageSize={10}
           rowsPerPageOptions={[10]}
           pagination
           paginationMode="server"
-          // onPageChange={(newPage) => setPage(newPage)}
-          // rowCount={totalLeads}
+        // onPageChange={(newPage) => setPage(newPage)}
+        // rowCount={totalLeads}
         />
       </div>
     </div>

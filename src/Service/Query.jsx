@@ -1,25 +1,36 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies()
 
 // Define a service using a base URL and expected endpoints
 export const apiQurey = createApi({
   reducerPath: 'apiQurey',
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/",
     // 'https://crm-backend-wui1.onrender.com/api/leads'
+
     // credentials:"include"
+    prepareHeaders: (headers, { getState }) => {
+      const token = cookies.get('authToken');
+
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`);
+      }
+
+      return headers;
+    },
 
    }),
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     getEmployees: builder.query({
-      query: () => `employees/`,
+      query: () => `employees`,
     }),
 //
-    leadUpdate: builder.mutation({
+    allocateLead: builder.mutation({
       query: (data) => ({
 
         url: `leads/${data}`,
         method: 'PATCH',
-        body: data,
       }),
     }),
 
@@ -45,10 +56,23 @@ export const apiQurey = createApi({
     fetchAllEmployee: builder.query({
       query: () => '/employees',
     }),
-    
+    fetchAllocatedLeads: builder.query({
+      query: () => '/leads/allocated',
+    }),
+    fetchAllLeads: builder.query({
+      query: () => '/leads',
+    }),
   }),
 });
 
 // Export hooks for usage in functional components
 // Note: Mutations use `useMutation`, not `useQuery`
-export const {  useLoginUserMutation,useGetEmployeesQuery, useLeadUpdateMutation,useAddEmployeeMutation,useFetchAllEmployeeQuery} = apiQurey;
+export const {  
+  useLoginUserMutation,
+  useGetEmployeesQuery, 
+  useAllocateLeadMutation,
+  useAddEmployeeMutation,
+  useFetchAllEmployeeQuery,
+  useFetchAllocatedLeadsQuery,
+  useFetchAllLeadsQuery,
+} = apiQurey;

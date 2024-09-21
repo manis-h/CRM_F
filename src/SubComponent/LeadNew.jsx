@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
-import { useLeadUpdateMutation } from '../Service/Query';
+import { useAllocateLeadMutation, useFetchAllLeadsQuery } from '../Service/Query';
 
 const LeadNew = () => {
   const [leads, setLeads] = useState([]); // Stores lead details
@@ -9,37 +9,22 @@ const LeadNew = () => {
   const [page, setPage] = useState(1); // Current page
   const [selectedLeads, setSelectedLeads] = useState(null); // Stores selected leads
   const apiUrl = import.meta.env.VITE_API_URL;
-  const [leadUpdate,{data,isSuccess}] =useLeadUpdateMutation();
+  const [allocateLead,{data:updatedLeads,isSuccess}] =useAllocateLeadMutation();
 
+  const {data:allLeads,refetch} = useFetchAllLeadsQuery()
 
-  // Fetch leads and total lead count
   useEffect(() => {
-    fetchLeads(page);
+    setLeads(allLeads);
   }, [page]);
-  console.log("leads",selectedLeads,);
-  
 
-  const fetchLeads = () => {
-            // axios.get(`https://crm-backend-wui1.onrender.com/api/leads`)
-
-    axios.get(`http://localhost:3000/api/leads/`)
-      .then(response => {
-        setLeads(response.data.leads);
-        setTotalLeads(response.data.totalLeads); // Set total lead count
-      })
-      .catch(error => {
-        console.error('Error fetching leads:', error);
-      });
-  };
+  useEffect(() => {
+    refetch()
+  },[updatedLeads])
   
-  // const handleCheckboxSelection = (selection) => {
-    //   setSelectedLeads(selection); // Set selected lead IDs
-    // };
     
     const handleActionButton = () => {
-      console.log('Selected Leads:', selectedLeads);
       // Perform action based on selected leads
-      leadUpdate(selectedLeads,);
+      allocateLead(selectedLeads);
     };
     
     const handleCheckboxChange = (id) => {
@@ -71,7 +56,7 @@ const LeadNew = () => {
       { field: 'salary', headerName: 'Salary', width: 150 },
     ];
     
-    const rows = leads.map(lead => ({
+    const rows = allLeads?.leads?.map(lead => ({
       id: lead._id, // Unique ID for each lead
       fName: lead.fName,
       lName: lead.lName,
@@ -83,7 +68,6 @@ const LeadNew = () => {
       loanAmount: lead.loanAmount,
       salary: lead.salary,
     }));
-    console.log("rows columns",rows,columns);
 
   return (
     <div>
