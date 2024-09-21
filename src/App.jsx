@@ -24,6 +24,7 @@ import AddBankDetails from './Component/AddBankDetails';
 import AddHolidayDetails from './Component/AddHolidayDetails';
 import LeadNew from './SubComponent/LeadNew';
 import ProtectedRoute from './Component/ProtectedRoute';
+import EmployeeList from './page/EmployeeList';
 
 function App() {
 
@@ -67,6 +68,7 @@ function App() {
 
               <Route path='/add-holiday-details' element={<AddHolidayDetails />} />
               <Route path="/user-profile" element={<UserProfileForm />} />
+              <Route path="/employees-list" element={<EmployeeList />} />
               <Route path='/add-bank-details' element={<AddBankDetails />} />
               <Route path='/import-csv' element={<ImportCSV />} />
               <Route path='/view-user' element={<ViewUsersForm />} />

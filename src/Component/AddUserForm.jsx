@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAddEmployeeMutation } from '../Service/Query';
 
 const AddUserForm = () => {
+    const [addEmployee,{data,isSuccess,isError}] = useAddEmployeeMutation()
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
+        fName: '',
+        lName: '',
         email: '',
         mobile: '',
         password: '',
         confPassword: '',
-        userRole: '',
-        id: ''
+        empRole: '',
+        empId: ''
     });
 
     const [error, setError] = useState('');
@@ -22,14 +24,21 @@ const AddUserForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         
+        console.log('form data',formData)
         if (formData.password !== formData.confPassword) {
             setError('Passwords do not match');
             return;
         }
+        addEmployee(formData)
+        setFormData({})
 
         console.log('Form Data Submitted: ', formData);
         // Add logic to save the user data
     };
+
+    useEffect(() => {
+        if(isSuccess) console.log('data',data)
+    },[isSuccess])
 
     return (
         <div className='add-user-form-container'>
@@ -41,7 +50,7 @@ const AddUserForm = () => {
                         <label>First Name</label>
                         <input
                             type="text"
-                            name="firstName"
+                            name="fName"
                             value={formData.firstName}
                             onChange={handleChange}
                             placeholder="Enter first name"
@@ -53,7 +62,7 @@ const AddUserForm = () => {
                         <label>Last Name</label>
                         <input
                             type="text"
-                            name="lastName"
+                            name="lName"
                             value={formData.lastName}
                             onChange={handleChange}
                             placeholder="Enter last name"
@@ -113,8 +122,8 @@ const AddUserForm = () => {
                         <label>Employee ID</label>
                         <input
                             type="text"
-                            name="id"
-                            value={formData.id}
+                            name="empId"
+                            value={formData.empId}
                             onChange={handleChange}
                             placeholder="Enter Employee ID"
                             required
@@ -122,11 +131,11 @@ const AddUserForm = () => {
                     </div>
 
                     <div className="form-group">
-                        <label htmlFor="userRole">Employee Role:</label>
+                        <label htmlFor="empRole">Employee Role:</label>
                         <select
-                            id="userRole"
-                            name="userRole"
-                            value={formData.userRole}
+                            id="empRole"
+                            name="empRole"
+                            value={formData.empRole}
                             onChange={handleChange}
                             required
                         >

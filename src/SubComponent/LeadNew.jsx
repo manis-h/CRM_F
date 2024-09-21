@@ -31,59 +31,59 @@ const LeadNew = () => {
         console.error('Error fetching leads:', error);
       });
   };
-console.log(data);
-
+  
   // const handleCheckboxSelection = (selection) => {
-  //   setSelectedLeads(selection); // Set selected lead IDs
-  // };
-
-  const handleActionButton = () => {
-    console.log('Selected Leads:', selectedLeads);
-    // Perform action based on selected leads
-    leadUpdate(selectedLeads,);
-  };
-
-  const handleCheckboxChange = (id) => {
-    setSelectedLeads(selectedLeads === id ? null : id);
-  }
-
-  const columns = [
-    {
-      field: 'select',
-      headerName: '',
-      width: 50,
-      renderCell: (params) => (
-        <input
+    //   setSelectedLeads(selection); // Set selected lead IDs
+    // };
+    
+    const handleActionButton = () => {
+      console.log('Selected Leads:', selectedLeads);
+      // Perform action based on selected leads
+      leadUpdate(selectedLeads,);
+    };
+    
+    const handleCheckboxChange = (id) => {
+      setSelectedLeads(selectedLeads === id ? null : id);
+    }
+    
+    const columns = [
+      {
+        field: 'select',
+        headerName: '',
+        width: 50,
+        renderCell: (params) => (
+          <input
           type="checkbox"
           checked={selectedLeads === params.row.id}
-        
+          
           onChange={() => handleCheckboxChange(params.row.id)}
-        />
-      ),
-    },
-    { field: 'fName', headerName: 'First Name', width: 150 },
-    { field: 'lName', headerName: 'Last Name', width: 150 },
-    { field: 'gender', headerName: 'Gender', width: 100 },
-    { field: 'personalEmail', headerName: 'Personal Email', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'city', headerName: 'City', width: 150 },
-    { field: 'state', headerName: 'State', width: 150 },
-    { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
-    { field: 'salary', headerName: 'Salary', width: 150 },
-  ];
-
-  const rows = leads.map(lead => ({
-    id: lead._id, // Unique ID for each lead
-    fName: lead.fName,
-    lName: lead.lName,
-    gender: lead.gender,
-    personalEmail: lead.personalEmail,
-    mobile: lead.mobile,
-    city: lead.city,
-    state: lead.state,
-    loanAmount: lead.loanAmount,
-    salary: lead.salary,
-  }));
+          />
+        ),
+      },
+      { field: 'fName', headerName: 'First Name', width: 150 },
+      { field: 'lName', headerName: 'Last Name', width: 150 },
+      { field: 'gender', headerName: 'Gender', width: 100 },
+      { field: 'personalEmail', headerName: 'Personal Email', width: 200 },
+      { field: 'mobile', headerName: 'Mobile', width: 150 },
+      { field: 'city', headerName: 'City', width: 150 },
+      { field: 'state', headerName: 'State', width: 150 },
+      { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
+      { field: 'salary', headerName: 'Salary', width: 150 },
+    ];
+    
+    const rows = leads.map(lead => ({
+      id: lead._id, // Unique ID for each lead
+      fName: lead.fName,
+      lName: lead.lName,
+      gender: lead.gender,
+      personalEmail: lead.personalEmail,
+      mobile: lead.mobile,
+      city: lead.city,
+      state: lead.state,
+      loanAmount: lead.loanAmount,
+      salary: lead.salary,
+    }));
+    console.log("rows columns",rows,columns);
 
   return (
     <div>

@@ -27,10 +27,23 @@ export const apiQurey = createApi({
     loginUser: builder.mutation({
       query: (user) => ({
 
-        url: '/employees/login',
+        url: 'employees/login',
         method: 'POST',
         body: user,
       }),
+    }),
+
+    addEmployee: builder.mutation({
+      query: (user) => ({
+
+        url: 'employees/register',
+        method: 'POST',
+        body: user,
+      }),
+    }),
+
+    fetchAllEmployee: builder.query({
+      query: () => '/employees',
     }),
     
   }),
@@ -38,4 +51,4 @@ export const apiQurey = createApi({
 
 // Export hooks for usage in functional components
 // Note: Mutations use `useMutation`, not `useQuery`
-export const {  useLoginUserMutation,useGetEmployeesQuery, useLeadUpdateMutation} = apiQurey;
+export const {  useLoginUserMutation,useGetEmployeesQuery, useLeadUpdateMutation,useAddEmployeeMutation,useFetchAllEmployeeQuery} = apiQurey;
