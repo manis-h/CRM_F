@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useFetchAllocatedLeadsQuery } from '../Service/Query';
+import { useFetchAllocatedLeadsQuery, useFetchSingleLeadQuery, useGetEmployeesQuery } from '../Service/Query';
 import { DataGrid } from '@mui/x-data-grid';
+import { useNavigate } from 'react-router-dom';
+import useStore from '../Store';
 
 const columns = [
     { field: 'fName', headerName: 'First Name', width: 150 },
@@ -16,20 +18,39 @@ const columns = [
 
 const ProcessingLeads = () => {
     const [processingLeads, setProcessingLeads] = useState()
+    const [totalLeads, setTotalLeads] = useState()
+    const [id, setId] = useState(null)
+    // const {employeeDetails} = useStore()
+    // console.log('emp details',employeeDetails)
+    const navigate = useNavigate()
+    const [paginationModel, setPaginationModel] = useState({
+        page: 0,
+        pageSize: 5,
+    });
+    const { data, isSuccess, refetch } = useFetchAllocatedLeadsQuery({ page: paginationModel.page + 1, limit: paginationModel.pageSize })
+    const {data:LeadData,isSuccess:leadSuccess} = useFetchSingleLeadQuery(id,{skip:id===null})
+    const handlePageChange = (newPaginationModel) => {
+        setPaginationModel(newPaginationModel)
+
+    }
+
+    const handleLeadClick = (lead) => {
+        console.log('lead click', lead)
+        setId(lead.id)
+        navigate(`/lead-profile/${lead.id}`)
+    }
 
 
-    const [page, setPage] = useState()
-    const { data,isSuccess } = useFetchAllocatedLeadsQuery()
-
-
+    useEffect(() => {
+        refetch({ page: paginationModel.page + 1, limit: paginationModel.pageSize });
+    }, [paginationModel]);
 
     useEffect(() => {
         if (data) {
             setProcessingLeads(data)
+            setTotalLeads(data?.totalLeads)
         }
-
-
-    }, [page,isSuccess])
+    }, [isSuccess, data])
 
     const rows = processingLeads?.leads?.map(lead => ({
         id: lead._id, // Unique ID for each lead
@@ -47,18 +68,24 @@ const ProcessingLeads = () => {
     return (
         <>
             <div className="crm-container">
-                <div style={{ height: 400, width: '100%', marginTop: '20px' }}>
+                {rows && <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        pageSize={10}
-                        rowsPerPageOptions={[10]}
-                        pagination
+                        rowCount={totalLeads}
+                        // loading={isLoading}
+                        pageSizeOptions={[5]}
+                        paginationModel={paginationModel}
                         paginationMode="server"
-                        onPageChange={(newPage) => setPage(newPage)}
-                        rowCount={30}
+                        onPaginationModelChange={handlePageChange}
+                        onRowClick={(params) => handleLeadClick(params)}
+                        sx={{
+                            '& .MuiDataGrid-row:hover': {
+                                cursor: 'pointer',
+                            },
+                        }}
                     />
-                </div>
+                </div>}
             </div>
 
         </>

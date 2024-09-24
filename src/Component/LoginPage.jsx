@@ -4,17 +4,18 @@ import axios from 'axios';
 import './LoginPageCss.css';
 import useStore from '../Store';
 import Cookies from 'universal-cookie';
-import { useLoginUserMutation } from '../Service/Query';
+import { useGetEmployeesQuery, useLoginUserMutation } from '../Service/Query';
 
 const LoginPage = () => {
   // const setLogin = useStore((state) => state.setLogin);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   // const [error, setError] = useState('');
-  const [loginUser,{data,isSuccess,isLoading,isError,error}] = useLoginUserMutation()
+  const [loginUser,{data:loginData,isSuccess:loginSuccess,isLoading:loginLoading,isError:loginError,error}] = useLoginUserMutation()
+  const {data:employeeDetails,isSuccess:empDetailsSuccess} = useGetEmployeesQuery(undefined,{skip:loginLoading || loginLoading || loginError})
   const navigate = useNavigate();
   const cookies = new Cookies();
-  const {setLogin,setEmployee} = useStore()
+  const {setLogin,setEmployeeDetails} = useStore()
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -25,22 +26,8 @@ const LoginPage = () => {
     }
   
     try {
-      // const response = await axios.post('http://localhost:3000/api/employees/login', { email, password });
        loginUser({email,password})
-      // console.log('res',res.isLoading)
-      // Check if the response message indicates success
-      // if (response.status === 'Login successful') {
-      //   // Optionally set a cookie if the token is included in the response
-      //   // if (response.data.token) {
-      //   //   cookies.set('authToken', response.data.token, { path: '/' });
-      //   // }
-        
-      //   // setLogin(true);
-      //   // navigate('/')
-      //   window.location.assign('/');
-      // } else {
-      //   setError('Invalid email or password');
-      // }
+      
     } catch (error) {
       console.error('Error during login:', error);
       setError('Something went wrong. Please try again later.');
@@ -48,21 +35,17 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    if(isSuccess ) {
-      console.log('token',data)
-      if (data.token) {
-          cookies.set('authToken', data.token, { path: '/' });
+    if(loginSuccess ) {
+      console.log('login data',loginData)
+      if (loginData.token) {
+          cookies.set('authToken', loginData.token, { path: '/' });
         }
-        
-        setLogin(true);
-        setEmployee(data.data)
-        
         navigate('/')
 
     } 
       
 
-  },[isSuccess])
+  },[loginSuccess])
   
 
   const handleForgotPassword = () => {

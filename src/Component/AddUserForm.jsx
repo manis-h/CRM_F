@@ -7,6 +7,7 @@ const AddUserForm = () => {
         fName: '',
         lName: '',
         email: '',
+        gender:'',
         mobile: '',
         password: '',
         confPassword: '',
@@ -30,7 +31,17 @@ const AddUserForm = () => {
             return;
         }
         addEmployee(formData)
-        setFormData({})
+        setFormData({
+            fName: '',
+            lName: '',
+            email: '',
+            gender:'',
+            mobile: '',
+            password: '',
+            confPassword: '',
+            empRole: '',
+            empId: ''
+        })
 
         console.log('Form Data Submitted: ', formData);
         // Add logic to save the user data
@@ -78,6 +89,18 @@ const AddUserForm = () => {
                             value={formData.email}
                             onChange={handleChange}
                             placeholder="Enter email address"
+                            required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Gender</label>
+                        <input
+                            type="text"
+                            name="gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            placeholder="Enter employee's gender"
                             required
                         />
                     </div>

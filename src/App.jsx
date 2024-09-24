@@ -26,6 +26,8 @@ import LeadNew from './SubComponent/LeadNew';
 import ProtectedRoute from './Component/ProtectedRoute';
 import EmployeeList from './page/EmployeeList';
 import ProcessingLeads from './page/ProcessingLeads';
+import LeadDetails from './Component/LeadDetails';
+import LeadProfile from './page/LeadProfile';
 
 function App() {
 
@@ -74,6 +76,7 @@ function App() {
               <Route path='/import-csv' element={<ImportCSV />} />
               <Route path='/view-user' element={<ViewUsersForm />} />
               <Route path='add-users' element={<AddUserForm />} />
+              <Route path='lead-profile/:id' element={<LeadProfile />} />
               <Route path="/lead-new" element={<LeadNew
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status"]}
                 rows={[
@@ -82,15 +85,8 @@ function App() {
                   ["103", "View", "2024-09-07", "Referral", "Bob Johnson", "New York", "New York City", "Branch C", "1122334455", "LMNOP5678H", "Individual", "Completed"],
 
                 ]} />} />
-            {/* <Route path="/lead-process" element={<DynamicTable
-              header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Screener"]}
-              rows={[
-                ["101", "Review", "2024-09-09", "Online", "Emily Davis", "California", "Los Angeles", "Branch A", "555-1111", "XYZ1234567", "Individual", "Active", "Screener 1"],
-                ["102", "Approve", "2024-09-08", "Offline", "Michael Brown", "Texas", "Austin", "Branch B", "555-2222", "ABC7654321", "Business", "Pending", "Screener 2"],
-                ["103", "Review", "2024-09-07", "Referral", "Sarah Wilson", "New York", "Manhattan", "Branch C", "555-3333", "DEF9876543", "Individual", "Completed", "Screener 3"],
-                ["104", "Reject", "2024-09-06", "Online", "James Taylor", "Florida", "Orlando", "Branch D", "555-4444", "GHI6543210", "Business", "Rejected", "Screener 4"]
-              ]} />} /> */}
               <Route path='/lead-process' element={<ProcessingLeads />} />
+              <Route path='/lead-process/:id' element={<LeadDetails />} />
               <Route path="/lead-hold" element={<DynamicTable
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Hold-On", "Screener"]}
                 rows={[

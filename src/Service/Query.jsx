@@ -12,6 +12,8 @@ export const apiQurey = createApi({
     prepareHeaders: (headers, { getState }) => {
       const token = cookies.get('authToken');
 
+      console.log('outh token',token)
+
       if (token) {
         headers.set('Authorization', `Bearer ${token}`);
       }
@@ -23,15 +25,25 @@ export const apiQurey = createApi({
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     getEmployees: builder.query({
-      query: () => `employees`,
+      query: () => `employees/me`,
     }),
 //
     allocateLead: builder.mutation({
-      query: (data) => ({
+      query: (id) => ({
 
-        url: `leads/${data}`,
+        url: `leads/${id}`,
         method: 'PATCH',
       }),
+    }),
+    uploadDocuments: builder.mutation({
+      query: ({id,docsData}) =>{ 
+        console.log('data',id,docsData)
+       return ({
+
+        url: `leads/docs/${id}`,
+        method: 'PATCH',
+        body:docsData
+      })},
     }),
 
     // POST request to send data (this should use builder.mutation)
@@ -57,10 +69,13 @@ export const apiQurey = createApi({
       query: () => '/employees',
     }),
     fetchAllocatedLeads: builder.query({
-      query: () => '/leads/allocated',
+      query: ({page,limit}) => `/leads/allocated/?page=${page}&limit=${limit}`,
     }),
     fetchAllLeads: builder.query({
-      query: () => '/leads',
+      query: ({page,limit}) => `/leads/?page=${page}&limit=${limit}`,
+    }),
+    fetchSingleLead: builder.query({
+      query: (id) => `/leads/${id}`,
     }),
   }),
 });
@@ -75,4 +90,6 @@ export const {
   useFetchAllEmployeeQuery,
   useFetchAllocatedLeadsQuery,
   useFetchAllLeadsQuery,
+  useFetchSingleLeadQuery,
+  useUploadDocumentsMutation,
 } = apiQurey;

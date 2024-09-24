@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 const Store = (set, get) => ({
   login:false,
-  employee:null,
+  employeeDetails:null,
   setLogin: (payload) => {
     
     set(() => ({
@@ -10,10 +10,10 @@ const Store = (set, get) => ({
     }));
   },
 
-  setEmployee: (payload) => {
+  setEmployeeDetails: (payload) => {
     
     set(() => ({
-      employee:payload
+      employeeDetails:payload
     }));
   },
 });
