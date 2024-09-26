@@ -77,6 +77,12 @@ export const apiQurey = createApi({
     fetchSingleLead: builder.query({
       query: (id) => `/leads/${id}`,
     }),
+    getLeadDocs: builder.query({
+      query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
+    }),
+    getInternalDedupe: builder.query({
+      query: (id) => `/leads/old-history/${id}`,
+    }),
   }),
 });
 
@@ -92,4 +98,6 @@ export const {
   useFetchAllLeadsQuery,
   useFetchSingleLeadQuery,
   useUploadDocumentsMutation,
+  useGetLeadDocsQuery,
+  useGetInternalDedupeQuery,
 } = apiQurey;
