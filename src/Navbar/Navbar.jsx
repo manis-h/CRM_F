@@ -1,92 +1,124 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Cookies from 'universal-cookie';
 import './Navbar.css';
 import useStore from '../Store';
 
 const Navbar = () => {
-    const [clientRole, setClientRole] = useState('Client');
-    const setLogin = useStore((state) => state.setLogin);
-    const cookies = new Cookies();
-    const navigate = useNavigate();
+  const [clientRole, setClientRole] = useState('Client');
+  const cookies = new Cookies();
+  const navigate = useNavigate();
+  const { setLogin, setEmployeeDetails } = useStore();
 
-    // Logout function in frontend
-    const handleLogout = async () => {
-        try {
-            await axios.post('http://localhost:3000/api/users/logout', {}, { withCredentials: true });
-            cookies.remove('authToken', { path: '/' });
-            localStorage.removeItem('userData'); // If you use local storage
-            setLogin(false);
-            window.location.assign('/login');
-        } catch (error) {
-            console.error('Error during logout:', error);
-        }
-    };
-    
-    
-    
+  const handleLogout = () => {
+    cookies.remove('authToken');
+    setLogin(false);
+    setEmployeeDetails(null);
+    navigate('/login');
+  };
 
-    const handleRoleChange = (event) => {
-        setClientRole(event.target.value);
-        console.log('Selected Role:', event.target.value);
-    };
+  const handleRoleChange = (event) => {
+    setClientRole(event.target.value);
+    console.log('Selected Role:', event.target.value);
+  };
 
-    return (
-        <nav className="navbar navbar-light">
-            <div className="container-fluid">
-                <a className="text navbar-brand">QuickMoney4U</a>
+  return (
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/">
+          QuickMoney4U
+        </Link>
 
-                {/* User Profile Link */}
-                <Link to="/user-profile" className="user-profile-link" style={{ marginLeft: '500px' }}>
-                    <i className="bi bi-person-circle" style={{ marginRight: '10px', color: 'black' }}></i>
-                    User Profile
-                </Link>
+        {/* Toggle button for mobile view */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-                {/* Settings Dropdown */}
-                <div className="dropdown">
-                    <Link
-                        to="#"
-                        className="dropdown-toggle settings-link"
-                        id="settingsDropdown"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        style={{ marginRight: '50px' }}
-                    >
-                        <i className="bi bi-gear" style={{ marginRight: '8px', color: 'black' }}></i>Setting
-                    </Link>
-                    
-                    <ul className="dropdown-menu" aria-labelledby="settingsDropdown">
-                        <li><Link className="dropdown-item" to="/add-users">Add Users</Link></li>
-                        <li><Link className="dropdown-item" to="/view-user">View Users</Link></li>
-                        <li><Link className="dropdown-item" to="/import-csv">Import CSV</Link></li>
-                        <li><Link className="dropdown-item" to="/add-bank-details">Add Bank Details</Link></li>
-                        <li><Link className="dropdown-item" to="/add-holiday-details">Add Holiday Details</Link></li>
-                    </ul>
-                </div>
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            {/* User Profile Link */}
+            <li className="nav-item">
+              <Link className="nav-link" to="/user-profile">
+                <i className="bi bi-person-circle me-1"></i> User Profile
+              </Link>
+            </li>
 
-                {/* Client Role Dropdown */}
-                <select
-                    className="client-role-dropdown"
-                    value={clientRole}
-                    onChange={handleRoleChange}
-                    style={{ marginLeft: '20px', borderRadius: '50px', textAlign: 'center', height: '30px' }}
-                >
-                    <option value="Guest">AUDIT</option>
-                    <option value="Client">CLIENT ADMIN</option>
-                    <option value="Admin">SCREENER</option>
-                </select>
+            {/* Settings Dropdown */}
+            <li className="nav-item dropdown">
+              <Link
+                className="nav-link dropdown-toggle"
+                to="#"
+                id="settingsDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i className="bi bi-gear me-1"></i>Settings
+              </Link>
+              <ul className="dropdown-menu" aria-labelledby="settingsDropdown">
+                <li>
+                  <Link className="dropdown-item" to="/add-users">
+                    Add Employee
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/employees-list">
+                    View Employees
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/import-csv">
+                    Import CSV
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/add-bank-details">
+                    Add Bank Details
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/add-holiday-details">
+                    Add Holiday Details
+                  </Link>
+                </li>
+              </ul>
+            </li>
 
-                {/* Logout Button */}
-                <button 
-                    style={{ backgroundColor: 'brown', marginLeft: '20px' }} 
-                    onClick={handleLogout}
-                >
-                    <i className="bi bi-box-arrow-right" style={{ marginLeft: '8px', color: 'white' }}></i>
-                </button>
-            </div>
-        </nav>
-    );
+            {/* Client Role Dropdown */}
+            <li className="nav-item">
+              <select
+                className="form-select client-role-dropdown"
+                value={clientRole}
+                onChange={handleRoleChange}
+              >
+                <option value="Guest">AUDIT</option>
+                <option value="Client">CLIENT ADMIN</option>
+                <option value="Admin">SCREENER</option>
+              </select>
+            </li>
+
+            {/* Logout Button */}
+            <li className="nav-item">
+              <button
+                className="btn btn-danger ms-lg-3"
+                onClick={handleLogout}
+              >
+                <i className="bi bi-box-arrow-right"></i>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
 };
 
 export default Navbar;

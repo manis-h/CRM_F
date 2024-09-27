@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './LoginPageCss.css';
 import useStore from '../Store';
 import Cookies from 'universal-cookie';
+import { useGetEmployeesQuery, useLoginUserMutation } from '../Service/Query';
 
 const LoginPage = () => {
-  const setLogin = useStore((state) => state.setLogin);
+  // const setLogin = useStore((state) => state.setLogin);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  // const [error, setError] = useState('');
+  const [loginUser,{data:loginData,isSuccess:loginSuccess,isLoading:loginLoading,isError:loginError,error}] = useLoginUserMutation()
+  const {data:employeeDetails,isSuccess:empDetailsSuccess} = useGetEmployeesQuery(undefined,{skip:loginLoading || loginLoading || loginError})
   const navigate = useNavigate();
   const cookies = new Cookies();
+  const {setLogin,setEmployeeDetails} = useStore()
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -22,25 +26,26 @@ const LoginPage = () => {
     }
   
     try {
-      const response = await axios.post('http://localhost:3000/api/users/login', { email, password });
-  
-      // Check if the response message indicates success
-      if (response.data.message === 'Login successful') {
-        // Optionally set a cookie if the token is included in the response
-        if (response.data.token) {
-          cookies.set('authToken', response.data.token, { path: '/' });
-        }
-        
-        setLogin(true);
-        window.location.assign('/dashboard');
-      } else {
-        setError('Invalid email or password');
-      }
+       loginUser({email,password})
+      
     } catch (error) {
       console.error('Error during login:', error);
       setError('Something went wrong. Please try again later.');
     }
   };
+
+  useEffect(() => {
+    if(loginSuccess ) {
+      console.log('login data',loginData)
+      if (loginData.token) {
+          cookies.set('authToken', loginData.token, { path: '/' });
+        }
+        navigate('/')
+
+    } 
+      
+
+  },[loginSuccess])
   
 
   const handleForgotPassword = () => {
