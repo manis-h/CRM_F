@@ -5,6 +5,7 @@ import './LoginPageCss.css';
 import useStore from '../Store';
 import Cookies from 'universal-cookie';
 import { useGetEmployeesQuery, useLoginUserMutation } from '../Service/Query';
+import Swal from 'sweetalert2';
 
 const LoginPage = () => {
   // const setLogin = useStore((state) => state.setLogin);
@@ -12,7 +13,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   // const [error, setError] = useState('');
   const [loginUser,{data:loginData,isSuccess:loginSuccess,isLoading:loginLoading,isError:loginError,error}] = useLoginUserMutation()
-  const {data:employeeDetails,isSuccess:empDetailsSuccess} = useGetEmployeesQuery(undefined,{skip:loginLoading || loginLoading || loginError})
+  // const {data:employeeDetails,isSuccess:empDetailsSuccess} = useGetEmployeesQuery(undefined,{skip:loginLoading || loginLoading || loginError})
   const navigate = useNavigate();
   const cookies = new Cookies();
   const {setLogin,setEmployeeDetails} = useStore()
@@ -46,6 +47,7 @@ const LoginPage = () => {
       
 
   },[loginSuccess])
+
   
 
   const handleForgotPassword = () => {
@@ -56,7 +58,6 @@ const LoginPage = () => {
     <div className="login-container">
       <div className="login-box">
         <h2 className='loginH2'>Login</h2>
-        {error && <p className="error">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="email">Email</label>
@@ -82,6 +83,7 @@ const LoginPage = () => {
           </div>
           <button type="submit" className="btn" >Login</button>
         </form>
+        {error && <p className="error">{error?.data?.message}</p>}
         <p className="forgot-password" onClick={handleForgotPassword}>Forgot Password?</p>
       </div>
     </div>

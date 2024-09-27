@@ -33,7 +33,6 @@ function App() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const setLogin = useStore((state) => state.setLogin);
-  const [login, setLoginState] = useState(true); // Local state to track login
 
   useEffect(() => {
     const cookies = new Cookies();
@@ -42,7 +41,7 @@ function App() {
     if (authToken) {
       console.log({ authToken })
       // Assume token presence means user is logged in
-      setLoginState(true);
+      // setLoginState(true);
       setLogin(true);
     }
   }, [setLogin]);
@@ -59,14 +58,14 @@ function App() {
 
       </Routes>
       <>
-      <ProtectedRoute>
-        <Navbar />
+        <ProtectedRoute>
+          <Navbar />
 
-        <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
-        <div style={{ marginLeft: isSidebarOpen ? '250px' : '0px' }} >
+          <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
+          <div style={{ marginLeft: isSidebarOpen ? '250px' : '0px' }} >
 
-          <Routes>
-            {/* <Route path='/' element={<ProtectedRoute><Dashboard /></ProtectedRoute>}> */}
+            <Routes>
+              {/* <Route path='/' element={<ProtectedRoute><Dashboard /></ProtectedRoute>}> */}
               <Route path="/" element={<Dashboard />} />
 
               <Route path='/add-holiday-details' element={<AddHolidayDetails />} />
@@ -314,12 +313,12 @@ function App() {
               <Route path="/search" element={<SearchForm />} />
               <Route path="/export-form" element={<ExportForm />} />
               <Route path="/mis-report" element={<MISReport />} />
-            {/* </Route> */}
+              {/* </Route> */}
 
 
-          </Routes>
-        </div>
-      </ProtectedRoute>
+            </Routes>
+          </div>
+        </ProtectedRoute>
         {/* <Navbar /> */}
 
       </>
