@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { FaPen, FaLock } from 'react-icons/fa';  // Import icons from react-icons
+import { useGetEmployeesQuery } from '../Service/Query';
 
 const ViewUsersForm = () => {
   // Extracting header and rows data from location state
@@ -9,6 +10,8 @@ const ViewUsersForm = () => {
     header: ["ID", "Action", "Name", "Email", "Mobile"], // Default headers
     rows: [] // Default empty rows
   };
+  const {data}=useGetEmployeesQuery();
+  console.log(data)
 
   // Internal CSS styles for the table
   const tableStyles = {
