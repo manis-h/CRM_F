@@ -9,7 +9,6 @@ const ProtectedRoute = ({ children }) => {
     const { login } = useStore();
     const location = useLocation();
 
-    // Check if user is authenticated based on the cookie
     const isAuthenticated = login || authToken; 
 
     

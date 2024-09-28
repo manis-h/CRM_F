@@ -99,9 +99,10 @@ const Navbar = () => {
                 value={clientRole}
                 onChange={handleRoleChange}
               >
-                <option value="Guest">AUDIT</option>
-                <option value="Client">CLIENT ADMIN</option>
-                <option value="Admin">SCREENER</option>
+                {/* <option value="Guest">AUDIT</option> */}
+                <option value="Admin">ADMIN</option>
+                <option value="Screener">SCREENER</option>
+                <option value="Credit-manager">CREDIT MANAGER</option>
               </select>
             </li>
 

@@ -83,6 +83,9 @@ export const apiQurey = createApi({
     getInternalDedupe: builder.query({
       query: (id) => `/leads/old-history/${id}`,
     }),
+    applicationHistory: builder.query({
+      query: (id) => `/leads/viewleadlog/${id}`,
+    }),
   }),
 });
 
@@ -100,4 +103,5 @@ export const {
   useUploadDocumentsMutation,
   useGetLeadDocsQuery,
   useGetInternalDedupeQuery,
+  useApplicationHistoryQuery,
 } = apiQurey;

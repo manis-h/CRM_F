@@ -8,6 +8,7 @@ import Swal from 'sweetalert2';
 import InternalDedupe from '../Component/InternalDedupe';
 import Upload from '@mui/icons-material/Upload';
 import UploadDocuments from '../Component/UploadDocuments';
+import ApplicationLogHistory from '../Component/ApplicationLogHistory';
 
 const LeadProfile = () => {
     const { id } = useParams();
@@ -171,6 +172,7 @@ const LeadProfile = () => {
                         <UploadDocuments  uploadedDocs={uploadedDocs} />
 
                         <InternalDedupe />
+                        <ApplicationLogHistory />
                     </Paper>
                 </>
             )}

@@ -53,7 +53,7 @@ const ProcessingLeads = () => {
     }, [isSuccess, data])
 
     const rows = processingLeads?.leads?.map(lead => ({
-        id: lead._id, // Unique ID for each lead
+        id: lead._id, 
         fName: lead.fName,
         lName: lead.lName,
         gender: lead.gender,
