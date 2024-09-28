@@ -61,7 +61,7 @@ const InternalDedupe = () => {
                             data-bs-target="#collapseOne"
                             aria-expanded="true"
                             aria-controls="collapseOne"
-                            style={{ backgroundColor: "#e823eb", borderRadius: "15px" }}
+                            style={{ backgroundColor: "#0366fc", borderRadius: "15px", color: "#fff"}}
                         >
                             <strong>Internal Dedupe</strong>
 
@@ -73,7 +73,6 @@ const InternalDedupe = () => {
                         aria-labelledby="headingOne"
                         data-bs-parent="#accordionExample"
                     >
-                        <h1>Internal Dedupe</h1>
                        
 
                         {columns && <div style={{ height: 400, width: '100%' }}>

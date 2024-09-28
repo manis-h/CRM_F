@@ -68,7 +68,7 @@ const ProcessingLeads = () => {
     return (
         <>
             <div className="crm-container">
-                {rows && <div style={{ height: 400, width: '100%' }}>
+                {columns && <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}

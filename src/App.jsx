@@ -28,6 +28,7 @@ import EmployeeList from './page/EmployeeList';
 import ProcessingLeads from './page/ProcessingLeads';
 import LeadDetails from './Component/LeadDetails';
 import LeadProfile from './page/LeadProfile';
+import HoldLead from './Component/los/HoldLead';
 
 function App() {
 
@@ -86,14 +87,7 @@ function App() {
                 ]} />} />
               <Route path='/lead-process' element={<ProcessingLeads />} />
               <Route path='/lead-process/:id' element={<LeadDetails />} />
-              <Route path="/lead-hold" element={<DynamicTable
-                header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Hold-On", "Screener"]}
-                rows={[
-                  ["001", "View", "2024-09-09", "Online", "Alice Johnson", "California", "San Francisco", "Branch X", "555-1234", "ABCD1234E", "Individual", "Active", "Yes", "Screener 1"],
-                  ["002", "Edit", "2024-09-08", "Offline", "Bob Smith", "New York", "Brooklyn", "Branch Y", "555-5678", "EFGH5678I", "Business", "Pending", "No", "Screener 2"],
-                  ["003", "View", "2024-09-07", "Referral", "Carol Lee", "Texas", "Houston", "Branch Z", "555-8765", "IJKL9012M", "Individual", "Completed", "Yes", "Screener 3"],
-                  ["004", "Edit", "2024-09-06", "Online", "David Brown", "Florida", "Miami", "Branch W", "555-4321", "MNOP3456Q", "Business", "Rejected", "No", "Screener 4"]
-                ]} />} />
+              <Route path="/lead-hold" element={<HoldLead />} />
 
               <Route path="/application-new" element={<DynamicTable
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Screener"]}
