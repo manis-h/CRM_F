@@ -9,15 +9,9 @@ export const apiQurey = createApi({
     baseUrl: "http://localhost:3000/api/",
     // 'https://crm-backend-wui1.onrender.com/api/leads'
 
-    // credentials:"include"
+    credentials:"include",
     prepareHeaders: (headers, { getState }) => {
-      const token = cookies.get('authToken');
-
-      console.log('outh token', token)
-
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
+     
 
       return headers;
     },
@@ -54,6 +48,12 @@ export const apiQurey = createApi({
         url: 'employees/login',
         method: 'POST',
         body: data,
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: 'employees/logout',
+        method: 'POST',       
       }),
     }),
     bulkUpload: builder.mutation({
@@ -112,6 +112,9 @@ export const apiQurey = createApi({
     applicationHistory: builder.query({
       query: (id) => `/leads/viewleadlog/${id}`,
     }),
+    fetchAllHoldLeads: builder.query({
+      query: (id) => `/leads/hold/`,
+    }),
   }),
 });
 
@@ -119,6 +122,7 @@ export const apiQurey = createApi({
 // Note: Mutations use `useMutation`, not `useQuery`
 export const {
   useLoginUserMutation,
+  useLogoutMutation,
   useGetEmployeesQuery,
   useAllocateLeadMutation,
   useAddEmployeeMutation,
@@ -133,4 +137,5 @@ export const {
   useApplicationHistoryQuery,
   useBulkUploadMutation,
   useHoldLeadMutation,
+  useFetchAllHoldLeadsQuery,
 } = apiQurey;
