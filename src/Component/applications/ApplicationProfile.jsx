@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Grid, Button, Accordion, AccordionSummary, AccordionDetails, Paper, Divider } from '@mui/material';
+import Upload from '@mui/icons-material/Upload';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useApproveLeadMutation, useFetchSingleLeadQuery, useGetLeadDocsQuery, useHoldLeadMutation, useRejectLeadMutation, useUnholdLeadMutation, useUploadDocumentsMutation } from '../Service/Query';
-import LeadDetails from '../Component/LeadDetails';
 import Swal from 'sweetalert2';
-import InternalDedupe from '../Component/InternalDedupe';
-import Upload from '@mui/icons-material/Upload';
-import UploadDocuments from '../Component/UploadDocuments';
-import ApplicationLogHistory from '../Component/ApplicationLogHistory';
-import { CheckBox } from '@mui/icons-material';
+import InternalDedupe from '../InternalDedupe';
+import ApplicationLogHistory from '../ApplicationLogHistory';
+import UploadDocuments from '../UploadDocuments';
+import LeadDetails from '../LeadDetails';
+import { useApproveLeadMutation, useFetchSingleLeadQuery, useHoldLeadMutation, useRejectLeadMutation, useUnholdLeadMutation } from '../../Service/Query';
 
-const LeadProfile = () => {
+
+const ApplicationProfile = () => {
     const { id } = useParams();
     const navigate = useNavigate()
     const [selectedFileType, setSelectedFileType] = useState(null);
@@ -300,4 +300,5 @@ const LeadProfile = () => {
     );
 };
 
-export default LeadProfile;
+export default ApplicationProfile;
+

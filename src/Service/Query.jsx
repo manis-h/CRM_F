@@ -3,31 +3,27 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies()
 
 // Define a service using a base URL and expected endpoints
-export const apiQurey = createApi({
-  reducerPath: 'apiQurey',
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000/api/",
+export const leadsApi = createApi({
+  reducerPath: 'leadsApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: "http://localhost:3000/api/",
     // 'https://crm-backend-wui1.onrender.com/api/leads'
 
-    // credentials:"include"
+    credentials:"include",
     prepareHeaders: (headers, { getState }) => {
-      const token = cookies.get('authToken');
-
-      console.log('outh token',token)
-
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-      }
+     
 
       return headers;
     },
 
-   }),
+  }),
+  tagTypes: ["getDocs","rejectedLeads","holdLeads"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     getEmployees: builder.query({
       query: () => `employees/me`,
     }),
-//
+    //
     allocateLead: builder.mutation({
       query: (id) => ({
 
@@ -36,46 +32,99 @@ export const apiQurey = createApi({
       }),
     }),
     uploadDocuments: builder.mutation({
-      query: ({id,docsData}) =>{ 
-        console.log('data',id,docsData)
-       return ({
+      query: ({ id, docsData }) => ({
 
         url: `leads/docs/${id}`,
         method: 'PATCH',
-        body:docsData
-      })},
+        body: docsData
+      }),
+      invalidatesTags: ["getDocs"]
     }),
 
     // POST request to send data (this should use builder.mutation)
     loginUser: builder.mutation({
-      query: (user) => ({
+      query: (data) => ({
 
         url: 'employees/login',
         method: 'POST',
-        body: user,
+        body: data,
+      }),
+    }),
+    logout: builder.mutation({
+      query: () => ({
+        url: 'employees/logout',
+        method: 'POST',       
+      }),
+    }),
+    bulkUpload: builder.mutation({
+      query: (data) => ({
+
+        url: 'leads/bulk-upload',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    holdLead: builder.mutation({
+      query: (id) => ({
+
+        url: `leads/hold/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["holdLeads"]
+    }),
+    rejectLead: builder.mutation({
+      query: (id) => ({
+
+        url: `leads/reject/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["rejectedLeads"]
+    }),
+    unholdLead: builder.mutation({
+      query: (id) => ({
+
+        url: `leads/unhold/${id}`,
+        method: 'PATCH',
+      }),
+    }),
+    approveLead: builder.mutation({
+      query: (id) => ({
+
+        url: `leads/approve/${id}`,
+        method: 'PATCH',
       }),
     }),
 
     addEmployee: builder.mutation({
-      query: (user) => ({
+      query: (data) => ({
 
         url: 'employees/register',
         method: 'POST',
-        body: user,
+        body: data,
       }),
+    }),
+    updateLead: builder.mutation({
+      query: ({id,formData}) => ({
+
+        url: `leads/update/${id}`,
+        method: 'PATCH',
+        body: formData,
+      }),
+      invalidatesTags:["getDocs"]
     }),
 
     fetchAllEmployee: builder.query({
-      query: () => '/employees',
+      query: () => 'employees',
     }),
     fetchAllocatedLeads: builder.query({
-      query: ({page,limit}) => `/leads/allocated/?page=${page}&limit=${limit}`,
+      query: ({ page, limit }) => `/leads/allocated/?page=${page}&limit=${limit}`,
     }),
     fetchAllLeads: builder.query({
-      query: ({page,limit}) => `/leads/?page=${page}&limit=${limit}`,
+      query: ({ page, limit }) => `/leads/?page=${page}&limit=${limit}`,
     }),
     fetchSingleLead: builder.query({
       query: (id) => `/leads/${id}`,
+      providesTags: ["getDocs"]
     }),
     getLeadDocs: builder.query({
       query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
@@ -86,14 +135,24 @@ export const apiQurey = createApi({
     applicationHistory: builder.query({
       query: (id) => `/leads/viewleadlog/${id}`,
     }),
+    fetchAllHoldLeads: builder.query({
+      query: () => `/leads/hold`,
+      providesTags:["holdLeads"]
+    }),
+    fetchAllRejectedLeads: builder.query({
+      query: () => `/leads/reject`,
+      providesTags:["rejectedLeads"]
+    }),
+    
   }),
 });
 
 // Export hooks for usage in functional components
 // Note: Mutations use `useMutation`, not `useQuery`
-export const {  
+export const {
   useLoginUserMutation,
-  useGetEmployeesQuery, 
+  useLogoutMutation,
+  useGetEmployeesQuery,
   useAllocateLeadMutation,
   useAddEmployeeMutation,
   useFetchAllEmployeeQuery,
@@ -101,7 +160,15 @@ export const {
   useFetchAllLeadsQuery,
   useFetchSingleLeadQuery,
   useUploadDocumentsMutation,
+  useUpdateLeadMutation,
   useGetLeadDocsQuery,
   useGetInternalDedupeQuery,
   useApplicationHistoryQuery,
-} = apiQurey;
+  useBulkUploadMutation,
+  useHoldLeadMutation,
+  useFetchAllHoldLeadsQuery,
+  useUnholdLeadMutation,
+  useApproveLeadMutation,
+  useRejectLeadMutation,
+  useFetchAllRejectedLeadsQuery,
+} = leadsApi;

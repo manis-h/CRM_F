@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useBulkUploadMutation } from '../Service/Query';
 
 const ImportCSV = () => {
+
+  const [bulkUpload,{data,isSuccess,isError,error}] = useBulkUploadMutation()
   const [file, setFile] = useState(null);
 
   const handleFileChange = (e) => {
@@ -9,7 +12,10 @@ const ImportCSV = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const formData = new FormData()
     if (file) {
+      formData.append("csv",file)
+      bulkUpload(formData)
       console.log('CSV file to be uploaded:', file);
     } else {
       alert('Please select a file to upload');
