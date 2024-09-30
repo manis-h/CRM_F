@@ -3,20 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './LoginPageCss.css';
 import useStore from '../Store';
-import Cookies from 'universal-cookie';
 import { useGetEmployeesQuery, useLoginUserMutation } from '../Service/Query';
 import Swal from 'sweetalert2';
+import useAuthStore from './store/authStore';
 
 const LoginPage = () => {
   // const setLogin = useStore((state) => state.setLogin);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const [error, setError] = useState('');
   const [loginUser,{data:loginData,isSuccess:loginSuccess,isLoading:loginLoading,isError:loginError,error}] = useLoginUserMutation()
-  // const {data:employeeDetails,isSuccess:empDetailsSuccess} = useGetEmployeesQuery(undefined,{skip:loginLoading || loginLoading || loginError})
   const navigate = useNavigate();
-  const cookies = new Cookies();
-  const {setLogin,setEmployeeDetails} = useStore()
+  const {empInfo,setEmpInfo,} = useStore()
+  const {isLoggedIn,setLogin} = useAuthStore()
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -27,7 +26,7 @@ const LoginPage = () => {
     }
   
     try {
-       loginUser({email,password})
+       await loginUser({email,password})
       
     } catch (error) {
       console.error('Error during login:', error);
@@ -37,10 +36,9 @@ const LoginPage = () => {
 
   useEffect(() => {
     if(loginSuccess ) {
-      console.log('login data',loginData)
-      if (loginData.token) {
-          cookies.set('authToken', loginData.token, { path: '/' });
-        }
+      setLogin(true)
+      setEmpInfo(loginData)
+     
         navigate('/')
 
     } 

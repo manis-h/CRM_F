@@ -52,7 +52,7 @@ const ApplicationLogHistory = () => {
                             data-bs-target="#collapseApplicationLog"
                             aria-expanded="true"
                             aria-controls="collapseApplicationLog"
-                            style={{ backgroundColor: "#e823eb", borderRadius: "15px" }}
+                            style={{ backgroundColor: "#0366fc", borderRadius: "15px", color: "#fff",  }}
                         >
                             <strong>Application Log</strong>
                         </button>

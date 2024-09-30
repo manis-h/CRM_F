@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { TextField, FormControl, InputLabel, Select, MenuItem, Button, Grid, Typography, OutlinedInput } from '@mui/material';
 import useStore from '../Store';
 import { useParams } from 'react-router-dom';
-import { useFetchSingleLeadQuery } from '../Service/Query';
+import { useFetchSingleLeadQuery, useUpdateLeadMutation } from '../Service/Query';
 
 const LeadDetails = ({ leadData, setLeadEdit }) => {
+  const {id} =useParams()
+  const [updateLead,{data,isSuccess,isError,error}] = useUpdateLeadMutation()
   const [formData, setFormData] = useState(leadData);
   console.log('lead data', leadData, formData);
 
@@ -15,7 +17,15 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLeadEdit(false);
-    console.log(formData);
+    updateLead({id,formData})
+    console.log("form lead",formData);
+  };
+
+  const convertToISODate = (dob) => {
+    if (!dob) return ''; // Return empty string if no dob is provided
+  
+    const [day, month, year] = dob.split('-');
+    return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
   };
 
   return (
@@ -87,7 +97,7 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
               name="dob"
               type="date"
               InputLabelProps={{ shrink: true }}
-              value={formData.dob}
+              value={formData.dob && convertToISODate(formData.dob)}
               onChange={handleChange}
               variant="outlined"
             />
@@ -99,8 +109,8 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
               required
               fullWidth
               label="Aadhaar"
-              name="adhaar"
-              value={formData.adhaar}
+              name="aadhaar"
+              value={formData.aadhaar}
               onChange={handleChange}
               variant="outlined"
             />
@@ -184,18 +194,6 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
             />
           </Grid>
 
-          {/* Number of Loans */}
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Number of Loans"
-              name="noOfLoans"
-              type="number"
-              value={formData.noOfLoans}
-              onChange={handleChange}
-              variant="outlined"
-            />
-          </Grid>
 
           {/* Salary */}
           <Grid item xs={12} sm={6}>

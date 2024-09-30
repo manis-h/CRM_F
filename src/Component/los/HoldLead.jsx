@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { useFetchAllocatedLeadsQuery, useFetchSingleLeadQuery, useGetEmployeesQuery } from '../Service/Query';
+import LeadProfile from '../../page/LeadProfile'
+import { useFetchAllHoldLeadsQuery, useFetchSingleLeadQuery } from '../../Service/Query';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
-import useStore from '../Store';
-
 const columns = [
     { field: 'fName', headerName: 'First Name', width: 150 },
     { field: 'lName', headerName: 'Last Name', width: 150 },
@@ -16,8 +15,8 @@ const columns = [
     { field: 'salary', headerName: 'Salary', width: 150 },
 ];
 
-const ProcessingLeads = () => {
-    const [processingLeads, setProcessingLeads] = useState()
+const HoldLead = () => {
+    const [holdLeads, setHoldLeads] = useState()
     const [totalLeads, setTotalLeads] = useState()
     const [id, setId] = useState(null)
     // const {employeeDetails} = useStore()
@@ -27,7 +26,7 @@ const ProcessingLeads = () => {
         page: 0,
         pageSize: 5,
     });
-    const { data, isSuccess, refetch } = useFetchAllocatedLeadsQuery({ page: paginationModel.page + 1, limit: paginationModel.pageSize })
+    const {data,isSuccess,isError} = useFetchAllHoldLeadsQuery()
     const {data:LeadData,isSuccess:leadSuccess} = useFetchSingleLeadQuery(id,{skip:id===null})
     const handlePageChange = (newPaginationModel) => {
         setPaginationModel(newPaginationModel)
@@ -41,18 +40,18 @@ const ProcessingLeads = () => {
     }
 
 
-    useEffect(() => {
-        refetch({ page: paginationModel.page + 1, limit: paginationModel.pageSize });
-    }, [paginationModel]);
+    // useEffect(() => {
+    //     refetch({ page: paginationModel.page + 1, limit: paginationModel.pageSize });
+    // }, [paginationModel]);
 
     useEffect(() => {
         if (data) {
-            setProcessingLeads(data)
-            setTotalLeads(data?.totalLeads)
+            setHoldLeads(data)
+        // setTotalLeads(data?.totalLeads)
         }
     }, [isSuccess, data])
 
-    const rows = processingLeads?.leads?.map(lead => ({
+    const rows = holdLeads?.leads?.map(lead => ({
         id: lead._id, 
         fName: lead.fName,
         lName: lead.lName,
@@ -72,13 +71,13 @@ const ProcessingLeads = () => {
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        rowCount={totalLeads}
+                        // rowCount={totalLeads}
                         // loading={isLoading}
                         pageSizeOptions={[5]}
                         paginationModel={paginationModel}
                         paginationMode="server"
                         onPaginationModelChange={handlePageChange}
-                        onRowClick={(params) => handleLeadClick(params)}
+                        // onRowClick={(params) => handleLeadClick(params)}
                         sx={{
                             '& .MuiDataGrid-row:hover': {
                                 cursor: 'pointer',
@@ -92,4 +91,4 @@ const ProcessingLeads = () => {
     )
 }
 
-export default ProcessingLeads
+export default HoldLead

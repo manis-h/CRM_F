@@ -1,26 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import './Navbar.css';
 import useStore from '../Store';
+import { useLoginUserMutation, useLogoutMutation } from '../Service/Query';
+import useAuthStore from '../Component/store/authStore';
 
 const Navbar = () => {
   const [clientRole, setClientRole] = useState('Client');
   const cookies = new Cookies();
   const navigate = useNavigate();
-  const { setLogin, setEmployeeDetails } = useStore();
+  const { setEmployeeDetails, setEmpInfo } = useStore();
+  const {setLogin} = useAuthStore()
+
+  const [logout, { data, isSuccess }] = useLogoutMutation()
 
   const handleLogout = () => {
-    cookies.remove('authToken');
-    setLogin(false);
-    setEmployeeDetails(null);
-    navigate('/login');
+    // cookies.remove('authToken');
+    logout()
+
   };
 
   const handleRoleChange = (event) => {
     setClientRole(event.target.value);
-    console.log('Selected Role:', event.target.value);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setLogin(false);
+      setEmpInfo(null);
+      setEmployeeDetails(null);
+      navigate('/login');
+
+    }
+
+  }, [isSuccess])
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">

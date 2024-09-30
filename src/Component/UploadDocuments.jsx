@@ -3,16 +3,18 @@ import { useGetLeadDocsQuery, useUploadDocumentsMutation } from '../Service/Quer
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-const UploadDocuments = ({ uploadedDocs }) => {
+const UploadDocuments = ({setUploadedDocs, uploadedDocs }) => {
     const { id } = useParams();
+    // const [docs,setDocs] = useState(leadDocuments)
     const [selectedFileType, setSelectedFileType] = useState(null);
 
-    const [uploadDocuments, { data: docsResult, isSuccess: docSuccess, error: docsError }] = useUploadDocumentsMutation();
+    const [uploadDocuments, { data: updateDocs, isSuccess: docSuccess, error: docsError }] = useUploadDocumentsMutation();
     
     const { data: docsData, isSuccess: docsSuccess, isError: docError, refetch } = useGetLeadDocsQuery(
         { id, docType: selectedFileType }, 
         { skip: !selectedFileType || !id } // Only skip if there's no file type selected or no ID
     );
+    console.log('uploadede documenst',selectedFileType)
 
     const [documents, setDocuments] = useState({
         aadhaarFront: null,
@@ -51,6 +53,13 @@ const UploadDocuments = ({ uploadedDocs }) => {
         }
 
         uploadDocuments({ id, docsData });
+        setDocuments({
+            aadhaarFront: null,
+            aadhaarBack: null,
+            panCard: null,
+            salarySlip: null,
+            bankStatement: null,
+        })
     };
 
     // Success for document upload
@@ -61,7 +70,8 @@ const UploadDocuments = ({ uploadedDocs }) => {
                 icon: 'success',
             });
         }
-    }, [docSuccess, docsResult]);
+        // setUploadedDocs([...uploadedDocs,])
+    }, [docSuccess, updateDocs]);
 
     // Error handling for fetching document
     useEffect(() => {
@@ -86,9 +96,9 @@ const UploadDocuments = ({ uploadedDocs }) => {
                     setSelectedFileType(null); // Reset state on modal close
                 }
             });
+
         }
     }, [docsSuccess, docsData]);
-    console.log('uploaded docs',uploadedDocs)
 
     return (
         <>
@@ -102,7 +112,7 @@ const UploadDocuments = ({ uploadedDocs }) => {
                             data-bs-target="#collapseUploadDocuments"
                             aria-expanded="false"
                             aria-controls="collapseUploadDocuments"
-                            style={{ backgroundColor: "#e823eb", borderRadius: "15px", color: "#fff", fontWeight: 'bold' }}
+                            style={{ backgroundColor: "#0366fc", borderRadius: "15px", color: "#fff", fontWeight: 'bold' }}
                         >
                             Upload Documents
                         </button>
@@ -130,7 +140,7 @@ const UploadDocuments = ({ uploadedDocs }) => {
                                                     onChange={handleChange}
                                                 />
                                             </div>
-                                            {uploadedDocs.includes(key) && (
+                                            {uploadedDocs?.includes(key) && (
                                                 <button
                                                     type="button"
                                                     className="btn btn-secondary ms-2" // Added margin start for spacing
