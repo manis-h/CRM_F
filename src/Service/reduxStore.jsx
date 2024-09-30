@@ -1,17 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
 // Or from '@reduxjs/toolkit/query/react'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { apiQurey } from './Query'
+import { leadsApi } from './Query'
+import { applicationApi } from '../querries/applicationQuerries'
 
 export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
-    [apiQurey.reducerPath]: apiQurey.reducer,
+    [leadsApi.reducerPath]: leadsApi.reducer,
+    [applicationApi.reducerPath]: applicationApi.reducer,
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiQurey.middleware),
+    getDefaultMiddleware().concat(leadsApi.middleware,applicationApi.middleware),
 })
 
 // optional, but required for refetchOnFocus/refetchOnReconnect behaviors

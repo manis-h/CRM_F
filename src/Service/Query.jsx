@@ -3,8 +3,8 @@ import Cookies from 'universal-cookie';
 const cookies = new Cookies()
 
 // Define a service using a base URL and expected endpoints
-export const apiQurey = createApi({
-  reducerPath: 'apiQurey',
+export const leadsApi = createApi({
+  reducerPath: 'leadsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000/api/",
     // 'https://crm-backend-wui1.onrender.com/api/leads'
@@ -17,7 +17,7 @@ export const apiQurey = createApi({
     },
 
   }),
-  tagTypes: ["getDocs"],
+  tagTypes: ["getDocs","rejectedLeads","holdLeads"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     getEmployees: builder.query({
@@ -70,6 +70,29 @@ export const apiQurey = createApi({
         url: `leads/hold/${id}`,
         method: 'PATCH',
       }),
+      invalidatesTags:["holdLeads"]
+    }),
+    rejectLead: builder.mutation({
+      query: (id) => ({
+
+        url: `leads/reject/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["rejectedLeads"]
+    }),
+    unholdLead: builder.mutation({
+      query: (id) => ({
+
+        url: `leads/unhold/${id}`,
+        method: 'PATCH',
+      }),
+    }),
+    approveLead: builder.mutation({
+      query: (id) => ({
+
+        url: `leads/approve/${id}`,
+        method: 'PATCH',
+      }),
     }),
 
     addEmployee: builder.mutation({
@@ -91,7 +114,7 @@ export const apiQurey = createApi({
     }),
 
     fetchAllEmployee: builder.query({
-      query: () => '/employees',
+      query: () => 'employees',
     }),
     fetchAllocatedLeads: builder.query({
       query: ({ page, limit }) => `/leads/allocated/?page=${page}&limit=${limit}`,
@@ -113,8 +136,14 @@ export const apiQurey = createApi({
       query: (id) => `/leads/viewleadlog/${id}`,
     }),
     fetchAllHoldLeads: builder.query({
-      query: (id) => `/leads/hold/`,
+      query: () => `/leads/hold`,
+      providesTags:["holdLeads"]
     }),
+    fetchAllRejectedLeads: builder.query({
+      query: () => `/leads/reject`,
+      providesTags:["rejectedLeads"]
+    }),
+    
   }),
 });
 
@@ -138,4 +167,8 @@ export const {
   useBulkUploadMutation,
   useHoldLeadMutation,
   useFetchAllHoldLeadsQuery,
-} = apiQurey;
+  useUnholdLeadMutation,
+  useApproveLeadMutation,
+  useRejectLeadMutation,
+  useFetchAllRejectedLeadsQuery,
+} = leadsApi;

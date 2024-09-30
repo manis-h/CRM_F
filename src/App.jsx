@@ -29,6 +29,9 @@ import ProcessingLeads from './page/ProcessingLeads';
 import LeadDetails from './Component/LeadDetails';
 import LeadProfile from './page/LeadProfile';
 import HoldLead from './Component/los/HoldLead';
+import RejectedLeads from './Component/los/RejectedLeads';
+import ApplicationProfile from './Component/applications/ApplicationProfile';
+import NewApplications from './Component/applications/NewApplications';
 
 function App() {
 
@@ -77,26 +80,13 @@ function App() {
               <Route path='/view-user' element={<ViewUsersForm />} />
               <Route path='add-users' element={<AddUserForm />} />
               <Route path='lead-profile/:id' element={<LeadProfile />} />
-              <Route path="/lead-new" element={<LeadNew
-                header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status"]}
-                rows={[
-                  ["101", "View", "2024-09-09", "Online", "John Doe", "California", "Los Angeles", "Branch A", "1234567890", "ABCDE1234F", "Individual", "Active"],
-                  ["102", "View", "2024-09-08", "Offline", "Jane Smith", "Texas", "Dallas", "Branch B", "0987654321", "WXYZ9876T", "Business", "Pending"],
-                  ["103", "View", "2024-09-07", "Referral", "Bob Johnson", "New York", "New York City", "Branch C", "1122334455", "LMNOP5678H", "Individual", "Completed"],
-
-                ]} />} />
+              <Route path="/lead-new" element={<LeadNew />} />
               <Route path='/lead-process' element={<ProcessingLeads />} />
               <Route path='/lead-process/:id' element={<LeadDetails />} />
               <Route path="/lead-hold" element={<HoldLead />} />
-
-              <Route path="/application-new" element={<DynamicTable
-                header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Screener"]}
-                rows={[
-                  ["201", "Submit", "2024-09-09", "Online", "Laura Martinez", "California", "San Diego", "Branch X", "555-5555", "LMN1234567", "Individual", "Active", "Screener 1"],
-                  ["202", "Review", "2024-09-08", "Offline", "Daniel Johnson", "New York", "Queens", "Branch Y", "555-6666", "OPQ7654321", "Business", "Pending", "Screener 2"],
-                  ["203", "Approve", "2024-09-07", "Referral", "Megan White", "Texas", "Dallas", "Branch Z", "555-7777", "RST9876543", "Individual", "Completed", "Screener 3"],
-                  ["204", "Reject", "2024-09-06", "Online", "Christopher Lee", "Florida", "Tampa", "Branch W", "555-8888", "UVW6543210", "Business", "Rejected", "Screener 4"]
-                ]} />} />
+              <Route path="/rejected-leads" element={<RejectedLeads />} />
+              <Route path="/new-application" element={<NewApplications />} />
+              <Route path="/application-profile/:id" element={<ApplicationProfile />} />
 
               <Route path="/application-process" element={<DynamicTable
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager"]}
@@ -140,14 +130,6 @@ function App() {
                   ["702", "Approved", "2024-09-08", "Offline", "Ethan Clark", "New York", "Staten Island", "Branch R", "555-8888", "XYZ789012Y", "Business", "Pending", "Manager 2", "2024-09-12", "$7500"],
                   ["703", "Approved", "2024-09-07", "Referral", "Olivia Martinez", "Texas", "Fort Worth", "Branch S", "555-9999", "ABC345678Z", "Individual", "Completed", "Manager 3", "2024-09-11", "$6000"],
                   ["704", "Approved", "2024-09-06", "Online", "Noah Lee", "Florida", "Tampa", "Branch T", "555-0000", "DEF901234A", "Business", "Active", "Manager 4", "2024-09-14", "$5500"]
-                ]} />} />
-              <Route path="/reject" element={<DynamicTable
-                header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status"]}
-                rows={[
-                  ["801", "Rejected", "2024-09-09", "Online", "Zoe Adams", "California", "Los Angeles", "Branch U", "555-1111", "GHI123456J", "Individual", "Rejected"],
-                  ["802", "Rejected", "2024-09-08", "Offline", "Jacob Taylor", "New York", "Queens", "Branch V", "555-2222", "JKL789012K", "Business", "Rejected"],
-                  ["803", "Rejected", "2024-09-07", "Referral", "Emily Wilson", "Texas", "Dallas", "Branch W", "555-3333", "MNO345678L", "Individual", "Rejected"],
-                  ["804", "Rejected", "2024-09-06", "Online", "Michael Brown", "Florida", "Miami", "Branch X", "555-4444", "PQR901234M", "Business", "Rejected"]
                 ]} />} />
               <Route path="/disbursal-new" element={<DynamicTable
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager", "Sanction-On", "Sanction-Amount"]}

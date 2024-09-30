@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import LeadProfile from '../../page/LeadProfile'
-import { useFetchAllHoldLeadsQuery, useFetchSingleLeadQuery } from '../../Service/Query';
+import { useFetchAllHoldLeadsQuery, useFetchAllRejectedLeadsQuery, useFetchSingleLeadQuery } from '../../Service/Query';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 const columns = [
@@ -15,21 +15,20 @@ const columns = [
     { field: 'salary', headerName: 'Salary', width: 150 },
 ];
 
-const HoldLead = () => {
-    const [holdLeads, setHoldLeads] = useState()
-    const [totalHoldLeads, setTotalHoldLeads] = useState()
+const RejectedLeads = () => {
+    const [rejectedLeads, setRejectedLeads] = useState()
+    const [totalRejectedLeads, setTotalRejectedLeads] = useState()
     const [id, setId] = useState(null)
-    // const {employeeDetails} = useStore()
-    // console.log('emp details',employeeDetails)
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 5,
     });
-    const {data,isSuccess,isError} = useFetchAllHoldLeadsQuery()
-    const {data:LeadData,isSuccess:leadSuccess} = useFetchSingleLeadQuery(id,{skip:id===null})
+    const { data, isSuccess, isError } = useFetchAllRejectedLeadsQuery()
+    // const { data: LeadData, isSuccess: leadSuccess } = useFetchSingleLeadQuery(id, { skip: id === null })
     const handlePageChange = (newPaginationModel) => {
         setPaginationModel(newPaginationModel)
+
     }
 
     const handleLeadClick = (lead) => {
@@ -38,19 +37,17 @@ const HoldLead = () => {
     }
 
 
-    // useEffect(() => {
-    //     refetch({ page: paginationModel.page + 1, limit: paginationModel.pageSize });
-    // }, [paginationModel]);
+    console.log('data',data,rejectedLeads,isSuccess)
 
     useEffect(() => {
         if (data) {
-            setHoldLeads(data)
-        setTotalHoldLeads(data?.totalLeads)
+            setRejectedLeads(data)
+            setTotalRejectedLeads(data?.totalLeads)
         }
     }, [isSuccess, data])
 
-    const rows = holdLeads?.leads?.map(lead => ({
-        id: lead._id, 
+    const rows = rejectedLeads?.leads?.map(lead => ({
+        id: lead._id,
         fName: lead.fName,
         lName: lead.lName,
         gender: lead.gender,
@@ -69,7 +66,7 @@ const HoldLead = () => {
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        rowCount={totalHoldLeads}
+                        rowCount={totalRejectedLeads}
                         // loading={isLoading}
                         pageSizeOptions={[5]}
                         paginationModel={paginationModel}
@@ -89,4 +86,4 @@ const HoldLead = () => {
     )
 }
 
-export default HoldLead
+export default RejectedLeads
