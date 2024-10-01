@@ -25,7 +25,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                         <li ><Link to="/lead-new">New Lead</Link>    </li>
                                         <li><Link to="/lead-process">Lead-Inprocess</Link></li>
                                         <li> <Link to="/lead-hold">Hold Lead </Link>   </li>
-                                        <li> <Link to="/rejected-lead">Rejected Lead</Link>   </li>
+                                        <li> <Link to="/rejected-leads">Rejected Lead</Link>   </li>
                                     </ul>
                                 </Accordion.Body>
                             </Accordion.Item>
