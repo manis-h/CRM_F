@@ -10,6 +10,7 @@ import Upload from '@mui/icons-material/Upload';
 import UploadDocuments from '../Component/UploadDocuments';
 import ApplicationLogHistory from '../Component/ApplicationLogHistory';
 import { CheckBox } from '@mui/icons-material';
+import VerificationUI from '../Component/leads/DetailsVerification';
 
 const LeadProfile = () => {
     const { id } = useParams();
@@ -242,6 +243,8 @@ const LeadProfile = () => {
                         </Grid>
 
                         <Divider style={{ margin: '30px 0' }} />
+
+                        <VerificationUI />
 
                         <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} />
 

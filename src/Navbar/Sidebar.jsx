@@ -36,7 +36,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                 <Accordion.Header> <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Application</Accordion.Header>
                                 <Accordion.Body>
                                     <ul className='sidebar-text'>
-                                        <li><Link to="/application-new"> New</Link></li>
+                                        <li><Link to="/new-application"> New</Link></li>
                                         <li><Link to="/application-process">Inprocess</Link></li>
                                         <li><Link to="/application-hold">Hold</Link></li>
                                         <li><Link to="/application-sent-back">Sent-Back</Link></li>

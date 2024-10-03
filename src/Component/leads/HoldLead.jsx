@@ -3,6 +3,7 @@ import LeadProfile from '../../page/LeadProfile'
 import { useFetchAllHoldLeadsQuery, useFetchSingleLeadQuery } from '../../Service/Query';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
+import OTPVerificationUI from './OtpVerification';
 const columns = [
     { field: 'fName', headerName: 'First Name', width: 150 },
     { field: 'lName', headerName: 'Last Name', width: 150 },
@@ -83,6 +84,7 @@ const HoldLead = () => {
                         }}
                     />
                 </div>}
+            <OTPVerificationUI />
             </div>
 
         </>

@@ -28,29 +28,15 @@ import EmployeeList from './page/EmployeeList';
 import ProcessingLeads from './page/ProcessingLeads';
 import LeadDetails from './Component/LeadDetails';
 import LeadProfile from './page/LeadProfile';
-import HoldLead from './Component/los/HoldLead';
-import RejectedLeads from './Component/los/RejectedLeads';
+import HoldLead from './Component/leads/HoldLead';
+import RejectedLeads from './Component/leads/RejectedLeads';
 import ApplicationProfile from './Component/applications/ApplicationProfile';
 import NewApplications from './Component/applications/NewApplications';
+import ProcessingApplication from './Component/applications/ProcessingApplication';
 
 function App() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const setLogin = useStore((state) => state.setLogin);
-
-  useEffect(() => {
-    const cookies = new Cookies();
-    const authToken = cookies.get('authToken');
-
-    if (authToken) {
-      console.log({ authToken })
-      // Assume token presence means user is logged in
-      // setLoginState(true);
-      setLogin(true);
-    }
-  }, [setLogin]);
-
-
   return (
     <Router>
       <Routes>
@@ -88,14 +74,7 @@ function App() {
               <Route path="/new-application" element={<NewApplications />} />
               <Route path="/application-profile/:id" element={<ApplicationProfile />} />
 
-              <Route path="/application-process" element={<DynamicTable
-                header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager"]}
-                rows={[
-                  ["301", "Submit", "2024-09-09", "Online", "Alice Brown", "California", "San Jose", "Branch A", "555-1111", "ABC123456X", "Individual", "Active", "Manager 1"],
-                  ["302", "Review", "2024-09-08", "Offline", "James Green", "Texas", "Austin", "Branch B", "555-2222", "DEF789012Y", "Business", "Pending", "Manager 2"],
-                  ["303", "Approve", "2024-09-07", "Referral", "Sophia Davis", "New York", "Brooklyn", "Branch C", "555-3333", "GHI345678Z", "Individual", "Completed", "Manager 3"],
-                  ["304", "Reject", "2024-09-06", "Online", "John Smith", "Florida", "Orlando", "Branch D", "555-4444", "JKL901234W", "Business", "Rejected", "Manager 4"]
-                ]} />} />
+              <Route path="/application-process" element={<ProcessingApplication />} />
 
               <Route path="/application-hold" element={<DynamicTable
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Hold-On", "Sanction Manager"]}

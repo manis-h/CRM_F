@@ -1,9 +1,11 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
-const Store = (set, get) => ({
+const Store =devtools( (set, get) => ({
   login:false,
   employeeDetails:null,
   empInfo:null,
+  applicationProfile:null,
   setLogin: (payload) => {
     
     set(() => ({
@@ -17,13 +19,19 @@ const Store = (set, get) => ({
       employeeDetails:payload
     }));
   },
+  setApplicationProfile: (payload) => {
+    
+    set(() => ({
+      applicationProfile:payload
+    }));
+  },
   setEmpInfo: (payload) => {
     
     set(() => ({
       empInfo:payload
     }));
   },
-});
+}));
 
 const useStore = create(Store);
 
