@@ -10,8 +10,8 @@ const Navbar = () => {
   const [clientRole, setClientRole] = useState('Client');
   const cookies = new Cookies();
   const navigate = useNavigate();
-  const { setEmployeeDetails, setEmpInfo } = useStore();
-  const {setLogin} = useAuthStore()
+  const { setEmployeeDetails,  } = useStore();
+  const {setLogin,setEmpInfo} = useAuthStore()
 
   const [logout, { data, isSuccess }] = useLogoutMutation()
 

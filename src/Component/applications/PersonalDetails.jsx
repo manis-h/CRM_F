@@ -33,14 +33,14 @@ const PersonalDetails = () => {
       setResidence(applicantData?.residence);
       setEmploymentData(applicantData?.employmentData);
       setReference(applicantData?.reference);
-      setColumns([
-        { label: 'Full Name', value: `${personalDetails?.fName || ''} ${personalDetails?.mName || ''} ${personalDetails?.lName || ''}`, label2: 'Date of Birth', value2: personalDetails?.dob || '' },
-        { label: 'pan', value: personalDetails?.pan || '', label2: 'Gender', value2: personalDetails?.gender || '' },
-        { label: 'Aadhaar', value: personalDetails?.aadhaar || '', label2: 'Mobile', value2: personalDetails?.mobile || '' },
-        { label: 'Personal Email', value: personalDetails?.personalEmail || '', label2: 'Office Email', value2: personalDetails?.officeEmail || '' },
-      ]);
-
+      
     }
+    setColumns([
+      { label: 'Full Name', value: `${personalDetails?.fName || ''} ${personalDetails?.mName || ''} ${personalDetails?.lName || ''}`, label2: 'Date of Birth', value2: personalDetails?.dob || '' },
+      { label: 'pan', value: personalDetails?.pan || '', label2: 'Gender', value2: personalDetails?.gender || '' },
+      { label: 'Aadhaar', value: personalDetails?.aadhaar || '', label2: 'Mobile', value2: personalDetails?.mobile || '' },
+      { label: 'Personal Email', value: personalDetails?.personalEmail || '', label2: 'Office Email', value2: personalDetails?.officeEmail || '' },
+    ]);
   }, [applicantSuccess, applicantData,personalDetails]);
 
   return (

@@ -70,7 +70,7 @@ const UploadDocuments = () => {
 
     const accordionStyles = {
         borderRadius: '12px',
-        background: 'linear-gradient(145deg, #8cb4f5, #474e59)',
+        background: 'linear-gradient(145deg, #0366fc, #ffffff)',
         boxShadow: '5px 5px 10px #d1d5db, -5px -5px 10px #ffffff',
         marginBottom: '20px'
     };
@@ -96,7 +96,7 @@ const UploadDocuments = () => {
         <Box sx={{ maxWidth: '700px', margin: '0 auto', mt: 3 }}>
             <Accordion style={accordionStyles}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#007bb2' }} />}>
-                    <Typography variant="h6" style={{ fontWeight: '600' }}>Upload Documents</Typography>
+                    <Typography variant="h6" style={{ fontWeight: '600', color:"#ffffff" }}>Upload Documents</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Paper elevation={3} style={paperStyles}>

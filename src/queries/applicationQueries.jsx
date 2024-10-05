@@ -6,7 +6,8 @@ const cookies = new Cookies()
 export const applicationApi = createApi({
   reducerPath: 'applicationApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api",
+    baseUrl: "http://localhost:3000/api", 
+    // baseUrl: "http://192.168.0.119:3000/api", 
     // 'https://crm-backend-wui1.onrender.com/api/leads'
 
     credentials:"include",
@@ -17,33 +18,34 @@ export const applicationApi = createApi({
     },
 
   }),
-  tagTypes: ["allocate","rejectedLeads","holdLeads"],
+  tagTypes: ["getApplication","getProfile","bankDetails"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
 
-    // holdLead: builder.mutation({
-    //   query: (id) => ({
+    holdApplication: builder.mutation({
+      query: (id) => ({
 
-    //     url: `leads/hold/${id}`,
-    //     method: 'PATCH',
-    //   }),
-    //   invalidatesTags:["holdLeads"]
-    // }),
-    // rejectLead: builder.mutation({
-    //   query: (id) => ({
+        url: `applications/hold/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["getProfile"]
+    }),
+    rejectApplication: builder.mutation({
+      query: (id) => ({
 
-    //     url: `leads/reject/${id}`,
-    //     method: 'PATCH',
-    //   }),
-    //   invalidatesTags:["rejectedLeads"]
-    // }),
-    // unholdLead: builder.mutation({
-    //   query: (id) => ({
+        url: `applications/reject/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["getProfile"]
+    }),
+    unholdApplication: builder.mutation({
+      query: (id) => ({
 
-    //     url: `leads/unhold/${id}`,
-    //     method: 'PATCH',
-    //   }),
-    // }),
+        url: `applications/unhold/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["getApplication"]
+    }),
     // approveLead: builder.mutation({
     //   query: (id) => ({
 
@@ -66,26 +68,39 @@ export const applicationApi = createApi({
         url: `/applications/${id}`,
         method: 'PATCH',
       }),
-      invalidatesTags:["allocate"]
+      invalidatesTags:["getApplication"]
+    }),
+    addBank: builder.mutation({
+      query: ({id,data}) => ({
+
+        url: `/applicant/bankDetails/${id}`,
+        method: 'POST',
+        body:data
+      }),
+      invalidatesTags:["getApplication","bankDetails"]
     }),
 
    
  
     fetchAllApplication: builder.query({
       query: ({ page, limit }) => `/applications/?page=${page}&limit=${limit}`,
-      providesTags:["allocate"]
+      providesTags:["getApplication"]
     }),
     fetchAllocatedApplication: builder.query({
       query: ({page,limit}) => `/applications/allocated/?page=${page}&limit=${limit}`,
-      providesTags: ["allocate"]
+      providesTags: ["getApplication"]
     }),
     fetchSingleApplication: builder.query({
       query: (id) => `/applications/${id}`,
-      // providesTags: ["getDocs"]
+      providesTags: ["getProfile"]
     }),
     applicantPersonalDetails: builder.query({
       query: (id) => `/applicant/${id}`,
       // providesTags: ["getDocs"]
+    }),
+    getBankDetails: builder.query({
+      query: (id) => `/applicant/bankDetails/${id}`,
+      providesTags:['bankDetails']
     }),
     // getLeadDocs: builder.query({
     //   query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
@@ -96,9 +111,9 @@ export const applicationApi = createApi({
     // applicationHistory: builder.query({
     //   query: (id) => `/leads/viewleadlog/${id}`,
     // }),
-    // fetchAllHoldLeads: builder.query({
+    // fetchAllgetApplication: builder.query({
     //   query: () => `/leads/hold`,
-    //   providesTags:["holdLeads"]
+    //   providesTags:["getApplication"]
     // }),
     // fetchAllRejectedLeads: builder.query({
     //   query: () => `/leads/reject`,
@@ -110,6 +125,11 @@ export const applicationApi = createApi({
 export const {
     useFetchAllApplicationQuery,
     useAllocateApplicationMutation,
+    useHoldApplicationMutation,
+    useRejectApplicationMutation,
+    useUnholdApplicationMutation,
+    useAddBankMutation,
+    useGetBankDetailsQuery,
     useFetchAllocatedApplicationQuery,
     useFetchSingleApplicationQuery,
     useApplicantPersonalDetailsQuery,

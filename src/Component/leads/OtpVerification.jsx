@@ -1,11 +1,16 @@
-import React, { useState, useRef } from 'react';
-import { Box, Grid, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
+import React, { useState, useRef, useEffect } from 'react';
+import { Box, TextField, Button, Dialog, DialogTitle, DialogContent, DialogActions, Typography } from '@mui/material';
+import { useVerifyEmailOtpMutation } from '../../Service/Query';
+import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
-const OTPVerificationUI = () => {
+const EmailVerification = ({ open, setOpen }) => {
+  const { id } = useParams()
   const [otp, setOtp] = useState(Array(6).fill(''));
-  const [open, setOpen] = useState(false);
   const [timeLeft, setTimeLeft] = useState(30); // 30 seconds countdown for resend
   const inputRefs = useRef([]);
+
+  const [verifyEmailOtp, { data: otpVerification,isError, isSuccess: emailOtpSuccess, error: otpError }] = useVerifyEmailOtpMutation()
 
   // Handle OTP input
   const handleChange = (e, index) => {
@@ -33,18 +38,15 @@ const OTPVerificationUI = () => {
     }
   };
 
-  // Open Dialog
   const handleClickOpen = () => {
     setOpen(true);
-    setTimeLeft(30); // Reset the countdown when dialog is opened
+    setTimeLeft(30);
   };
 
-  // Close Dialog
   const handleClose = () => {
     setOpen(false);
   };
 
-  // Resend OTP
   const handleResend = () => {
     setTimeLeft(30); // Reset timer
     // Add resend OTP logic here
@@ -60,15 +62,39 @@ const OTPVerificationUI = () => {
 
   // Handle form submit (you can add real verification logic here)
   const handleSubmit = () => {
-    alert(`OTP Submitted: ${otp.join('')}`);
-    setOpen(false);
+    const data = Number(otp.join(''))
+    console.log('otp',data)
+    verifyEmailOtp({id,data})
+    // alert(`OTP Submitted: ${otp.join('')}`);
   };
+
+  useEffect(() => {
+    if (emailOtpSuccess) {
+      Swal.fire({
+        title: 'Email Verified!',
+        icon: 'success',
+      });
+    setOpen(false);
+
+    }
+
+  }, [emailOtpSuccess, otpVerification])
+
+  // useEffect(() => {
+  //   if (otpError?.data?.message) {
+  //     Swal.fire({
+  //       title: `${otpError.data.message}`,
+  //       icon: 'error',
+  //     });
+  //   }
+
+  // }, [otpError])
 
   return (
     <div>
-      <Button 
-        variant="contained" 
-        onClick={handleClickOpen} 
+      <Button
+        variant="contained"
+        onClick={handleClickOpen}
         sx={{
           backgroundColor: '#4caf50',
           color: 'white',
@@ -93,69 +119,77 @@ const OTPVerificationUI = () => {
         <DialogContent>
           <Box mt={2} mb={3} display="flex" justifyContent="center">
             <Typography variant="body1" align="center" color="textSecondary">
-              Enter the 6-digit code we sent to your phone.
+              Enter the 6-digit OTP sent to your Email.
             </Typography>
           </Box>
-          <Grid container justifyContent="center" spacing={2}>
+
+          {/* OTP Input Fields */}
+          <Box display="flex" justifyContent="center" gap={2}>
             {otp.map((digit, index) => (
-              <Grid item key={index}>
-                <TextField
-                  variant="outlined"
-                  inputProps={{
-                    maxLength: 1,
-                    style: { 
-                      textAlign: 'center', 
-                      fontSize: '24px', 
-                      padding: '10px',
-                    },
-                  }}
-                  value={digit}
-                  onChange={(e) => handleChange(e, index)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  inputRef={(el) => (inputRefs.current[index] = el)}
-                  sx={{
-                    width: 55,
-                    height: 55,
-                    backgroundColor: '#f3f3f3',
+              <TextField
+                key={index}
+                variant="outlined"
+                inputProps={{
+                  maxLength: 1,
+                  style: {
+                    textAlign: 'center',
+                    fontSize: '24px',
+                    padding: '10px',
+                  },
+                }}
+                value={digit}
+                onChange={(e) => handleChange(e, index)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                inputRef={(el) => (inputRefs.current[index] = el)}
+                sx={{
+                  width: 55,
+                  height: 55,
+                  backgroundColor: '#f3f3f3',
+                  borderRadius: '8px',
+                  boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                  '& .MuiOutlinedInput-root': {
                     borderRadius: '8px',
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '8px',
-                      borderColor: '#1976D2',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        borderColor: '#43a047',
-                      },
+                    borderColor: '#1976D2',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      borderColor: '#43a047',
                     },
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderWidth: '2px',
-                    },
-                    '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                      borderColor: '#1976D2',
-                      boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.1)',
-                    },
-                  }}
-                />
-              </Grid>
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderWidth: '2px',
+                  },
+                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#1976D2',
+                    boxShadow: '0px 6px 15px rgba(0, 0, 0, 0.1)',
+                  },
+                }}
+              />
             ))}
-          </Grid>
+          </Box>
+
           <Box mt={3} display="flex" justifyContent="center">
             <Typography variant="body2" color="textSecondary">
-              {timeLeft > 0 
+              {timeLeft > 0
                 ? `Resend OTP in ${timeLeft}s`
                 : <Button onClick={handleResend} sx={{ color: '#1976D2', fontWeight: 'bold' }}>Resend OTP</Button>}
             </Typography>
           </Box>
+          {isError && otpError?.data?.message && (
+            <Typography color="error" variant="body1" mt={2}>
+              {otpError.data.message}
+            </Typography>
+          )}
         </DialogContent>
+
         <DialogActions>
-          <Button 
-            onClick={handleClose} 
+          <Button
+            onClick={handleClose}
             sx={{ color: '#f44336', fontWeight: 'bold' }}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleSubmit} 
-            variant="contained" 
+          <Button
+            onClick={handleSubmit}
+            variant="contained"
             sx={{
               backgroundColor: '#1976D2',
               color: 'white',
@@ -174,4 +208,4 @@ const OTPVerificationUI = () => {
   );
 };
 
-export default OTPVerificationUI;
+export default EmailVerification;

@@ -33,6 +33,7 @@ import RejectedLeads from './Component/leads/RejectedLeads';
 import ApplicationProfile from './Component/applications/ApplicationProfile';
 import NewApplications from './Component/applications/NewApplications';
 import ProcessingApplication from './Component/applications/ProcessingApplication';
+import AadhaarOtpVerification from './Component/leads/AadhaarOtpVerification';
 
 function App() {
 
@@ -73,6 +74,7 @@ function App() {
               <Route path="/rejected-leads" element={<RejectedLeads />} />
               <Route path="/new-application" element={<NewApplications />} />
               <Route path="/application-profile/:id" element={<ApplicationProfile />} />
+              <Route path="/aadhaar-verification/:id" element={<AadhaarOtpVerification />} />
 
               <Route path="/application-process" element={<ProcessingApplication />} />
 

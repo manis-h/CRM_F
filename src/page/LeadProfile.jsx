@@ -11,6 +11,7 @@ import UploadDocuments from '../Component/UploadDocuments';
 import ApplicationLogHistory from '../Component/ApplicationLogHistory';
 import { CheckBox } from '@mui/icons-material';
 import VerificationUI from '../Component/leads/DetailsVerification';
+import CibilScorePage from '../Component/leads/CibilScore';
 
 const LeadProfile = () => {
     const { id } = useParams();
@@ -244,7 +245,12 @@ const LeadProfile = () => {
 
                         <Divider style={{ margin: '30px 0' }} />
 
-                        <VerificationUI />
+                        <VerificationUI 
+                        isEmailVerified={leadData?.isEmailVerified} 
+                        isAadhaarVerified={leadData?.isAadhaarVerified} 
+                        isPanVerified={leadData?.isPanVerified} 
+                        />
+                        <CibilScorePage />
 
                         <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} />
 

@@ -18,14 +18,15 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
     e.preventDefault();
     setLeadEdit(false);
     updateLead({id,formData})
-    console.log("form lead",formData);
   };
-
+  
   const convertToISODate = (dob) => {
-    if (!dob) return ''; // Return empty string if no dob is provided
+    console.log("form date",dob);
+    if (!dob) return ''; 
   
     const [day, month, year] = dob.split('-');
-    return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
+    // return `${year}-${month}-${day}`;
+    return `${day}-${month}-${year}`;
   };
 
   return (
