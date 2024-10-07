@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { useGetLeadDocsQuery, useUploadDocumentsMutation } from '../Service/Query';
+import React, { useState, useEffect } from 'react';
+import { Accordion, AccordionSummary, AccordionDetails, Typography, Button, Paper, Box, TextField } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useUploadDocumentsMutation, useGetLeadDocsQuery } from '../Service/Query';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-const UploadDocuments = ({setUploadedDocs, uploadedDocs }) => {
+const UploadDocuments = () => {
     const { id } = useParams();
-    // const [docs,setDocs] = useState(leadDocuments)
+    const [isEditing, setIsEditing] = useState(false);
     const [selectedFileType, setSelectedFileType] = useState(null);
 
-    const [uploadDocuments, { data: updateDocs, isSuccess: docSuccess, error: docsError }] = useUploadDocumentsMutation();
-    
-    const { data: docsData, isSuccess: docsSuccess, isError: docError, refetch } = useGetLeadDocsQuery(
+    const [uploadDocuments, { isSuccess: docSuccess }] = useUploadDocumentsMutation();
+    const { data: docsData, isSuccess: docsSuccess } = useGetLeadDocsQuery(
         { id, docType: selectedFileType }, 
-        { skip: !selectedFileType || !id } // Only skip if there's no file type selected or no ID
+        { skip: !selectedFileType || !id }
     );
-    console.log('uploadede documenst',selectedFileType)
 
     const [documents, setDocuments] = useState({
         aadhaarFront: null,
@@ -24,7 +26,6 @@ const UploadDocuments = ({setUploadedDocs, uploadedDocs }) => {
         bankStatement: null,
     });
 
-    // Handle file change for document uploads
     const handleChange = (e) => {
         if (e.target.type === 'file') {
             const file = e.target.files[0];
@@ -33,36 +34,21 @@ const UploadDocuments = ({setUploadedDocs, uploadedDocs }) => {
         }
     };
 
-    // Trigger fetching the document when a file type is selected
-    const viewFile = (docType) => {
-        setSelectedFileType(docType); // This will trigger the query since the component is re-rendered
-        // if(selectedFileType){
-        //     refetch()
-        // }
-    };
-
-    // Handle document upload
-    const documentSubmit = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const docsData = new FormData();
-
-        for (let key of Object.keys(documents)) {
+        const formData = new FormData();
+        Object.keys(documents).forEach((key) => {
             if (documents[key]) {
-                docsData.append(key, documents[key]);
+                formData.append(key, documents[key]);
             }
-        }
-
-        uploadDocuments({ id, docsData });
-        setDocuments({
-            aadhaarFront: null,
-            aadhaarBack: null,
-            panCard: null,
-            salarySlip: null,
-            bankStatement: null,
-        })
+        });
+        uploadDocuments({ id, docsData: formData });
     };
 
-    // Success for document upload
+    const viewFile = (docType) => {
+        setSelectedFileType(docType);
+    };
+
     useEffect(() => {
         if (docSuccess) {
             Swal.fire({
@@ -70,100 +56,107 @@ const UploadDocuments = ({setUploadedDocs, uploadedDocs }) => {
                 icon: 'success',
             });
         }
-        // setUploadedDocs([...uploadedDocs,])
-    }, [docSuccess, updateDocs]);
+    }, [docSuccess]);
 
-    // Error handling for fetching document
-    useEffect(() => {
-        if (docsError) {
-            Swal.fire({
-                title: 'Error!',
-                text: 'Unable to fetch the document.',
-                icon: 'error',
-            });
-        }
-    }, [docsError]);
-
-    // Handle document display success
     useEffect(() => {
         if (docsSuccess) {
             Swal.fire({
                 title: 'Document retrieved successfully!',
-                html: `<img src="${docsData?.url}" alt="${selectedFileType}" width="400" />`, // Assuming docsData contains image URL
+                html: `<img src="${docsData?.url}" alt="${selectedFileType}" width="400" />`,
                 showCloseButton: true,
-                confirmButtonText: 'Close',
-                willClose: () => {
-                    setSelectedFileType(null); // Reset state on modal close
-                }
             });
-
         }
     }, [docsSuccess, docsData]);
 
+    const accordionStyles = {
+        borderRadius: '12px',
+        background: 'linear-gradient(145deg, #0366fc, #ffffff)',
+        boxShadow: '5px 5px 10px #d1d5db, -5px -5px 10px #ffffff',
+        marginBottom: '20px'
+    };
+
+    const paperStyles = {
+        padding: '30px',
+        borderRadius: '15px',
+        backgroundColor: '#fafafa',
+        boxShadow: '5px 5px 15px rgba(0, 0, 0, 0.1)',
+    };
+
+    const buttonStyles = {
+        borderRadius: '8px',
+        padding: '10px 20px',
+        background: 'linear-gradient(45deg, #42a5f5, #007bb2)',
+        color: '#fff',
+        '&:hover': {
+            background: 'linear-gradient(45deg, #007bb2, #42a5f5)',
+        },
+    };
+
     return (
-        <>
-            <div className="accordion mt-3" id="uploadDocumentsAccordion">
-                <div className="accordion-item mx-40" style={{ maxWidth: "700px", margin: "0 auto" }}>
-                    <h2 className="accordion-header" id="headingUploadDocuments">
-                        <button
-                            className="accordion-button"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseUploadDocuments"
-                            aria-expanded="false"
-                            aria-controls="collapseUploadDocuments"
-                            style={{ backgroundColor: "#0366fc", borderRadius: "15px", color: "#fff", fontWeight: 'bold' }}
-                        >
-                            Upload Documents
-                        </button>
-                    </h2>
-                    <div
-                        id="collapseUploadDocuments"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingUploadDocuments"
-                        data-bs-parent="#uploadDocumentsAccordion"
-                    >
-                        <div className="accordion-body">
-                            <form className="m-4" onSubmit={documentSubmit}>
-                                <div className="row">
-                                    {Object.entries(documents).map(([key]) => (
-                                        <div className="col-12 mb-3 d-flex align-items-center" key={key}>
-                                            <div className="flex-grow-1"> {/* This div allows the input to grow and take available space */}
-                                                <label className="form-label">
-                                                    Upload {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1').replace('Card', ' Card')}:
-                                                </label>
-                                                <input
-                                                    type="file"
-                                                    className="form-control"
-                                                    name={key}
-                                                    accept=".pdf,.doc,.docx,.jpg"
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            {uploadedDocs?.includes(key) && (
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-secondary ms-2" // Added margin start for spacing
-                                                    onClick={() => viewFile(key)} // This triggers the query by setting selectedFileType
-                                                    style={{ width: "auto", padding: "0.25rem 0.5rem" }} // Adjust padding for smaller button
-                                                >
-                                                    View file
-                                                </button>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="d-flex justify-content-end">
-                                    <button type="submit" className="btn btn-primary">
-                                        Upload
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+        <Box sx={{ maxWidth: '700px', margin: '0 auto', mt: 3 }}>
+            <Accordion style={accordionStyles}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#007bb2' }} />}>
+                    <Typography variant="h6" style={{ fontWeight: '600', color:"#ffffff" }}>Upload Documents</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Paper elevation={3} style={paperStyles}>
+                        <Box display="flex" flexDirection="column" gap={2}>
+                            {Object.keys(documents).map((key) => (
+                                <Box key={key} display="flex" flexDirection="column" gap={1} mb={3}>
+                                    <Typography variant="subtitle1" style={{ fontWeight: '600' }}>
+                                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:
+                                    </Typography>
+                                    {isEditing ? (
+                                        <TextField
+                                            type="file"
+                                            name={key}
+                                            accept=".pdf,.doc,.docx,.jpg"
+                                            onChange={handleChange}
+                                            fullWidth
+                                        />
+                                    ) : (
+                                        <Typography variant="body2" color="textSecondary">
+                                            {documents[key] ? documents[key].name : 'No file uploaded'}
+                                        </Typography>
+                                    )}
+
+                                    {documents[key] && (
+                                        <Button
+                                            variant="contained"
+                                            sx={buttonStyles}
+                                            onClick={() => viewFile(key)}
+                                            startIcon={<VisibilityIcon />}
+                                        >
+                                            View {key}
+                                        </Button>
+                                    )}
+                                </Box>
+                            ))}
+                        </Box>
+                        <Box display="flex" justifyContent="space-between" mt={2}>
+                            <Button
+                                variant="outlined"
+                                onClick={() => setIsEditing((prev) => !prev)}
+                                sx={{ borderRadius: '8px' }}
+                            >
+                                {isEditing ? 'Cancel' : 'Edit'}
+                            </Button>
+                            {isEditing && (
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={buttonStyles}
+                                    startIcon={<UploadFileIcon />}
+                                    onClick={handleSubmit}
+                                >
+                                    Upload
+                                </Button>
+                            )}
+                        </Box>
+                    </Paper>
+                </AccordionDetails>
+            </Accordion>
+        </Box>
     );
 };
 

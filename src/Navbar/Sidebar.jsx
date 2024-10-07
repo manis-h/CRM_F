@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import './Sidebar.css'; // Ensure this CSS file is created with the styles below
 import Accordion from 'react-bootstrap/Accordion';
 import { Link } from 'react-router-dom';
+import useAuthStore from '../Component/store/authStore';
 
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
+    const {empInfo} = useAuthStore()
     // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const toggleSidebar = () => {
@@ -17,7 +19,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
                 <div className='sidebar-margin'>
                     <ul className="sidebar-links">
-                        <Accordion defaultActiveKey="0">
+                        {empInfo?.empRole === "screener"&&<Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="0">
                                 <Accordion.Header> <i className="bi bi-person" style={{ marginRight: '8px' }}></i>  Lead</Accordion.Header>
                                 <Accordion.Body>
@@ -29,21 +31,21 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                     </ul>
                                 </Accordion.Body>
                             </Accordion.Item>
-                        </Accordion>
+                        </Accordion>}
 
-                        <Accordion defaultActiveKey="0">
+                        {empInfo?.empRole === "creditManager" && <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="1">
                                 <Accordion.Header> <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Application</Accordion.Header>
                                 <Accordion.Body>
                                     <ul className='sidebar-text'>
-                                        <li><Link to="/application-new"> New</Link></li>
+                                        <li><Link to="/new-application"> New</Link></li>
                                         <li><Link to="/application-process">Inprocess</Link></li>
                                         <li><Link to="/application-hold">Hold</Link></li>
                                         <li><Link to="/application-sent-back">Sent-Back</Link></li>
                                     </ul>
                                 </Accordion.Body>
                             </Accordion.Item>
-                        </Accordion>
+                        </Accordion>}
                         <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="3">
                                 <Accordion.Header> <i className="bi bi-x" style={{ marginRight: '8px' }}></i> Reject App</Accordion.Header>

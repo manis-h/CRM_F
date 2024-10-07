@@ -37,8 +37,6 @@ const RejectedLeads = () => {
     }
 
 
-    console.log('data',data,rejectedLeads,isSuccess)
-
     useEffect(() => {
         if (data) {
             setRejectedLeads(data)

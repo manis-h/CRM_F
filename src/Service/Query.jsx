@@ -7,11 +7,11 @@ export const leadsApi = createApi({
   reducerPath: 'leadsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000/api/",
+    // baseUrl: "http://192.168.0.119:3000/api/",
     // 'https://crm-backend-wui1.onrender.com/api/leads'
 
     credentials:"include",
-    prepareHeaders: (headers, { getState }) => {
-     
+    prepareHeaders: (headers, { getState }) => {   
 
       return headers;
     },
@@ -112,6 +112,41 @@ export const leadsApi = createApi({
       }),
       invalidatesTags:["getDocs"]
     }),
+    getEmailOtp: builder.mutation({
+      query: (id) => ({
+
+        url: `verify/email/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["getDocs"]
+    }),
+    verifyEmailOtp: builder.mutation({
+      query: ({id,data}) => ({
+
+        url: `verify/email-otp/${id}`,
+        method: 'PATCH',
+        body:{otp:data}
+      }),
+      invalidatesTags:["getDocs"]
+    }),
+    verifyAadhaarOtp: builder.mutation({
+      query: ({id,data}) => ({
+
+        url: `verify/aadhaar-otp/${id}`,
+        method: 'POST',
+        body:{otp:data}
+      }),
+      invalidatesTags:["getDocs"]
+    }),
+    verifyPanOtp: builder.mutation({
+      query: ({id,data}) => ({
+
+        url: `verify/pan-aadhaar-link/${id}`,
+        method: 'POST',
+        body:{otp:data}
+      }),
+      invalidatesTags:["getDocs"]
+    }),
 
     fetchAllEmployee: builder.query({
       query: () => 'employees',
@@ -143,6 +178,18 @@ export const leadsApi = createApi({
       query: () => `/leads/reject`,
       providesTags:["rejectedLeads"]
     }),
+    fetchCibilScore: builder.query({
+      query: (id) => `verify/equifax/${id}`,
+      // providesTags:["rejectedLeads"]
+    }),
+    aadhaarOtp: builder.query({
+      query: (id) => `verify/aadhaar/${id}`,
+      // providesTags:["getDocs"]
+    }),
+    panOtp: builder.query({
+      query: (id) => `verify/pan/${id}`,
+      invalidatesTags:["getDocs"]
+    }),
     
   }),
 });
@@ -169,6 +216,12 @@ export const {
   useFetchAllHoldLeadsQuery,
   useUnholdLeadMutation,
   useApproveLeadMutation,
+  useGetEmailOtpMutation,
+  useVerifyEmailOtpMutation,
+  useLazyAadhaarOtpQuery,
+  useVerifyAadhaarOtpMutation,
+  useLazyPanOtpQuery,  
   useRejectLeadMutation,
+  useLazyFetchCibilScoreQuery,
   useFetchAllRejectedLeadsQuery,
 } = leadsApi;
