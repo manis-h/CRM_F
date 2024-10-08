@@ -20,7 +20,6 @@ const CibilScore = () => {
     // setError('');
    
   };
-  console.log('cibil',cibilRes)
 
   const accordionStyles = {
     borderRadius: '12px',

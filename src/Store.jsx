@@ -6,6 +6,7 @@ const Store = devtools((set, get) => ({
   employeeDetails: null,
   empInfo: null,
   applicationProfile: null,
+  lead:null,
   setLogin: (payload) => {
 
     set(() => ({
@@ -23,6 +24,11 @@ const Store = devtools((set, get) => ({
 
     set(() => ({
       applicationProfile: payload
+    }));
+  },
+  setLead: (payload) => {
+    set(() => ({
+      lead: payload
     }));
   },
 }));

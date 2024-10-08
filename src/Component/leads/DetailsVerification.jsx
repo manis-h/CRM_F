@@ -2,21 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails, Typography, Button, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Swal from 'sweetalert2';
-import { useGetEmailOtpMutation, useLazyAadhaarOtpQuery, useLazyPanOtpQuery } from '../../Service/Query';
+import { useGetEmailOtpMutation, useLazyAadhaarOtpQuery, useLazyGetPanDetailsQuery } from '../../Service/Query';
 import { useNavigate, useParams } from 'react-router-dom';
 import EmailVerification from './OtpVerification';
 import AadhaarOtpVerification from './AadhaarOtpVerification';
+import PanCompare from './PanCompare';
 
-const VerifyContact = ({ isEmailVerified, isAadhaarVerified, isPanVerified }) => {
+const VerifyContact = ({isMobileVerified, isEmailVerified, isAadhaarVerified, isPanVerified }) => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [otp, setOtp] = useState(false)
   const [otpAadhaar, setOtpAadhaar] = useState(false)
+  const [panModal, setPanModal] = useState(false)
   const [otpPan, setOtpPan] = useState(false)
   const [mobileVerified, setMobileVerified] = useState(false);
 
   const [getEmailOtp, { data: emailOtp, isSuccess: emailOtpSuccess, }] = useGetEmailOtpMutation()
-  const [panOtp,panRes] = useLazyPanOtpQuery()
+  const [getPanDetails,panRes] = useLazyGetPanDetailsQuery()
   const [aadhaarOtp,aadhaarRes] = useLazyAadhaarOtpQuery()
 
   const handleMobileVerification = () => {
@@ -28,19 +30,12 @@ const VerifyContact = ({ isEmailVerified, isAadhaarVerified, isPanVerified }) =>
     });
   };
 
-  console.log('verify',isEmailVerified)
 
   const handleEmailVerification = () => {
     getEmailOtp(id)
-    // Logic for email verification
-    // setEmailVerified(true);
-    // Swal.fire({
-    //   title: 'Email Verified!',
-    //   icon: 'success',
-    // });
   };
-  const handlePanVerification = () => {
-    panOtp(id)
+  const   handlePanVerification = () => {
+    getPanDetails(id)
   }
   const handleAadhaarVerification = () => {
     aadhaarOtp(id)
@@ -48,10 +43,8 @@ const VerifyContact = ({ isEmailVerified, isAadhaarVerified, isPanVerified }) =>
 
   useEffect(() => {
     if (panRes?.isSuccess) {
-      Swal.fire({
-          title: 'Pan Verified!',
-          icon: 'success',
-        });
+    setPanModal(true)
+      
     }
   }, [panRes?.data, panRes?.isSuccess])
 
@@ -63,16 +56,17 @@ const VerifyContact = ({ isEmailVerified, isAadhaarVerified, isPanVerified }) =>
   useEffect(() => {
     if (aadhaarRes?.isSuccess && aadhaarRes) {
       // setOtpAadhaar(true)
-      navigate(`/aadhar-verification/${aadhaarRes?.data?.trx_id}`)
+      navigate(`/aadhaar-verification/${aadhaarRes?.data?.trx_id}`)
     }
   }, [aadhaarRes.data, aadhaarRes?.isSuccess])
 
 
 
+
   return (
     <>
-      {otp && <EmailVerification open={otp} setOpen={setOtp} />}
-      {otpAadhaar && <AadhaarOtpVerification open={otpAadhaar} setOpen={setOtpAadhaar} />}
+      {otp && <EmailVerification open={otp} setOpen={setOtp}  />}
+      {<PanCompare open={panModal} setOpen={setPanModal} panDetails={panRes?.data?.data?.result} />}
       <Box sx={{ maxWidth: 700, margin: '0 auto', mt: 4 }}>
         {/* Single Accordion for Mobile and Email Verification */}
         <Accordion sx={{ borderRadius: '15px', boxShadow: 3 }}>
@@ -97,18 +91,18 @@ const VerifyContact = ({ isEmailVerified, isAadhaarVerified, isPanVerified }) =>
                 <Typography variant="body1">
 
 
-                  Mobile:<span style={{ color: mobileVerified ? 'green' : 'red' }}> {mobileVerified ? 'Verified' : 'Not Verified'}
+                  Mobile:<span style={{ color: isMobileVerified ? 'green' : 'red' }}> {isMobileVerified ? 'Verified' : 'Not Verified'}
                   </span>
                 </Typography>
                 <Button
                   variant="contained"
                   onClick={handleMobileVerification}
                   sx={{
-                    backgroundColor: mobileVerified ? '#ccc' : '#4caf50',
-                    '&:hover': { backgroundColor: mobileVerified ? '#ccc' : '#388e3c' },
+                    backgroundColor: isMobileVerified ? '#ccc' : '#4caf50',
+                    '&:hover': { backgroundColor: isMobileVerified ? '#ccc' : '#388e3c' },
                     transition: 'background-color 0.3s'
                   }}
-                  disabled={mobileVerified} // Disable button if already verified
+                  disabled={isMobileVerified} // Disable button if already verified
                 >
                   Verify Mobile
                 </Button>
