@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Grid, Button, Accordion, AccordionSummary, AccordionDetails, Paper, Divider, Alert } from '@mui/material';
+import { Typography, Grid, Button, Accordion, AccordionSummary, AccordionDetails, Paper, Divider, Alert, Select, MenuItem, TextField, Box } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useApproveLeadMutation, useFetchSingleLeadQuery, useHoldLeadMutation, useRejectLeadMutation, useUnholdLeadMutation, useUploadDocumentsMutation } from '../Service/Query';
@@ -22,6 +22,13 @@ const LeadProfile = () => {
     const [uploadedDocs, setUploadedDocs] = useState([]); // Initialize uploadedDocs state
     const { setLead } = useStore()
     const [leadEdit, setLeadEdit] = useState(false);
+    const [actionType, setActionType] = useState(''); // To track which action is selected: 'hold', 'reject', 'approve'
+    const [selectedReason, setSelectedReason] = useState(''); // To track the selected reason for hold or reject
+    const [remarks, setRemarks] = useState(''); // To track remarks input for 'Other'
+
+   
+
+    
 
     const { data: leadData, isSuccess: leadSuccess } = useFetchSingleLeadQuery(id, { skip: id === null });
     const [holdLead, { data: holdLeadData, isSuccess: holdLeadSuccess, isError: isHoldError, error: leadHoldError }] = useHoldLeadMutation();
@@ -42,7 +49,45 @@ const LeadProfile = () => {
     const handleReject = () => {
         rejectLead(id)
     }
+    const handleActionClick = (type) => {
+        setActionType(type); // Set the action to either 'hold' or 'reject'
+    };
 
+    const handleReasonChange = (event) => {
+        const reason = event.target.value;
+        setSelectedReason(reason);
+        
+            setRemarks(reason); // Clear remarks if 'Other' is not selected
+        
+    };
+
+    const handleSubmit = () => {
+        // Submit logic for hold/reject based on actionType
+        if (actionType === 'hold') {
+            holdLead({id,reason:remarks})
+            
+            console.log('Hold reason:', selectedReason, 'Remarks:', remarks);
+        } else if (actionType === 'reject') {
+            // Perform reject action, include selectedReason and remarks
+            rejectLead({id,reason:remarks})
+            console.log('Reject reason:', selectedReason, 'Remarks:', remarks);
+        }else if(actionType ==='unhold'){
+            unholdLead(id)
+            console.log('unhold', selectedReason, remarks)
+        }
+
+        // Reset state after submission
+        setActionType('');
+        setSelectedReason('');
+        setRemarks('');
+    };
+
+    const handleCancel = () => {
+        // Reset all states to go back to initial state
+        setActionType('');
+        setSelectedReason('');
+        setRemarks('');
+    };
     useEffect(() => {
         if (holdLeadSuccess && holdLeadData) {
             Swal.fire({
@@ -272,49 +317,85 @@ const LeadProfile = () => {
                         </Alert>}
                         {!leadData?.isRejected && <div className='my-3  d-flex justify-content-center'>
 
-                            {(!leadData?.onHold) && <Button
-                                variant="contained"
-                                color="success"
-                                onClick={handleApprove}
-                                sx={{
-                                    marginInline: "10px",
-                                    backgroundColor: 'green',
-                                    '&:hover': {
-                                        backgroundColor: 'darkgreen',
-                                        color: 'white',
-                                    }
-                                }}
-                            >
-                                Approve
-                            </Button>}
-                            <Button
-                                variant='contained'
-                                color="warning"
-                                onClick={handleHold}
-                                sx={{
-                                    marginInline: "10px",
-                                    backgroundColor: 'orange',
-                                    '&:hover': {
-                                        backgroundColor: 'darkorange',
-                                        color: 'white',
-                                    },
-                                }}
-                            >{leadData?.onHold ? "unHold" : "hold"}</Button>
-                            <Button
-                                variant="contained"
-                                color="error"
-                                onClick={handleReject}
-                                sx={{
-                                    marginInline: "10px",
-                                    backgroundColor: 'red',
-                                    '&:hover': {
-                                        backgroundColor: 'darkred',
-                                        color: 'white',
-                                    },
-                                }}
-                            >
-                                Reject
-                            </Button>
+                            {/* Action Buttons */}
+                            <Box sx={{ padding: 2 }}>
+            {/* Render buttons if no action is selected */}
+            {!actionType && (
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => handleActionClick('approve')}
+                    >
+                        Approve
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="warning"
+                        onClick={() => handleActionClick(leadData?.onHold ? "unhold":'hold')}
+                    >
+                        {leadData?.onHold ? "Unhold" : "Hold"}
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleActionClick('reject')}
+                    >
+                        Reject
+                    </Button>
+                </Box>
+            )}
+
+            {/* Render dropdown, input, and submit/cancel buttons when Hold or Reject is selected */}
+            {(actionType === 'hold' || actionType === 'reject') && (
+                <Box sx={{ marginTop: 3 }}>
+                    <Select
+                        value={selectedReason}
+                        onChange={handleReasonChange}
+                        displayEmpty
+                        fullWidth
+                        sx={{ marginBottom: 2 }}
+                    >
+                        <MenuItem value="" disabled>
+                            Select a reason
+                        </MenuItem>
+                        <MenuItem value="Reason A">Reason A</MenuItem>
+                        <MenuItem value="Reason B">Reason B</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
+                    </Select>
+
+                    {selectedReason === 'Other' && (
+                        <TextField
+                            label="Remarks"
+                            value={remarks}
+                            onChange={(e) => setRemarks(e.target.value)}
+                            fullWidth
+                            multiline
+                            rows={3}
+                            sx={{ marginBottom: 2 }}
+                        />
+                    )}
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+                    <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={handleCancel}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleSubmit}
+                        >
+                            Submit
+                        </Button>
+                        
+                    </Box>
+                </Box>
+            )}
+        </Box>
                         </div>}
                     </Paper>
                 </>

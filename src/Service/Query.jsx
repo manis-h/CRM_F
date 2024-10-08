@@ -65,18 +65,20 @@ export const leadsApi = createApi({
       }),
     }),
     holdLead: builder.mutation({
-      query: (id) => ({
+      query: ({id,reason}) => ({
 
         url: `leads/hold/${id}`,
         method: 'PATCH',
+        body:reason
       }),
       invalidatesTags:["leadProfile"]
     }),
     rejectLead: builder.mutation({
-      query: (id) => ({
+      query: ({id,reason}) => ({
 
         url: `leads/reject/${id}`,
         method: 'PATCH',
+        body:reason
       }),
       invalidatesTags:["leadProfile"]
     }),
@@ -198,7 +200,7 @@ export const leadsApi = createApi({
     }),
     getPanDetails: builder.query({
       query: (id) => `verify/pan/${id}`,
-      providesTags:["leadProfile"]
+      // providesTags:["leadProfile"]
     }),
     
   }),

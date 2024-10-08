@@ -35,6 +35,7 @@ const VerifyContact = ({isMobileVerified, isEmailVerified, isAadhaarVerified, is
     getEmailOtp(id)
   };
   const   handlePanVerification = () => {
+    console.log('pan details')
     getPanDetails(id)
   }
   const handleAadhaarVerification = () => {
@@ -42,7 +43,8 @@ const VerifyContact = ({isMobileVerified, isEmailVerified, isAadhaarVerified, is
   }
 
   useEffect(() => {
-    if (panRes?.isSuccess) {
+    if (panRes?.isSuccess && panRes?.data) {
+      console.log('pan res ')
     setPanModal(true)
       
     }

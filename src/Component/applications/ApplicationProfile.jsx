@@ -109,6 +109,7 @@ const ApplicationProfile = () => {
             {applicationStatus === "banking" && <BankDetails />}
 
             {/* Action Buttons */}
+<<<<<<< Updated upstream
             { applicationStatus === "application" && <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
               <Button
                 variant="contained"
@@ -163,6 +164,76 @@ const ApplicationProfile = () => {
               applicationStatus === "cam" && <Cam />
              }
             
+=======
+            {!actionType && (
+                <div className="my-3 d-flex justify-content-center">
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => handleActionClick('approve')}
+                        sx={{ marginInline: "10px", backgroundColor: 'green' }}
+                    >
+                        Approve
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="warning"
+                        onClick={() => handleActionClick('hold')}
+                        sx={{ marginInline: "10px", backgroundColor: 'orange' }}
+                    >
+                        Hold
+                    </Button>
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => handleActionClick('reject')}
+                        sx={{ marginInline: "10px", backgroundColor: 'red' }}
+                    >
+                        Reject
+                    </Button>
+                </div>
+            )}
+
+            {/* Render dropdown, input, and submit button when Hold or Reject is selected */}
+            {(actionType === 'hold' || actionType === 'reject') && (
+                <div className="action-form">
+                    <Select
+                        value={selectedReason}
+                        onChange={handleReasonChange}
+                        displayEmpty
+                        fullWidth
+                        sx={{ marginBottom: '20px' }}
+                    >
+                        <MenuItem value="" disabled>
+                            Select a reason
+                        </MenuItem>
+                        <MenuItem value="Reason A">Reason A</MenuItem>
+                        <MenuItem value="Reason B">Reason B</MenuItem>
+                        <MenuItem value="Other">Other</MenuItem>
+                    </Select>
+
+                    {selectedReason === 'Other' && (
+                        <TextField
+                            label="Remarks"
+                            value={remarks}
+                            onChange={(e) => setRemarks(e.target.value)}
+                            fullWidth
+                            sx={{ marginBottom: '20px' }}
+                        />
+                    )}
+
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        fullWidth
+                        sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
+                    >
+                        Submit
+                    </Button>
+                </div>
+            )}
+>>>>>>> Stashed changes
           </div>
         </>
       )}

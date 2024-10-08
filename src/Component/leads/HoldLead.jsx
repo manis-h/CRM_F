@@ -5,15 +5,15 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import OTPVerificationUI from './OtpVerification';
 const columns = [
-    { field: 'fName', headerName: 'First Name', width: 150 },
-    { field: 'lName', headerName: 'Last Name', width: 150 },
-    { field: 'gender', headerName: 'Gender', width: 100 },
-    { field: 'personalEmail', headerName: 'Personal Email', width: 200 },
+    { field: 'name', headerName: 'Full Name', width: 200 },
     { field: 'mobile', headerName: 'Mobile', width: 150 },
+    { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
+    { field: 'pan', headerName: 'Pan No.', width: 150 },
     { field: 'city', headerName: 'City', width: 150 },
     { field: 'state', headerName: 'State', width: 150 },
     { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
     { field: 'salary', headerName: 'Salary', width: 150 },
+    { field: 'source', headerName: 'Source', width: 150 },
 ];
 
 const HoldLead = () => {
@@ -52,15 +52,15 @@ const HoldLead = () => {
 
     const rows = holdLeads?.leads?.map(lead => ({
         id: lead._id, 
-        fName: lead.fName,
-        lName: lead.lName,
-        gender: lead.gender,
-        personalEmail: lead.email,
-        mobile: lead.mobile,
+        name: ` ${lead?.fName}  ${lead?.mName} ${lead?.lName}`,
+        mobile: lead?.mobile,
+        aadhaar: lead?.aadhaar,
+        pan: lead?.pan,
         city: lead.city,
         state: lead.state,
         loanAmount: lead.loanAmount,
         salary: lead.salary,
+        source: lead.source,
     }));
 
     return (
