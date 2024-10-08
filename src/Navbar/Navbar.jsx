@@ -12,6 +12,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { setEmployeeDetails,  } = useStore();
   const {setLogin,setEmpInfo} = useAuthStore()
+  // const { } = userAuthStore();
 
   const [logout, { data, isSuccess }] = useLogoutMutation()
 

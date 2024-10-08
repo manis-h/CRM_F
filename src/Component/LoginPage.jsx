@@ -15,10 +15,10 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const {isLoggedIn,setLogin,setEmpInfo} = useAuthStore()
 
-  if (isLoggedIn) {
-    // Redirect to dashboard or homepage if the user is already logged in
-    return <Navigate to="/" />;
-}
+//   if (isLoggedIn) {
+//     // Redirect to dashboard or homepage if the user is already logged in
+//     return <Navigate to="/" />;
+// }
 
 
   const handleSubmit = async (event) => {

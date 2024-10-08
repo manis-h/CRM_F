@@ -13,6 +13,7 @@ const UploadDocuments = ({ uploadedDocs, setUploadedDocs }) => {
 
     const [uploadDocuments, { isSuccess: docSuccess }] = useUploadDocumentsMutation();
     const [getLeadDocs, { data: docsData, isSuccess: docsSuccess }] = useLazyGetLeadDocsQuery();
+    const [accordianOpen,setAccordinaOpen]= useState(true)
 
     const [documents, setDocuments] = useState({
         aadhaarFront: null,
@@ -91,8 +92,8 @@ const UploadDocuments = ({ uploadedDocs, setUploadedDocs }) => {
 
     return (
         <Box sx={{ maxWidth: '700px', margin: '0 auto', mt: 3 }}>
-            <Accordion style={accordionStyles}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#007bb2' }} />}>
+            <Accordion defaultExpanded style={accordionStyles}>
+                <AccordionSummary   expandIcon={<ExpandMoreIcon sx={{ color: '#007bb2' }} />}>
                     <Typography variant="h6" style={{ fontWeight: '600', color: "#ffffff" }}>Upload Documents</Typography>
                 </AccordionSummary>
                 <AccordionDetails>

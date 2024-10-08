@@ -56,17 +56,16 @@ function App() {
           <Sidebar isSidebarOpen={isSidebarOpen} setIsSidebarOpen={setIsSidebarOpen} />
           <div style={{ marginLeft: isSidebarOpen ? '250px' : '0px' }} >
 
-            <Routes>
+            <Routes   >
               {/* <Route path='/' element={<ProtectedRoute><Dashboard /></ProtectedRoute>}> */}
               <Route path="/" element={<Dashboard />} />
-
               <Route path='/add-holiday-details' element={<AddHolidayDetails />} />
               <Route path="/user-profile" element={<UserProfileForm />} />
               <Route path="/employees-list" element={<EmployeeList />} />
               <Route path='/add-bank-details' element={<AddBankDetails />} />
               <Route path='/import-csv' element={<ImportCSV />} />
               <Route path='/view-user' element={<ViewUsersForm />} />
-              <Route path='add-users' element={<AddUserForm />} />
+              <Route path='/add-users' element={<AddUserForm />} />
               <Route path='lead-profile/:id' element={<LeadProfile />} />
               <Route path="/lead-new" element={<LeadNew />} />
               <Route path='/lead-process' element={<ProcessingLeads />} />

@@ -8,6 +8,7 @@ import PersonalDetails from './PersonalDetails';
 import BankDetails from './BankDetails';
 import { useFetchSingleApplicationQuery } from '../../queries/applicationQueries';
 import useStore from '../../Store';
+import Cam from './Cam';
 
 const ApplicationProfile = () => {
   const { id } = useParams();
@@ -62,7 +63,7 @@ const ApplicationProfile = () => {
         <>
           <div className='p-3'>
             <Box display="flex" flexWrap="wrap" justifyContent="center" mb={3}>
-              {['Application', 'Documents', 'Personal', 'Banking', 'Verification'].map(status => (
+              {['Application', 'Documents', 'Personal', 'Banking', 'Verification','Cam'].map(status => (
                 <Button
                   key={status}
                   variant="contained"
@@ -100,7 +101,7 @@ const ApplicationProfile = () => {
                     </Table>
                   </TableContainer>
                 </Paper>
-                <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} />
+                
               </>
             )}
 
@@ -108,7 +109,7 @@ const ApplicationProfile = () => {
             {applicationStatus === "banking" && <BankDetails />}
 
             {/* Action Buttons */}
-            <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
+            { applicationStatus === "application" && <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
               <Button
                 variant="contained"
                 color="success"
@@ -153,7 +154,15 @@ const ApplicationProfile = () => {
               >
                 Reject
               </Button>
-            </Box>
+            </Box> 
+             }
+
+             { applicationStatus === "documents" && <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} /> }
+
+             {
+              applicationStatus === "cam" && <Cam />
+             }
+            
           </div>
         </>
       )}
