@@ -8,7 +8,6 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
   const {id} =useParams()
   const [updateLead,{data,isSuccess,isError,error}] = useUpdateLeadMutation()
   const [formData, setFormData] = useState(leadData);
-  console.log('lead data', leadData, formData);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -21,9 +20,7 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
   };
   
   const convertToISODate = (dob) => {
-    console.log("form date",dob);
-    if (!dob) return ''; 
-  
+    if (!dob) return '';   
     const [day, month, year] = dob.split('-');
     // return `${year}-${month}-${day}`;
     return `${day}-${month}-${year}`;

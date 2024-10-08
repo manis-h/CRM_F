@@ -42,7 +42,7 @@ const ApplicationProfile = () => {
     { label: "Alternate Mobile", value: applicationData?.lead?.alternateMobile, label2: "Personal Email", value2: applicationData?.lead?.personalEmail },
     { label: "Office Email", value: applicationData?.lead?.officeEmail, label2: "Loan Amount", value2: applicationData?.lead?.loanAmount },
     { label: "Salary", value: applicationData?.lead?.salary, label2: "State", value2: applicationData?.lead?.state },
-    { label: "City", value: applicationData?.lead?.city, label2: "Pin Code", value: applicationData?.lead?.pinCode },
+    { label: "City", value: applicationData?.lead?.city, label2: "Pin Code", value2: applicationData?.lead?.pinCode },
   ];
 
   useEffect(() => {

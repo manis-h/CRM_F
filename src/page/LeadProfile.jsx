@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Grid, Button, Accordion, AccordionSummary, AccordionDetails, Paper, Divider } from '@mui/material';
+import { Typography, Grid, Button, Accordion, AccordionSummary, AccordionDetails, Paper, Divider, Alert } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useApproveLeadMutation, useFetchSingleLeadQuery, useGetLeadDocsQuery, useHoldLeadMutation, useRejectLeadMutation, useUnholdLeadMutation, useUploadDocumentsMutation } from '../Service/Query';
+import { useApproveLeadMutation, useFetchSingleLeadQuery, useHoldLeadMutation, useRejectLeadMutation, useUnholdLeadMutation, useUploadDocumentsMutation } from '../Service/Query';
 import LeadDetails from '../Component/LeadDetails';
 import Swal from 'sweetalert2';
 import InternalDedupe from '../Component/InternalDedupe';
@@ -12,31 +12,30 @@ import ApplicationLogHistory from '../Component/ApplicationLogHistory';
 import { CheckBox } from '@mui/icons-material';
 import VerificationUI from '../Component/leads/DetailsVerification';
 import CibilScorePage from '../Component/leads/CibilScore';
+import useStore from '../Store';
+import PanComapare from '../Component/leads/PanCompare';
 
 const LeadProfile = () => {
     const { id } = useParams();
     const navigate = useNavigate()
-    const [selectedFileType, setSelectedFileType] = useState(null);
-    const [showDedupe, setShowDedupe] = useState(false);
+    
     const [uploadedDocs, setUploadedDocs] = useState([]); // Initialize uploadedDocs state
-    const [checkStatus, setCheckStatus] = useState(null)
-
-
+    const { setLead } = useStore()
     const [leadEdit, setLeadEdit] = useState(false);
 
     const { data: leadData, isSuccess: leadSuccess } = useFetchSingleLeadQuery(id, { skip: id === null });
-    const [holdLead, { data: holdLeadData, isSuccess: holdLeadSuccess, error: leadHoldError }] = useHoldLeadMutation();
-    const [unholdLead, { data: unholdLeadData, isSuccess: unholdLeadSuccess, error: unleadHoldError }] = useUnholdLeadMutation();
-    const [approveLead, { data: approveLeadData, isSuccess: approveLeadSuccess, error: approveLeadError }] = useApproveLeadMutation();
-    const [rejectLead, { data: rejectLeadData, isSuccess: rejectLeadSuccess, error: rejectLeadError }] = useRejectLeadMutation();
+    const [holdLead, { data: holdLeadData, isSuccess: holdLeadSuccess, isError: isHoldError, error: leadHoldError }] = useHoldLeadMutation();
+    const [unholdLead, { data: unholdLeadData, isSuccess: unholdLeadSuccess, isError: isUnHoldError, error: unleadHoldError }] = useUnholdLeadMutation();
+    const [approveLead, { data: approveLeadData, isSuccess: approveLeadSuccess, isError: isApproveError, error: approveLeadError }] = useApproveLeadMutation();
+    const [rejectLead, { data: rejectLeadData, isSuccess: rejectLeadSuccess, isError: isRejectError, error: rejectLeadError }] = useRejectLeadMutation();
 
     const handleApprove = () => {
         approveLead(id)
     }
     const handleHold = () => {
-        if(!leadData?.onHold){
+        if (!leadData?.onHold) {
             holdLead(id)
-        }else{
+        } else {
             unholdLead(id)
         }
     }
@@ -45,7 +44,7 @@ const LeadProfile = () => {
     }
 
     useEffect(() => {
-        if (holdLeadSuccess) {
+        if (holdLeadSuccess && holdLeadData) {
             Swal.fire({
                 // title: "Good job!",
                 text: "Lead on hold!",
@@ -53,7 +52,7 @@ const LeadProfile = () => {
             });
             navigate("/lead-hold")
         }
-        if (unholdLeadSuccess) {
+        if (unholdLeadSuccess && unholdLeadData) {
             Swal.fire({
                 // title: "Good job!",
                 text: "Lead in process!",
@@ -62,7 +61,7 @@ const LeadProfile = () => {
             navigate("/lead-process")
         }
 
-    }, [holdLeadSuccess, holdLeadData,unholdLeadSuccess])
+    }, [holdLeadData, unholdLeadData])
     useEffect(() => {
         if (rejectLeadSuccess) {
             Swal.fire({
@@ -89,7 +88,8 @@ const LeadProfile = () => {
 
     useEffect(() => {
         if (leadSuccess) {
-            if (leadData?.document && leadData?.document.length) {
+            setLead(leadData)
+            if (leadData?.document && leadData?.document.length > 0) {
                 for (let docs of leadData.document) {
                     setUploadedDocs(pre => [...pre, docs.type])
                 }
@@ -105,7 +105,6 @@ const LeadProfile = () => {
                 text: "Lead on hold",
                 icon: "question"
             });
-            console.log('hold data', holdLeadData)
         }
 
     }, [holdLeadSuccess])
@@ -113,6 +112,7 @@ const LeadProfile = () => {
 
     return (
         <div className="crm-container">
+            
             {leadEdit ? (
                 <LeadDetails leadData={leadData} setLeadEdit={setLeadEdit} />
             ) : (
@@ -245,10 +245,11 @@ const LeadProfile = () => {
 
                         <Divider style={{ margin: '30px 0' }} />
 
-                        <VerificationUI 
-                        isEmailVerified={leadData?.isEmailVerified} 
-                        isAadhaarVerified={leadData?.isAadhaarVerified} 
-                        isPanVerified={leadData?.isPanVerified} 
+                        <VerificationUI
+                            isMobileVerified={leadData?.isMobileVerified}
+                            isEmailVerified={leadData?.isEmailVerified}
+                            isAadhaarVerified={leadData?.isAadhaarVerified}
+                            isPanVerified={leadData?.isPanVerified}
                         />
                         <CibilScorePage />
 
@@ -256,6 +257,19 @@ const LeadProfile = () => {
 
                         <InternalDedupe />
                         <ApplicationLogHistory />
+
+                        {isApproveError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                            {approveLeadError?.data?.message}
+                        </Alert>}
+                        {isHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                            {leadHoldError?.data?.message}
+                        </Alert>}
+                        {isRejectError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                            {rejectLeadError?.data?.message}
+                        </Alert>}
+                        {isUnHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                            {unleadHoldError?.data?.message}
+                        </Alert>}
                         {!leadData?.isRejected && <div className='my-3  d-flex justify-content-center'>
 
                             {(!leadData?.onHold) && <Button
@@ -285,7 +299,7 @@ const LeadProfile = () => {
                                         color: 'white',
                                     },
                                 }}
-                            >{leadData?.onHold ? "unHold":"hold"}</Button>
+                            >{leadData?.onHold ? "unHold" : "hold"}</Button>
                             <Button
                                 variant="contained"
                                 color="error"

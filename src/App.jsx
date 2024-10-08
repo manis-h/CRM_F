@@ -34,6 +34,7 @@ import ApplicationProfile from './Component/applications/ApplicationProfile';
 import NewApplications from './Component/applications/NewApplications';
 import ProcessingApplication from './Component/applications/ProcessingApplication';
 import AadhaarOtpVerification from './Component/leads/AadhaarOtpVerification';
+import CompareUserDetails from './Component/leads/PanCompare';
 
 function App() {
 
@@ -75,6 +76,7 @@ function App() {
               <Route path="/new-application" element={<NewApplications />} />
               <Route path="/application-profile/:id" element={<ApplicationProfile />} />
               <Route path="/aadhaar-verification/:id" element={<AadhaarOtpVerification />} />
+              <Route path="/compare" element={<CompareUserDetails />} />
 
               <Route path="/application-process" element={<ProcessingApplication />} />
 

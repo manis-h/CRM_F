@@ -17,7 +17,7 @@ export const leadsApi = createApi({
     },
 
   }),
-  tagTypes: ["getDocs","rejectedLeads","holdLeads"],
+  tagTypes: ["leadProfile","rejectedLeads","holdLeads"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     getEmployees: builder.query({
@@ -38,7 +38,7 @@ export const leadsApi = createApi({
         method: 'PATCH',
         body: docsData
       }),
-      invalidatesTags: ["getDocs"]
+      invalidatesTags: ["leadProfile"]
     }),
 
     // POST request to send data (this should use builder.mutation)
@@ -70,7 +70,7 @@ export const leadsApi = createApi({
         url: `leads/hold/${id}`,
         method: 'PATCH',
       }),
-      invalidatesTags:["holdLeads"]
+      invalidatesTags:["leadProfile"]
     }),
     rejectLead: builder.mutation({
       query: (id) => ({
@@ -78,7 +78,7 @@ export const leadsApi = createApi({
         url: `leads/reject/${id}`,
         method: 'PATCH',
       }),
-      invalidatesTags:["rejectedLeads"]
+      invalidatesTags:["leadProfile"]
     }),
     unholdLead: builder.mutation({
       query: (id) => ({
@@ -86,6 +86,7 @@ export const leadsApi = createApi({
         url: `leads/unhold/${id}`,
         method: 'PATCH',
       }),
+      invalidatesTags:["leadProfile"]
     }),
     approveLead: builder.mutation({
       query: (id) => ({
@@ -110,7 +111,7 @@ export const leadsApi = createApi({
         method: 'PATCH',
         body: formData,
       }),
-      invalidatesTags:["getDocs"]
+      invalidatesTags:["leadProfile"]
     }),
     getEmailOtp: builder.mutation({
       query: (id) => ({
@@ -118,7 +119,7 @@ export const leadsApi = createApi({
         url: `verify/email/${id}`,
         method: 'PATCH',
       }),
-      invalidatesTags:["getDocs"]
+      invalidatesTags:["leadProfile"]
     }),
     verifyEmailOtp: builder.mutation({
       query: ({id,data}) => ({
@@ -127,25 +128,34 @@ export const leadsApi = createApi({
         method: 'PATCH',
         body:{otp:data}
       }),
-      invalidatesTags:["getDocs"]
+      invalidatesTags:["leadProfile"]
     }),
     verifyAadhaarOtp: builder.mutation({
-      query: ({id,data}) => ({
+      query: ({id,trx_id,otp}) => ({
 
-        url: `verify/aadhaar-otp/${id}`,
+        url: `verify/aadhaar-otp/?id=${id}&trx_id=${trx_id}`,
         method: 'POST',
-        body:{otp:data}
+        body:{otp}
       }),
-      invalidatesTags:["getDocs"]
+      invalidatesTags:["leadProfile"]
     }),
-    verifyPanOtp: builder.mutation({
+    verifyAadhaar: builder.mutation({
+      query: ({id,details}) => ({
+
+        url: `verify/aadhaar/${id}`,
+        method: 'POST',
+        body:{details}
+      }),
+      invalidatesTags:["leadProfile"]
+    }),
+    verifyPan: builder.mutation({
       query: ({id,data}) => ({
 
-        url: `verify/pan-aadhaar-link/${id}`,
+        url: `verify/pan/${id}`,
         method: 'POST',
-        body:{otp:data}
+        body:{data}
       }),
-      invalidatesTags:["getDocs"]
+      invalidatesTags:["leadProfile"]
     }),
 
     fetchAllEmployee: builder.query({
@@ -159,7 +169,7 @@ export const leadsApi = createApi({
     }),
     fetchSingleLead: builder.query({
       query: (id) => `/leads/${id}`,
-      providesTags: ["getDocs"]
+      providesTags: ["leadProfile"]
     }),
     getLeadDocs: builder.query({
       query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
@@ -184,11 +194,11 @@ export const leadsApi = createApi({
     }),
     aadhaarOtp: builder.query({
       query: (id) => `verify/aadhaar/${id}`,
-      // providesTags:["getDocs"]
+      // providesTags:["leadProfile"]
     }),
-    panOtp: builder.query({
+    getPanDetails: builder.query({
       query: (id) => `verify/pan/${id}`,
-      invalidatesTags:["getDocs"]
+      providesTags:["leadProfile"]
     }),
     
   }),
@@ -208,7 +218,7 @@ export const {
   useFetchSingleLeadQuery,
   useUploadDocumentsMutation,
   useUpdateLeadMutation,
-  useGetLeadDocsQuery,
+  useLazyGetLeadDocsQuery,
   useGetInternalDedupeQuery,
   useApplicationHistoryQuery,
   useBulkUploadMutation,
@@ -219,8 +229,10 @@ export const {
   useGetEmailOtpMutation,
   useVerifyEmailOtpMutation,
   useLazyAadhaarOtpQuery,
+  useVerifyPanMutation,
   useVerifyAadhaarOtpMutation,
-  useLazyPanOtpQuery,  
+  useVerifyAadhaarMutation,
+  useLazyGetPanDetailsQuery,  
   useRejectLeadMutation,
   useLazyFetchCibilScoreQuery,
   useFetchAllRejectedLeadsQuery,

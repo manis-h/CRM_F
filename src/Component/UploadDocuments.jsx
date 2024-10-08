@@ -3,20 +3,16 @@ import { Accordion, AccordionSummary, AccordionDetails, Typography, Button, Pape
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { useUploadDocumentsMutation, useGetLeadDocsQuery } from '../Service/Query';
+import { useLazyGetLeadDocsQuery, useUploadDocumentsMutation, } from '../Service/Query';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-const UploadDocuments = () => {
+const UploadDocuments = ({ uploadedDocs, setUploadedDocs }) => {
     const { id } = useParams();
-    const [isEditing, setIsEditing] = useState(false);
     const [selectedFileType, setSelectedFileType] = useState(null);
 
     const [uploadDocuments, { isSuccess: docSuccess }] = useUploadDocumentsMutation();
-    const { data: docsData, isSuccess: docsSuccess } = useGetLeadDocsQuery(
-        { id, docType: selectedFileType }, 
-        { skip: !selectedFileType || !id }
-    );
+    const [getLeadDocs, { data: docsData, isSuccess: docsSuccess }] = useLazyGetLeadDocsQuery();
 
     const [documents, setDocuments] = useState({
         aadhaarFront: null,
@@ -47,6 +43,7 @@ const UploadDocuments = () => {
 
     const viewFile = (docType) => {
         setSelectedFileType(docType);
+        getLeadDocs({ id, docType })
     };
 
     useEffect(() => {
@@ -66,7 +63,7 @@ const UploadDocuments = () => {
                 showCloseButton: true,
             });
         }
-    }, [docsSuccess, docsData]);
+    }, [docsData]);
 
     const accordionStyles = {
         borderRadius: '12px',
@@ -96,7 +93,7 @@ const UploadDocuments = () => {
         <Box sx={{ maxWidth: '700px', margin: '0 auto', mt: 3 }}>
             <Accordion style={accordionStyles}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#007bb2' }} />}>
-                    <Typography variant="h6" style={{ fontWeight: '600', color:"#ffffff" }}>Upload Documents</Typography>
+                    <Typography variant="h6" style={{ fontWeight: '600', color: "#ffffff" }}>Upload Documents</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <Paper elevation={3} style={paperStyles}>
@@ -106,52 +103,82 @@ const UploadDocuments = () => {
                                     <Typography variant="subtitle1" style={{ fontWeight: '600' }}>
                                         {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:
                                     </Typography>
-                                    {isEditing ? (
+                                    <Box
+                                        display="flex"
+                                        flexDirection="row"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                        sx={{
+                                            padding: '12px',
+                                            border: '2px solid #dfe3e8',
+                                            borderRadius: '12px',
+                                            boxShadow: '0 6px 12px rgba(0, 0, 0, 0.08)',
+                                            backgroundColor: '#ffffff',
+                                            marginBottom: '20px',
+                                            
+                                        }}
+                                    >
                                         <TextField
                                             type="file"
                                             name={key}
                                             accept=".pdf,.doc,.docx,.jpg"
                                             onChange={handleChange}
                                             fullWidth
+                                            InputProps={{
+                                                sx: {
+                                                    borderRadius: '6px',
+                                                    padding: '8px',
+                                                    backgroundColor: '#f4f6f8',
+                                                    '&:hover': {
+                                                        backgroundColor: '#e0e3e7',
+                                                    },
+                                                    '& input': {
+                                                        padding: '8px',
+                                                    },
+                                                },
+                                            }}
                                         />
-                                    ) : (
-                                        <Typography variant="body2" color="textSecondary">
-                                            {documents[key] ? documents[key].name : 'No file uploaded'}
-                                        </Typography>
-                                    )}
 
-                                    {documents[key] && (
-                                        <Button
-                                            variant="contained"
-                                            sx={buttonStyles}
-                                            onClick={() => viewFile(key)}
-                                            startIcon={<VisibilityIcon />}
-                                        >
-                                            View {key}
-                                        </Button>
-                                    )}
+                                        {uploadedDocs.includes(key) && (
+                                            <Button
+                                                variant="outlined"
+                                                color="secondary"
+                                                onClick={() => viewFile(key)}
+                                                startIcon={<VisibilityIcon />}
+                                                sx={{
+                                                    marginLeft: '16px',
+                                                    padding: '8px 18px',
+                                                    borderRadius: '12px',
+                                                    borderColor: '#3f51b5',
+                                                    color: '#3f51b5',
+                                                    transition: 'border-color 0.3s, background-color 0.3s',
+                                                    '&:hover': {
+                                                        borderColor: '#303f9f',
+                                                        backgroundColor: '#e8eaf6',
+                                                    },
+                                                }}
+                                            >
+                                                View
+                                            </Button>
+                                        )}
+                                    </Box>
+
+
+
                                 </Box>
                             ))}
                         </Box>
                         <Box display="flex" justifyContent="space-between" mt={2}>
                             <Button
-                                variant="outlined"
-                                onClick={() => setIsEditing((prev) => !prev)}
-                                sx={{ borderRadius: '8px' }}
+                                type="submit"
+                                variant="contained"
+                                sx={buttonStyles}
+                                startIcon={<UploadFileIcon />}
+                                onClick={handleSubmit}
                             >
-                                {isEditing ? 'Cancel' : 'Edit'}
+                                Upload
                             </Button>
-                            {isEditing && (
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    sx={buttonStyles}
-                                    startIcon={<UploadFileIcon />}
-                                    onClick={handleSubmit}
-                                >
-                                    Upload
-                                </Button>
-                            )}
+
                         </Box>
                     </Paper>
                 </AccordionDetails>

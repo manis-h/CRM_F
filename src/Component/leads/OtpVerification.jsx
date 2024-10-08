@@ -63,7 +63,6 @@ const EmailVerification = ({ open, setOpen }) => {
   // Handle form submit (you can add real verification logic here)
   const handleSubmit = () => {
     const data = Number(otp.join(''))
-    console.log('otp',data)
     verifyEmailOtp({id,data})
     // alert(`OTP Submitted: ${otp.join('')}`);
   };
