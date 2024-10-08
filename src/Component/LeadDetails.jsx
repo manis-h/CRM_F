@@ -8,7 +8,6 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
   const {id} =useParams()
   const [updateLead,{data,isSuccess,isError,error}] = useUpdateLeadMutation()
   const [formData, setFormData] = useState(leadData);
-  console.log('lead data', leadData, formData);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -18,14 +17,13 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
     e.preventDefault();
     setLeadEdit(false);
     updateLead({id,formData})
-    console.log("form lead",formData);
   };
-
-  const convertToISODate = (dob) => {
-    if (!dob) return ''; // Return empty string if no dob is provided
   
+  const convertToISODate = (dob) => {
+    if (!dob) return '';   
     const [day, month, year] = dob.split('-');
-    return `${year}-${month}-${day}`; // Return in YYYY-MM-DD format
+    // return `${year}-${month}-${day}`;
+    return `${day}-${month}-${year}`;
   };
 
   return (

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './LoginPageCss.css';
 import useStore from '../Store';
@@ -13,8 +13,12 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loginUser,{data:loginData,isSuccess:loginSuccess,isLoading:loginLoading,isError:loginError,error}] = useLoginUserMutation()
   const navigate = useNavigate();
-  const {empInfo,setEmpInfo,} = useStore()
-  const {isLoggedIn,setLogin} = useAuthStore()
+  const {isLoggedIn,setLogin,setEmpInfo} = useAuthStore()
+
+  if (isLoggedIn) {
+    // Redirect to dashboard or homepage if the user is already logged in
+    return <Navigate to="/" />;
+}
 
 
   const handleSubmit = async (event) => {
@@ -38,13 +42,14 @@ const LoginPage = () => {
     if(loginSuccess ) {
       setLogin(true)
       setEmpInfo(loginData)
+      console.log('login navigation',loginData)
      
         navigate('/')
 
     } 
       
 
-  },[loginSuccess])
+  },[loginSuccess,loginData])
 
   
 

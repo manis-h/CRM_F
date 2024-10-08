@@ -7,17 +7,17 @@ export const leadsApi = createApi({
   reducerPath: 'leadsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3000/api/",
+    // baseUrl: "http://192.168.0.119:3000/api/",
     // 'https://crm-backend-wui1.onrender.com/api/leads'
 
     credentials:"include",
-    prepareHeaders: (headers, { getState }) => {
-     
+    prepareHeaders: (headers, { getState }) => {   
 
       return headers;
     },
 
   }),
-  tagTypes: ["getDocs","rejectedLeads","holdLeads"],
+  tagTypes: ["leadProfile","rejectedLeads","holdLeads"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     getEmployees: builder.query({
@@ -38,7 +38,7 @@ export const leadsApi = createApi({
         method: 'PATCH',
         body: docsData
       }),
-      invalidatesTags: ["getDocs"]
+      invalidatesTags: ["leadProfile"]
     }),
 
     // POST request to send data (this should use builder.mutation)
@@ -70,7 +70,7 @@ export const leadsApi = createApi({
         url: `leads/hold/${id}`,
         method: 'PATCH',
       }),
-      invalidatesTags:["holdLeads"]
+      invalidatesTags:["leadProfile"]
     }),
     rejectLead: builder.mutation({
       query: (id) => ({
@@ -78,7 +78,7 @@ export const leadsApi = createApi({
         url: `leads/reject/${id}`,
         method: 'PATCH',
       }),
-      invalidatesTags:["rejectedLeads"]
+      invalidatesTags:["leadProfile"]
     }),
     unholdLead: builder.mutation({
       query: (id) => ({
@@ -86,6 +86,7 @@ export const leadsApi = createApi({
         url: `leads/unhold/${id}`,
         method: 'PATCH',
       }),
+      invalidatesTags:["leadProfile"]
     }),
     approveLead: builder.mutation({
       query: (id) => ({
@@ -110,7 +111,51 @@ export const leadsApi = createApi({
         method: 'PATCH',
         body: formData,
       }),
-      invalidatesTags:["getDocs"]
+      invalidatesTags:["leadProfile"]
+    }),
+    getEmailOtp: builder.mutation({
+      query: (id) => ({
+
+        url: `verify/email/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["leadProfile"]
+    }),
+    verifyEmailOtp: builder.mutation({
+      query: ({id,data}) => ({
+
+        url: `verify/email-otp/${id}`,
+        method: 'PATCH',
+        body:{otp:data}
+      }),
+      invalidatesTags:["leadProfile"]
+    }),
+    verifyAadhaarOtp: builder.mutation({
+      query: ({id,trx_id,otp}) => ({
+
+        url: `verify/aadhaar-otp/?id=${id}&trx_id=${trx_id}`,
+        method: 'POST',
+        body:{otp}
+      }),
+      invalidatesTags:["leadProfile"]
+    }),
+    verifyAadhaar: builder.mutation({
+      query: ({id,details}) => ({
+
+        url: `verify/aadhaar/${id}`,
+        method: 'POST',
+        body:{details}
+      }),
+      invalidatesTags:["leadProfile"]
+    }),
+    verifyPan: builder.mutation({
+      query: ({id,data}) => ({
+
+        url: `verify/pan/${id}`,
+        method: 'POST',
+        body:{data}
+      }),
+      invalidatesTags:["leadProfile"]
     }),
 
     fetchAllEmployee: builder.query({
@@ -124,7 +169,7 @@ export const leadsApi = createApi({
     }),
     fetchSingleLead: builder.query({
       query: (id) => `/leads/${id}`,
-      providesTags: ["getDocs"]
+      providesTags: ["leadProfile"]
     }),
     getLeadDocs: builder.query({
       query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
@@ -142,6 +187,18 @@ export const leadsApi = createApi({
     fetchAllRejectedLeads: builder.query({
       query: () => `/leads/reject`,
       providesTags:["rejectedLeads"]
+    }),
+    fetchCibilScore: builder.query({
+      query: (id) => `verify/equifax/${id}`,
+      // providesTags:["rejectedLeads"]
+    }),
+    aadhaarOtp: builder.query({
+      query: (id) => `verify/aadhaar/${id}`,
+      // providesTags:["leadProfile"]
+    }),
+    getPanDetails: builder.query({
+      query: (id) => `verify/pan/${id}`,
+      providesTags:["leadProfile"]
     }),
     
   }),
@@ -161,7 +218,7 @@ export const {
   useFetchSingleLeadQuery,
   useUploadDocumentsMutation,
   useUpdateLeadMutation,
-  useGetLeadDocsQuery,
+  useLazyGetLeadDocsQuery,
   useGetInternalDedupeQuery,
   useApplicationHistoryQuery,
   useBulkUploadMutation,
@@ -169,6 +226,14 @@ export const {
   useFetchAllHoldLeadsQuery,
   useUnholdLeadMutation,
   useApproveLeadMutation,
+  useGetEmailOtpMutation,
+  useVerifyEmailOtpMutation,
+  useLazyAadhaarOtpQuery,
+  useVerifyPanMutation,
+  useVerifyAadhaarOtpMutation,
+  useVerifyAadhaarMutation,
+  useLazyGetPanDetailsQuery,  
   useRejectLeadMutation,
+  useLazyFetchCibilScoreQuery,
   useFetchAllRejectedLeadsQuery,
 } = leadsApi;

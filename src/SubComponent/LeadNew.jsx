@@ -133,27 +133,7 @@ const LeadNew = () => {
         </button>
       </div>
 
-      {/* Data Grid displaying the data */}
-      {/* <div style={{ height: 400, width: '100%', marginTop: '20px' }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          // pageSize={3}
-          // rowsPerPageOptions={[5,10]}
-          initialState={{
-            pagination: {
-              paginationModel: { pageSize: 10, page: page },
-            },
-          }}
-
-          pagination
-          paginationMode="server"
-          onPageChange={handlePageChange}
-          rowCount={totalLeads}
-          loading={!allLeads}
-        />
-      </div> */}
-      {rows && <div style={{ height: 400, width: '100%' }}>
+      {columns && <div style={{ height: 400, width: '100%' }}>
         <DataGrid
           rows={rows}
           columns={columns}

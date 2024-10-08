@@ -1,29 +1,37 @@
 import { create } from "zustand";
+import { devtools } from "zustand/middleware";
 
-const Store = (set, get) => ({
-  login:false,
-  employeeDetails:null,
-  empInfo:null,
+const Store = devtools((set, get) => ({
+  login: false,
+  employeeDetails: null,
+  empInfo: null,
+  applicationProfile: null,
+  lead:null,
   setLogin: (payload) => {
-    
+
     set(() => ({
-      login:payload
+      login: payload
     }));
   },
 
   setEmployeeDetails: (payload) => {
-    
+
     set(() => ({
-      employeeDetails:payload
+      employeeDetails: payload
     }));
   },
-  setEmpInfo: (payload) => {
-    
+  setApplicationProfile: (payload) => {
+
     set(() => ({
-      empInfo:payload
+      applicationProfile: payload
     }));
   },
-});
+  setLead: (payload) => {
+    set(() => ({
+      lead: payload
+    }));
+  },
+}));
 
 const useStore = create(Store);
 

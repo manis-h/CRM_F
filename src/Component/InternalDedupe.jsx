@@ -1,8 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { useGetInternalDedupeQuery } from '../Service/Query'
-import { useParams } from 'react-router-dom'
-import { isRejected } from '@reduxjs/toolkit';
+import React, { useEffect, useState } from 'react';
+import { useGetInternalDedupeQuery } from '../Service/Query';
+import { useParams } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
+import {
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Typography,
+    Box,
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 const columns = [
     { field: 'sr', headerName: '#', width: 50 },
@@ -11,98 +18,74 @@ const columns = [
     { field: 'salary', headerName: 'Salary', width: 100 },
     { field: 'isApproved', headerName: 'Approved', width: 100 },
     { field: 'isRejected', headerName: 'Rejected', width: 100 },
-
 ];
 
 const InternalDedupe = () => {
-    const { id } = useParams()
-    const [leadHistory, setLeadHistory] = useState(null)
+    const { id } = useParams();
+    const [leadHistory, setLeadHistory] = useState([]);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 5,
     });
-    const { data, isSuccess, isError } = useGetInternalDedupeQuery(id, { skip: id === null })
 
-    console.log('dddddddd', history, data)
+    const { data, isSuccess, isError } = useGetInternalDedupeQuery(id, { skip: id === null });
 
     useEffect(() => {
         if (isSuccess) {
-            setLeadHistory(data.relatedLeads)
-
+            setLeadHistory(data.relatedLeads || []);
         }
-
-    }, [isSuccess])
+    }, [isSuccess, data]);
 
     const handlePageChange = (newPaginationModel) => {
-        setPaginationModel(newPaginationModel)
+        setPaginationModel(newPaginationModel);
+    };
 
-    }
-
-    const rows = leadHistory && leadHistory?.length && leadHistory.map((lead,index) => ({
-        id:lead._id,
-        sr:index + 1, 
-        name: lead.fName + " " + lead?.mName + " " + lead?.lName,
-        loanAmount:lead?.loanAmount,
+    const rows = leadHistory.map((lead, index) => ({
+        id: lead._id,
+        sr: index + 1,
+        name: `${lead.fName} ${lead.mName || ''} ${lead.lName || ''}`,
+        loanAmount: lead?.loanAmount,
         salary: lead?.salary,
-        isRejected: !lead?.isRejected ? "Rejected" : "NA" ,
-        isApproved: !lead?.isApproved ? "Approved" : "NA" ,
-        
-    }))
+        isRejected: lead?.isRejected ? 'NA' : 'Rejected',
+        isApproved: lead?.isApproved ? 'NA' : 'Approved',
+    }));
+
     return (
-        <>
+        <Box sx={{ maxWidth: '700px', margin: '0 auto', mt: 3, borderRadius: '15px' }}>
+            <Accordion>
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="internal-dedupe-content"
+                    id="internal-dedupe-header"
+                    sx={{
+                        backgroundColor: '#0366fc',
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        borderRadius: '5px',
+                    }}
+                >
+                    <Typography variant="h6">Internal Dedupe</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <Box sx={{ height: 400, width: '100%' }}>
+                        <DataGrid
+                            rows={rows}
+                            columns={columns}
+                            pageSizeOptions={[5]}
+                            paginationModel={paginationModel}
+                            paginationMode="server"
+                            onPaginationModelChange={handlePageChange}
+                            sx={{
+                                '& .MuiDataGrid-row:hover': {
+                                    cursor: 'pointer',
+                                },
+                            }}
+                        />
+                    </Box>
+                </AccordionDetails>
+            </Accordion>
+        </Box>
+    );
+};
 
-            <div className="accordion mt-3" id="accordionExample" style={{ borderRadius: "15px" }}>
-                <div className="accordion-item" data-bs-toggle="collapse" style={{ maxWidth: "700px", margin: "0 auto" }}>
-                    <h2 className="accordion-header" id="headingOne">
-                        <button
-                            className="accordion-button"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne"
-                            aria-expanded="true"
-                            aria-controls="collapseOne"
-                            style={{ backgroundColor: "#0366fc", borderRadius: "15px", color: "#fff"}}
-                        >
-                            <strong>Internal Dedupe</strong>
-
-                        </button>
-                    </h2>
-                    <div
-                        id="collapseOne"
-                        className="accordion-collapse collapse"
-                        aria-labelledby="headingOne"
-                        data-bs-parent="#accordionExample"
-                    >
-                       
-
-                        {columns && <div style={{ height: 400, width: '100%' }}>
-                                <DataGrid
-                                    rows={rows}
-                                    columns={columns}
-                                    // rowCount={totalLeads}
-                                    // loading={isLoading}
-                                    pageSizeOptions={[5]}
-                                    paginationModel={paginationModel}
-                                    paginationMode="server"
-                                    onPaginationModelChange={handlePageChange}
-                                    // onRowClick={(params) => handleLeadClick(params)}
-                                    sx={{
-                                        '& .MuiDataGrid-row:hover': {
-                                            cursor: 'pointer',
-                                        },
-                                    }}
-                                />
-                            </div>}
-                       
-
-                    </div>
-                </div>
-            </div>
-
-
-
-        </>
-    )
-}
-
-export default InternalDedupe
+export default InternalDedupe;
