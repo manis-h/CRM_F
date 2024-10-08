@@ -9,17 +9,13 @@ const Dashboard = ({isSidebarOpen}) => {
 
   useEffect(() => {
     if(empDetailsSuccess){
-      setEmployeeDetails(employeeDetails)
-      
+      setEmployeeDetails(employeeDetails)  
     }    
   },[employeeDetails])
   
   useEffect(() => {
     refetch()
-
   },[login])
-
-
 console.log({isSidebarOpen},login)
   return (
     <div>

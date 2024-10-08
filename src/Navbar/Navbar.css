@@ -84,3 +84,26 @@
     background-color: #7c7b7b;
     color: white;
 }
+
+
+
+.user-profile-link {
+    color: black;
+    font-weight: bold;
+  }
+  
+  .dropdown-menu {
+    min-width: 200px;
+    /* padding: 0.5rem; */
+  }
+  
+  .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .btn-danger {
+    display: block;
+    /* width: 100%; */
+  }
+  
