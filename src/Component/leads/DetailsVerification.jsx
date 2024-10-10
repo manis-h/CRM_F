@@ -8,7 +8,7 @@ import EmailVerification from './OtpVerification';
 import AadhaarOtpVerification from './AadhaarOtpVerification';
 import PanCompare from './PanCompare';
 
-const VerifyContact = ({isMobileVerified, isEmailVerified, isAadhaarVerified, isPanVerified }) => {
+const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerified, isPanVerified }) => {
   const { id } = useParams()
   const navigate = useNavigate()
   const [otp, setOtp] = useState(false)
@@ -191,4 +191,4 @@ const VerifyContact = ({isMobileVerified, isEmailVerified, isAadhaarVerified, is
   );
 };
 
-export default VerifyContact;
+export default VerifyContactDetails;

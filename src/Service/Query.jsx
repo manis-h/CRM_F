@@ -83,10 +83,11 @@ export const leadsApi = createApi({
       invalidatesTags:["leadProfile",'logs']
     }),
     unholdLead: builder.mutation({
-      query: (id) => ({
+      query: ({id,reason}) => ({
 
         url: `leads/unhold/${id}`,
         method: 'PATCH',
+        body:{reason}
       }),
       invalidatesTags:["leadProfile","logs"]
     }),
@@ -181,7 +182,7 @@ export const leadsApi = createApi({
       providesTags:['holdLeads','rejectedLeads']
     }),
     applicationLogs: builder.query({
-      query: (id) => `/leads/viewleadlog/${id}`,
+      query: (id) => `/leads/viewlogs/${id}`,
       providesTags:["logs"]
     }),
     fetchAllHoldLeads: builder.query({

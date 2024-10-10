@@ -7,6 +7,7 @@ import {
     AccordionDetails,
     Typography,
     Box,
+    Alert,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useApplicationLogsQuery } from '../Service/Query';
@@ -20,21 +21,21 @@ const columns = [
     { field: 'reason', headerName: 'Reason', width: 250 },
 ];
 
-const ApplicationLogHistory = ({id}) => {
-    
+const ApplicationLogHistory = ({ id }) => {
+
     const [applicationLog, setApplicationLog] = useState([]);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 5,
     });
 
-    const logResponse = useApplicationLogsQuery(id);
+    const { data, isSuccess, isError, error } = useApplicationLogsQuery(id);
 
     useEffect(() => {
-        if (logResponse.isSuccess) {
-            setApplicationLog(logResponse.data || []);
+        if (isSuccess) {
+            setApplicationLog(data || []);
         }
-    }, [logResponse.isSuccess, logResponse.data]);
+    }, [isSuccess, data]);
 
     const rows = applicationLog.map((log, index) => ({
         id: log._id,
@@ -70,7 +71,7 @@ const ApplicationLogHistory = ({id}) => {
                             // pageSizeOptions={[5]}
                             // paginationModel={paginationModel}
                             paginationMode="server"
-                            onPaginationModelChange={setPaginationModel} 
+                            onPaginationModelChange={setPaginationModel}
                             sx={{
                                 '& .MuiDataGrid-row:hover': {
                                     cursor: 'pointer',
@@ -80,6 +81,11 @@ const ApplicationLogHistory = ({id}) => {
                     </Box>
                 </AccordionDetails>
             </Accordion>
+            {isError &&
+                <Alert severity="error" sx={{ borderRadius: '8px', mt: 2 }}>
+                    {error?.data?.message}
+                </Alert>
+            }
         </Box>
     );
 };

@@ -12,7 +12,7 @@ import Cam from './Cam';
 import BarButtons from '../BarButtons';
 import ActionButton from '../actionButton';
 
-const barButtonOptions = ['Application', 'Documents', 'Personal', 'Banking', 'Verification','Cam']
+const barButtonOptions = ['Application', 'Documents', 'Personal', 'Banking', 'Verification', 'Cam']
 
 const ApplicationProfile = () => {
   const { id } = useParams();
@@ -23,21 +23,7 @@ const ApplicationProfile = () => {
   const [leadEdit, setLeadEdit] = useState(false);
 
   const { data: applicationData, isSuccess: applicationSuccess } = useFetchSingleApplicationQuery(id, { skip: id === null });
-  const [holdLead] = useHoldLeadMutation();
-  const [unholdLead] = useUnholdLeadMutation();
-  const [approveLead] = useApproveLeadMutation();
-  const [rejectLead] = useRejectLeadMutation();
 
-  const handleApprove = () => approveLead(id);
-  const handleHold = () => {
-    if (!applicationData?.onHold) {
-      holdLead(id);
-    } else {
-      unholdLead(id);
-    }
-  };
-  const handleReject = () => rejectLead(id);
-  const handleBarButtons = status => setApplicationStatus(status);
 
   const columns = [
     { label: "First Name", value: applicationData?.lead?.fName, label2: "Middle Name", value2: applicationData?.lead?.mName },
@@ -66,12 +52,13 @@ const ApplicationProfile = () => {
       ) : (
         <>
           <div className='p-3'>
-            <BarButtons 
-            barButtonOptions={barButtonOptions} 
-            setCurrentPage={setCurrentPage} 
+            <BarButtons
+              barButtonOptions={barButtonOptions}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
             />
 
-            {currentPage === "application" && (
+            {currentPage === "application" &&
               <>
                 <Paper elevation={3} sx={{ padding: '20px', marginTop: '20px', borderRadius: '10px' }}>
                   <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
@@ -89,27 +76,26 @@ const ApplicationProfile = () => {
                     </Table>
                   </TableContainer>
                 </Paper>
-                
+                {/* Action Buttons */}
+
+                <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
+                  <ActionButton leadData={applicationData?.lead} />
+
+                </Box>
+
+
               </>
-            )}
+            }
 
             {currentPage === "personal" && <PersonalDetails applicationId={id} />}
             {currentPage === "banking" && <BankDetails />}
 
-            {/* Action Buttons */}
-            { currentPage === "application" && 
-            <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
-              <ActionButton leadData={applicationData?.lead} />
-             
-            </Box> 
-             }
 
-             { currentPage === "documents" && <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} /> }
 
-             {
-              currentPage === "cam" && <Cam />
-             }
-            
+            {currentPage === "documents" && <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} />}
+
+            {currentPage === "cam" && <Cam />}
+
           </div>
         </>
       )}

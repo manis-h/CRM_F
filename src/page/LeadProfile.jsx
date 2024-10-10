@@ -7,14 +7,14 @@ import InternalDedupe from '../Component/InternalDedupe';
 import Upload from '@mui/icons-material/Upload';
 import UploadDocuments from '../Component/UploadDocuments';
 import ApplicationLogHistory from '../Component/ApplicationLogHistory';
-import VerificationUI from '../Component/leads/DetailsVerification';
+import VerifyContactDetails from '../Component/leads/DetailsVerification';
 import CibilScorePage from '../Component/leads/CibilScore';
 import useStore from '../Store';
 import PanComapare from '../Component/leads/PanCompare';
 import ActionButton from '../Component/actionButton';
 import BarButtons from '../Component/BarButtons';
 
-const barButtonOptions = ['lead', 'Documents', 'Verification',]
+const barButtonOptions = ['Lead', 'Documents', 'Verification',]
 
 
 const LeadProfile = () => {
@@ -28,16 +28,7 @@ const LeadProfile = () => {
     const [leadEdit, setLeadEdit] = useState(false);
 
 
-    const { data: leadData, isSuccess: leadSuccess } = useFetchSingleLeadQuery(id, { skip: id === null });
-    // const [holdLead, { data: holdLeadData, isSuccess: holdLeadSuccess, isError: isHoldError, error: leadHoldError }] = useHoldLeadMutation();
-    // const [unholdLead, { data: unholdLeadData, isSuccess: unholdLeadSuccess, isError: isUnHoldError, error: unleadHoldError }] = useUnholdLeadMutation();
-    // const [approveLead, { data: approveLeadData, isSuccess: approveLeadSuccess, isError: isApproveError, error: approveLeadError }] = useApproveLeadMutation();
-    // const [rejectLead, { data: rejectLeadData, isSuccess: rejectLeadSuccess, isError: isRejectError, error: rejectLeadError }] = useRejectLeadMutation();
-
-    const handleBarButtons = status => setApplicationStatus(status);
-
-
-
+    const { data: leadData, isSuccess: leadSuccess, isError, error } = useFetchSingleLeadQuery(id, { skip: id === null });
 
     const columns = [
         { label: "First Name", value: leadData?.fName, label2: "Middle Name", value2: leadData?.mName },
@@ -64,6 +55,8 @@ const LeadProfile = () => {
 
     }, [leadSuccess, leadData])
 
+    console.log('current page', currentPage)
+
 
 
 
@@ -77,61 +70,89 @@ const LeadProfile = () => {
                     <div className="p-3">
                         <BarButtons
                             barButtonOptions={barButtonOptions}
+                            currentPage={currentPage}
                             setCurrentPage={setCurrentPage}
                         />
 
-                        {currentPage === "lead"&&<Paper elevation={3} sx={{ padding: '20px', marginTop: '20px', borderRadius: '10px' }}>
-                            <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
-                                <Table aria-label="application details table">
-                                    <TableBody>
-                                        {columns.map((row, index) => (
-                                            <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
-                                                <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
-                                                <TableCell align="left">{row.value || ''}</TableCell>
-                                                <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>
-                                                <TableCell align="left">{row.value2 || ''}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => setLeadEdit(true)}
-                                    sx={{
-                                        backgroundColor: 'primary.main',
-                                        color: 'white',
-                                        padding: '10px 20px',
-                                        '&:hover': {
-                                            backgroundColor: 'darkPrimary',
-                                        },
-                                    }}
+                        {currentPage === "lead" &&
+                            <>
+                                <Paper
+                                    elevation={3}
+                                    sx={{ padding: '20px', marginTop: '20px', borderRadius: '10px' }}
                                 >
-                                    Edit
-                                </Button>
-                            </Box>
+                                    <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
+                                        <Table aria-label="application details table">
+                                            <TableBody>
+                                                {columns.map((row, index) => (
+                                                    <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                                                        <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
+                                                        <TableCell align="left">{row.value || ''}</TableCell>
+                                                        <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>
+                                                        <TableCell align="left">{row.value2 || ''}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    {isError &&
+                                        <Alert severity="error" sx={{ borderRadius: '8px', mt: 2 }}>
+                                            {error?.data?.message}
+                                        </Alert>
+                                    }
+                                    <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => setLeadEdit(true)}
+                                            sx={{
+                                                backgroundColor: 'primary.main',
+                                                color: 'white',
+                                                padding: '10px 20px',
+                                                '&:hover': {
+                                                    backgroundColor: 'darkPrimary',
+                                                },
+                                            }}
+                                        >
+                                            Edit
+                                        </Button>
+                                    </Box>
 
-                        </Paper>}
+
+                                </Paper>
+                                {leadData?._id &&
+                                    <>
+                                        <CibilScorePage id={leadData._id} />
+                                        <InternalDedupe id={leadData._id} />
+                                        <ApplicationLogHistory id={leadData._id} />
+                                        {/* Action Buttons */}
+                                        {!leadData?.isRejected &&
+                                            <div className='my-3  d-flex justify-content-center'>
+
+                                                <ActionButton leadData={leadData} />
+
+                                            </div>}
+                                    </>
+                                }
+                            </>
+                        }
                         {leadData?._id &&
                             <>
-                                <VerificationUI
-                                    isMobileVerified={leadData?.isMobileVerified}
-                                    isEmailVerified={leadData?.isEmailVerified}
-                                    isAadhaarVerified={leadData?.isAadhaarVerified}
-                                    isPanVerified={leadData?.isPanVerified}
-                                />
-                                <CibilScorePage id={leadData._id} />
-                                <UploadDocuments leadData={leadData} setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} />
-                                <InternalDedupe id={leadData._id} />
-                                <ApplicationLogHistory id={leadData._id} />
+                                {currentPage === "verification" &&
+                                    <VerifyContactDetails
+                                        isMobileVerified={leadData?.isMobileVerified}
+                                        isEmailVerified={leadData?.isEmailVerified}
+                                        isAadhaarVerified={leadData?.isAadhaarVerified}
+                                        isPanVerified={leadData?.isPanVerified}
+                                    />
+                                }
+                                {currentPage === "documents" &&
+                                    <UploadDocuments
+                                        leadData={leadData}
+                                        setUploadedDocs={setUploadedDocs}
+                                        uploadedDocs={uploadedDocs}
+                                    />
+                                }
 
-                                {!leadData?.isRejected && <div className='my-3  d-flex justify-content-center'>
 
-                                    {/* Action Buttons */}
-                                    <ActionButton leadData={leadData} />
-
-                                </div>}
                             </>
                         }
                     </div>

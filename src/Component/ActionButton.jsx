@@ -10,6 +10,7 @@ const loanHoldReasons = [
     { label: "Inconsistent Information", value: "unverifiable_information" },
     { label: "Pending Verification", value: "pending_verification" },
     { label: "Regulatory Changes", value: "regulatory_changes" },
+    { label: "Other", value: "Other" },
 ];
 const loanRejectReasons = [
     { label: "Inconsistent Information", value: "unverifiable_information" },
@@ -19,10 +20,11 @@ const loanRejectReasons = [
     { label: "Unstable Employment History", value: "unstable_employment" },
     { label: "Legal or Regulatory Issues", value: "legal_regulatory_issues" },
     { label: "High-Risk Profile", value: "high_risk_profile" },
+    { label: "Other", value: "Other" },
     // { label: "Unclear Purpose of Loan", value: "unclear_loan_purpose" }
 ];
 
-const ActionButton = ({leadData}) => {
+const ActionButton = ({ leadData }) => {
     const id = leadData?._id
     const navigate = useNavigate()
 
@@ -38,18 +40,19 @@ const ActionButton = ({leadData}) => {
 
 
     const handleActionClick = (type) => {
-        console.log('type')
         if (type === "unhold") {
-            unholdLead(id)
+            
+            setSelectedReason("Other")
         } else {
             if (type === "hold") {
                 setReasonList(loanHoldReasons)
             } else {
                 setReasonList(loanRejectReasons)
             }
-            setActionType(type); // Set the action to either 'hold' or 'reject'
         }
+        setActionType(type); // Set the action to either 'hold' or 'reject'
     };
+    console.log('reason', selectedReason,"action type:", actionType)
     const handleBarButtons = status => setApplicationStatus(status);
 
     const handleReasonChange = (event) => {
@@ -69,6 +72,8 @@ const ActionButton = ({leadData}) => {
         } else if (actionType === 'reject') {
             // Perform reject action, include selectedReason and remarks
             rejectLead({ id, reason: remarks })
+        }else if(actionType === "unhold"){
+            unholdLead({id,reason:remarks})
         }
 
         // Reset state after submission
@@ -141,18 +146,18 @@ const ActionButton = ({leadData}) => {
 
     return (
         <>
-        {isApproveError && <Alert severity="error" style={{ marginTop: "10px" }}>
-                                    {approveLeadError?.data?.message}
-                                </Alert>}
-                                {isHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
-                                    {leadHoldError?.data?.message}
-                                </Alert>}
-                                {isRejectError && <Alert severity="error" style={{ marginTop: "10px" }}>
-                                    {rejectLeadError?.data?.message}
-                                </Alert>}
-                                {isUnHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
-                                    {unleadHoldError?.data?.message}
-                                </Alert>}
+            {isApproveError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                {approveLeadError?.data?.message}
+            </Alert>}
+            {isHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                {leadHoldError?.data?.message}
+            </Alert>}
+            {isRejectError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                {rejectLeadError?.data?.message}
+            </Alert>}
+            {isUnHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                {unleadHoldError?.data?.message}
+            </Alert>}
             <Box sx={{ padding: 2 }}>
                 {/* Render buttons if no action is selected */}
                 {!actionType && (
@@ -184,21 +189,23 @@ const ActionButton = ({leadData}) => {
                 {/* Render dropdown, input, and submit/cancel buttons when Hold or Reject is selected */}
                 {(actionType === 'hold' || actionType === "unhold" || actionType === 'reject') && (
                     <Box sx={{ marginTop: 3 }}>
-                        <Select
-                            value={selectedReason}
-                            onChange={handleReasonChange}
-                            displayEmpty
-                            fullWidth
-                            sx={{ marginBottom: 2 }}
-                        >
-                            <MenuItem value="" disabled>
-                                Select a reason
-                            </MenuItem>
-                            {reasonList && reasonList.length > 0 && reasonList.map((reason, index) => {
-                                return <MenuItem key={index} value={reason.label}>{reason.label}</MenuItem>
-                            })}
+                        {console.log('type condiotion',!actionType === "unhold")}
+                        {(actionType === "hold" || actionType === "reject") &&
+                            <Select
+                                value={selectedReason}
+                                onChange={handleReasonChange}
+                                displayEmpty
+                                fullWidth
+                                sx={{ marginBottom: 2 }}
+                            >
+                                <MenuItem value="" disabled>
+                                    Select a reason
+                                </MenuItem>
+                                {reasonList && reasonList.length > 0 && reasonList.map((reason, index) => {
+                                    return <MenuItem key={index} value={reason.label}>{reason.label}</MenuItem>
+                                })}
 
-                        </Select>
+                            </Select>}
 
                         {selectedReason === 'Other' && (
                             <TextField
