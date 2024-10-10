@@ -8,6 +8,7 @@ import {
     AccordionDetails,
     Typography,
     Box,
+    Alert,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
@@ -28,11 +29,11 @@ const InternalDedupe = ({id}) => {
         pageSize: 5,
     });
 
-    const { data, isSuccess, isError } = useGetInternalDedupeQuery(id, { skip: id === null });
+    const { data, isSuccess, isError,error } = useGetInternalDedupeQuery(id, { skip: id === null });
 
     useEffect(() => {
         if (isSuccess) {
-            setLeadHistory(data.relatedLeads || []);
+            setLeadHistory(data?.relatedLeads || []);
         }
     }, [isSuccess, data]);
 
@@ -71,6 +72,7 @@ const InternalDedupe = ({id}) => {
                         <DataGrid
                             rows={rows}
                             columns={columns}
+                            rowCount={data?.relatedLeads.length}
                             pageSizeOptions={[5]}
                             paginationModel={paginationModel}
                             paginationMode="server"
@@ -84,6 +86,11 @@ const InternalDedupe = ({id}) => {
                     </Box>
                 </AccordionDetails>
             </Accordion>
+            {isError &&
+                <Alert severity="error" sx={{ borderRadius: '8px', mt: 2 }}>
+                    {error?.data?.message}
+                </Alert>
+            }
         </Box>
     );
 };

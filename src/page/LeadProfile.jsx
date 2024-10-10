@@ -55,11 +55,6 @@ const LeadProfile = () => {
 
     }, [leadSuccess, leadData])
 
-    console.log('current page', currentPage)
-
-
-
-
     return (
         <div className="crm-container">
 

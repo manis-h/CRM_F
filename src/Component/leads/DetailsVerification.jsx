@@ -35,7 +35,6 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
     getEmailOtp(id)
   };
   const   handlePanVerification = () => {
-    console.log('pan details')
     getPanDetails(id)
   }
   const handleAadhaarVerification = () => {
@@ -44,7 +43,6 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
 
   useEffect(() => {
     if (panRes?.isSuccess && panRes?.data) {
-      console.log('pan res ')
     setPanModal(true)
       
     }
@@ -114,7 +112,7 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,mb:2 }}>
                 <Typography variant="body1">
                   Email:
-                  <span style={{ color: isEmailVerified ? 'green' : 'inherit' }}>
+                  <span style={{ color: isEmailVerified ? 'green' : 'red' }}>
                     {isEmailVerified ? ' Verified' : ' Not Verified'}
                   </span>
                 </Typography>
@@ -136,7 +134,7 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,mb:2 }}>
                 <Typography variant="body1">
                   Adhaar:
-                  <span style={{ color: isAadhaarVerified ? 'green' : 'inherit' }}>
+                  <span style={{ color: isAadhaarVerified ? 'green' : 'red' }}>
                     {isAadhaarVerified ? ' Verified' : ' Not Verified'}
                   </span>
                 </Typography>
@@ -158,7 +156,7 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,mb:2 }}>
                 <Typography variant="body1">
                   Pan:
-                  <span style={{ color: isPanVerified ? 'green' : 'inherit' }}>
+                  <span style={{ color: isPanVerified ? 'green' : 'red' }}>
                     {isPanVerified ? ' Verified' : ' Not Verified'}
                   </span>
                 </Typography>

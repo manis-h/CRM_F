@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Select, MenuItem, TextField, Box } from '@mui/material';
+import { Button, Select, MenuItem, TextField, Box, Alert } from '@mui/material';
 
 import { useApproveLeadMutation, useHoldLeadMutation, useRejectLeadMutation, useUnholdLeadMutation } from '../Service/Query';
 import Swal from 'sweetalert2';
@@ -39,6 +39,9 @@ const ActionButton = ({ leadData }) => {
     const [rejectLead, { data: rejectLeadData, isSuccess: rejectLeadSuccess, isError: isRejectError, error: rejectLeadError }] = useRejectLeadMutation();
 
 
+    const handleApprove = () => {
+        approveLead(id)
+    }
     const handleActionClick = (type) => {
         if (type === "unhold") {
             
@@ -52,7 +55,6 @@ const ActionButton = ({ leadData }) => {
         }
         setActionType(type); // Set the action to either 'hold' or 'reject'
     };
-    console.log('reason', selectedReason,"action type:", actionType)
     const handleBarButtons = status => setApplicationStatus(status);
 
     const handleReasonChange = (event) => {
@@ -66,7 +68,6 @@ const ActionButton = ({ leadData }) => {
     const handleSubmit = () => {
         // Submit logic for hold/reject based on actionType
         if (actionType === 'hold') {
-            console.log('action', actionType)
             holdLead({ id, reason: remarks })
 
         } else if (actionType === 'reject') {
@@ -146,6 +147,7 @@ const ActionButton = ({ leadData }) => {
 
     return (
         <>
+            <Box sx={{ padding: 2 }}>
             {isApproveError && <Alert severity="error" style={{ marginTop: "10px" }}>
                 {approveLeadError?.data?.message}
             </Alert>}
@@ -158,14 +160,13 @@ const ActionButton = ({ leadData }) => {
             {isUnHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
                 {unleadHoldError?.data?.message}
             </Alert>}
-            <Box sx={{ padding: 2 }}>
                 {/* Render buttons if no action is selected */}
                 {!actionType && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
                         <Button
                             variant="contained"
                             color="success"
-                            onClick={() => handleActionClick('approve')}
+                            onClick={() => handleApprove('')}
                         >
                             Approve
                         </Button>
@@ -189,7 +190,6 @@ const ActionButton = ({ leadData }) => {
                 {/* Render dropdown, input, and submit/cancel buttons when Hold or Reject is selected */}
                 {(actionType === 'hold' || actionType === "unhold" || actionType === 'reject') && (
                     <Box sx={{ marginTop: 3 }}>
-                        {console.log('type condiotion',!actionType === "unhold")}
                         {(actionType === "hold" || actionType === "reject") &&
                             <Select
                                 value={selectedReason}

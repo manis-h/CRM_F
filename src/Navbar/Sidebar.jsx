@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Sidebar.css'; // Ensure this CSS file is created with the styles below
 import Accordion from 'react-bootstrap/Accordion';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import useAuthStore from '../Component/store/authStore';
 
 
@@ -19,15 +19,15 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
                 <div className='sidebar-margin'>
                     <ul className="sidebar-links">
-                        {empInfo?.empRole === "screener"&&<Accordion defaultActiveKey="0">
+                        {(empInfo?.empRole === "screener" || empInfo?.empRole === "admin" || empInfo?.empRole === "sanctionHead")&&<Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="0">
                                 <Accordion.Header> <i className="bi bi-person" style={{ marginRight: '8px' }}></i>  Lead</Accordion.Header>
                                 <Accordion.Body>
                                     <ul className='sidebar-text  '>
-                                        <li ><Link to="/lead-new">New Lead</Link>    </li>
-                                        <li><Link to="/lead-process">Lead-Inprocess</Link></li>
-                                        <li> <Link to="/lead-hold">Hold Lead </Link>   </li>
-                                        <li> <Link to="/rejected-leads">Rejected Lead</Link>   </li>
+                                        <li ><NavLink to="/lead-new" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>New Lead</NavLink>    </li>
+                                        <li><NavLink to="/lead-process" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Lead-Inprocess</NavLink></li>
+                                        <li> <NavLink to="/lead-hold" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Hold Lead </NavLink>   </li>
+                                        <li> <NavLink to="/rejected-leads" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Rejected Lead</NavLink>   </li>
                                     </ul>
                                 </Accordion.Body>
                             </Accordion.Item>
