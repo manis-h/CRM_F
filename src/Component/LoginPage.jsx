@@ -11,27 +11,27 @@ const LoginPage = () => {
   // const setLogin = useStore((state) => state.setLogin);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loginUser,{data:loginData,isSuccess:loginSuccess,isLoading:loginLoading,isError:loginError,error}] = useLoginUserMutation()
+  const [loginUser, { data: loginData, isSuccess: loginSuccess, isLoading: loginLoading, isError: loginError, error }] = useLoginUserMutation()
   const navigate = useNavigate();
-  const {isLoggedIn,setLogin,setEmpInfo} = useAuthStore()
+  const { isLoggedIn, setLogin, setEmpInfo } = useAuthStore()
 
-//   if (isLoggedIn) {
-//     // Redirect to dashboard or homepage if the user is already logged in
-//     return <Navigate to="/" />;
-// }
+  if (isLoggedIn) {
+    // Redirect to dashboard or homepage if the user is already logged in
+    return <Navigate to="/" />;
+  }
 
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (!email || !password) {
       setError('Please enter both email and password');
       return;
     }
-  
+
     try {
-       await loginUser({email,password})
-      
+      await loginUser({ email, password })
+
     } catch (error) {
       console.error('Error during login:', error);
       setError('Something went wrong. Please try again later.');
@@ -39,19 +39,19 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    if(loginSuccess ) {
+    if (loginSuccess) {
       setLogin(true)
       setEmpInfo(loginData)
-      console.log('login navigation',loginData)
-     
-        navigate('/')
+      console.log('login navigation', loginData)
 
-    } 
-      
+      navigate('/')
 
-  },[loginSuccess,loginData])
+    }
 
-  
+
+  }, [loginSuccess, loginData])
+
+
 
   const handleForgotPassword = () => {
     navigate('/forgot-password');
@@ -69,7 +69,7 @@ const LoginPage = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required 
+              required
               placeholder='Email'
             />
           </div>
@@ -80,7 +80,7 @@ const LoginPage = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required 
+              required
               placeholder='Password'
             />
           </div>

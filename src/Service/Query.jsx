@@ -17,7 +17,7 @@ export const leadsApi = createApi({
     },
 
   }),
-  tagTypes: ["leadProfile","rejectedLeads","holdLeads"],
+  tagTypes: ["leadProfile","rejectedLeads","holdLeads","logs"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     getEmployees: builder.query({
@@ -69,18 +69,18 @@ export const leadsApi = createApi({
 
         url: `leads/hold/${id}`,
         method: 'PATCH',
-        body:reason
+        body:{reason}
       }),
-      invalidatesTags:["leadProfile"]
+      invalidatesTags:["leadProfile",'logs']
     }),
     rejectLead: builder.mutation({
       query: ({id,reason}) => ({
 
         url: `leads/reject/${id}`,
         method: 'PATCH',
-        body:reason
+        body:{reason}
       }),
-      invalidatesTags:["leadProfile"]
+      invalidatesTags:["leadProfile",'logs']
     }),
     unholdLead: builder.mutation({
       query: (id) => ({
@@ -88,7 +88,7 @@ export const leadsApi = createApi({
         url: `leads/unhold/${id}`,
         method: 'PATCH',
       }),
-      invalidatesTags:["leadProfile"]
+      invalidatesTags:["leadProfile","logs"]
     }),
     approveLead: builder.mutation({
       query: (id) => ({
@@ -178,9 +178,11 @@ export const leadsApi = createApi({
     }),
     getInternalDedupe: builder.query({
       query: (id) => `/leads/old-history/${id}`,
+      providesTags:['holdLeads','rejectedLeads']
     }),
-    applicationHistory: builder.query({
+    applicationLogs: builder.query({
       query: (id) => `/leads/viewleadlog/${id}`,
+      providesTags:["logs"]
     }),
     fetchAllHoldLeads: builder.query({
       query: () => `/leads/hold`,
@@ -222,7 +224,7 @@ export const {
   useUpdateLeadMutation,
   useLazyGetLeadDocsQuery,
   useGetInternalDedupeQuery,
-  useApplicationHistoryQuery,
+  useApplicationLogsQuery,
   useBulkUploadMutation,
   useHoldLeadMutation,
   useFetchAllHoldLeadsQuery,

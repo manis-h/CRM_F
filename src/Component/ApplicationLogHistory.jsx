@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useApplicationHistoryQuery } from '../Service/Query';
 import { useParams } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import {
@@ -10,6 +9,7 @@ import {
     Box,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useApplicationLogsQuery } from '../Service/Query';
 
 const columns = [
     { field: 'sr', headerName: '#', width: 150 },
@@ -17,17 +17,18 @@ const columns = [
     { field: 'logDate', headerName: 'Log Date', width: 100 },
     { field: 'status', headerName: 'Status', width: 100 },
     { field: 'leadRemark', headerName: 'Lead Remark', width: 250 },
+    { field: 'reason', headerName: 'Reason', width: 250 },
 ];
 
-const ApplicationLogHistory = () => {
-    const { id } = useParams();
+const ApplicationLogHistory = ({id}) => {
+    
     const [applicationLog, setApplicationLog] = useState([]);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
         pageSize: 5,
     });
 
-    const logResponse = useApplicationHistoryQuery(id);
+    const logResponse = useApplicationLogsQuery(id);
 
     useEffect(() => {
         if (logResponse.isSuccess) {
@@ -42,6 +43,7 @@ const ApplicationLogHistory = () => {
         logDate: log?.logDate,
         status: log?.status,
         leadRemark: log?.leadRemark,
+        reason: log?.reason,
     }));
 
     return (
@@ -65,10 +67,10 @@ const ApplicationLogHistory = () => {
                         <DataGrid
                             rows={rows}
                             columns={columns}
-                            pageSizeOptions={[5]}
-                            paginationModel={paginationModel}
+                            // pageSizeOptions={[5]}
+                            // paginationModel={paginationModel}
                             paginationMode="server"
-                            onPaginationModelChange={setPaginationModel} // Update pagination on change
+                            onPaginationModelChange={setPaginationModel} 
                             sx={{
                                 '& .MuiDataGrid-row:hover': {
                                     cursor: 'pointer',

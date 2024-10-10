@@ -51,16 +51,16 @@ const HoldLead = () => {
     }, [isSuccess, data])
 
     const rows = holdLeads?.leads?.map(lead => ({
-        id: lead._id, 
+        id: lead?._id, 
         name: ` ${lead?.fName}  ${lead?.mName} ${lead?.lName}`,
         mobile: lead?.mobile,
         aadhaar: lead?.aadhaar,
         pan: lead?.pan,
-        city: lead.city,
-        state: lead.state,
-        loanAmount: lead.loanAmount,
-        salary: lead.salary,
-        source: lead.source,
+        city: lead?.city,
+        state: lead?.state,
+        loanAmount: lead?.loanAmount,
+        salary: lead?.salary,
+        source: lead?.source,
     }));
 
     return (

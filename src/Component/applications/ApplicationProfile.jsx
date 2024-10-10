@@ -9,13 +9,17 @@ import BankDetails from './BankDetails';
 import { useFetchSingleApplicationQuery } from '../../queries/applicationQueries';
 import useStore from '../../Store';
 import Cam from './Cam';
+import BarButtons from '../BarButtons';
+import ActionButton from '../actionButton';
+
+const barButtonOptions = ['Application', 'Documents', 'Personal', 'Banking', 'Verification','Cam']
 
 const ApplicationProfile = () => {
   const { id } = useParams();
   const { setApplicationProfile } = useStore();
   const navigate = useNavigate();
   const [uploadedDocs, setUploadedDocs] = useState([]);
-  const [applicationStatus, setApplicationStatus] = useState("application");
+  const [currentPage, setCurrentPage] = useState("application");
   const [leadEdit, setLeadEdit] = useState(false);
 
   const { data: applicationData, isSuccess: applicationSuccess } = useFetchSingleApplicationQuery(id, { skip: id === null });
@@ -62,28 +66,12 @@ const ApplicationProfile = () => {
       ) : (
         <>
           <div className='p-3'>
-            <Box display="flex" flexWrap="wrap" justifyContent="center" mb={3}>
-              {['Application', 'Documents', 'Personal', 'Banking', 'Verification','Cam'].map(status => (
-                <Button
-                  key={status}
-                  variant="contained"
-                  color="success"
-                  onClick={() => handleBarButtons(status.toLowerCase())}
-                  sx={{
-                    margin: "5px",
-                    backgroundColor: 'green',
-                    '&:hover': {
-                      backgroundColor: 'darkgreen',
-                      color: 'white',
-                    },
-                  }}
-                >
-                  {status}
-                </Button>
-              ))}
-            </Box>
+            <BarButtons 
+            barButtonOptions={barButtonOptions} 
+            setCurrentPage={setCurrentPage} 
+            />
 
-            {applicationStatus === "application" && (
+            {currentPage === "application" && (
               <>
                 <Paper elevation={3} sx={{ padding: '20px', marginTop: '20px', borderRadius: '10px' }}>
                   <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
@@ -92,9 +80,9 @@ const ApplicationProfile = () => {
                         {columns.map((row, index) => (
                           <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
                             <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
-                            <TableCell align="left">{row.value || 'N/A'}</TableCell>
+                            <TableCell align="left">{row.value || ''}</TableCell>
                             <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>
-                            <TableCell align="left">{row.value2 || 'N/A'}</TableCell>
+                            <TableCell align="left">{row.value2 || ''}</TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
@@ -105,135 +93,23 @@ const ApplicationProfile = () => {
               </>
             )}
 
-            {applicationStatus === "personal" && <PersonalDetails applicationId={id} />}
-            {applicationStatus === "banking" && <BankDetails />}
+            {currentPage === "personal" && <PersonalDetails applicationId={id} />}
+            {currentPage === "banking" && <BankDetails />}
 
             {/* Action Buttons */}
-<<<<<<< Updated upstream
-            { applicationStatus === "application" && <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleApprove}
-                sx={{
-                  backgroundColor: 'green',
-                  marginRight: '10px', // Adjust the margin to be closer
-                  '&:hover': {
-                    backgroundColor: 'darkgreen',
-                    color: 'white',
-                  },
-                }}
-              >
-                Approve
-              </Button>
-              <Button
-                variant="contained"
-                color="warning"
-                onClick={handleHold}
-                sx={{
-                  backgroundColor: 'orange',
-                  marginRight: '10px', // Adjust the margin to be closer
-                  '&:hover': {
-                    backgroundColor: 'darkorange',
-                    color: 'white',
-                  },
-                }}
-              >
-                Hold
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleReject}
-                sx={{
-                  backgroundColor: 'red',
-                  '&:hover': {
-                    backgroundColor: 'darkred',
-                    color: 'white',
-                  },
-                }}
-              >
-                Reject
-              </Button>
+            { currentPage === "application" && 
+            <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
+              <ActionButton leadData={applicationData?.lead} />
+             
             </Box> 
              }
 
-             { applicationStatus === "documents" && <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} /> }
+             { currentPage === "documents" && <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} /> }
 
              {
-              applicationStatus === "cam" && <Cam />
+              currentPage === "cam" && <Cam />
              }
             
-=======
-            {!actionType && (
-                <div className="my-3 d-flex justify-content-center">
-                    <Button
-                        variant="contained"
-                        color="success"
-                        onClick={() => handleActionClick('approve')}
-                        sx={{ marginInline: "10px", backgroundColor: 'green' }}
-                    >
-                        Approve
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="warning"
-                        onClick={() => handleActionClick('hold')}
-                        sx={{ marginInline: "10px", backgroundColor: 'orange' }}
-                    >
-                        Hold
-                    </Button>
-                    <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleActionClick('reject')}
-                        sx={{ marginInline: "10px", backgroundColor: 'red' }}
-                    >
-                        Reject
-                    </Button>
-                </div>
-            )}
-
-            {/* Render dropdown, input, and submit button when Hold or Reject is selected */}
-            {(actionType === 'hold' || actionType === 'reject') && (
-                <div className="action-form">
-                    <Select
-                        value={selectedReason}
-                        onChange={handleReasonChange}
-                        displayEmpty
-                        fullWidth
-                        sx={{ marginBottom: '20px' }}
-                    >
-                        <MenuItem value="" disabled>
-                            Select a reason
-                        </MenuItem>
-                        <MenuItem value="Reason A">Reason A</MenuItem>
-                        <MenuItem value="Reason B">Reason B</MenuItem>
-                        <MenuItem value="Other">Other</MenuItem>
-                    </Select>
-
-                    {selectedReason === 'Other' && (
-                        <TextField
-                            label="Remarks"
-                            value={remarks}
-                            onChange={(e) => setRemarks(e.target.value)}
-                            fullWidth
-                            sx={{ marginBottom: '20px' }}
-                        />
-                    )}
-
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={handleSubmit}
-                        fullWidth
-                        sx={{ backgroundColor: 'blue', '&:hover': { backgroundColor: 'darkblue' } }}
-                    >
-                        Submit
-                    </Button>
-                </div>
-            )}
->>>>>>> Stashed changes
           </div>
         </>
       )}

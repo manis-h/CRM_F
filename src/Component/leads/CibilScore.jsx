@@ -5,8 +5,8 @@ import Swal from 'sweetalert2';
 import { useLazyFetchCibilScoreQuery } from '../../Service/Query';
 import { useParams } from 'react-router-dom';
 
-const CibilScore = () => {
-  const {id} = useParams()
+const CibilScore = ({id}) => {
+  
   const [score, setScore] = useState(null); 
   const [loading, setLoading] = useState(false); 
   const [error, setError] = useState(''); 

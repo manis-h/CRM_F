@@ -20,8 +20,8 @@ const columns = [
     { field: 'isRejected', headerName: 'Rejected', width: 100 },
 ];
 
-const InternalDedupe = () => {
-    const { id } = useParams();
+const InternalDedupe = ({id}) => {
+    
     const [leadHistory, setLeadHistory] = useState([]);
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
