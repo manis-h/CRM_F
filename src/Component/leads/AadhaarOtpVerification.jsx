@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Box, TextField, Button, Typography, Paper } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { useVerifyAadhaarOtpMutation } from '../../Service/Query';
+import { useLazyAadhaarOtpQuery, useVerifyAadhaarOtpMutation } from '../../Service/Query';
 import useStore from '../../Store';
 import AadhaarCompare from './AadhaarCompare';
 
@@ -18,6 +18,7 @@ const AadhaarOtpVerification = () => {
   const {lead} = useStore()
 
   const [verifyAadhaarOtp, { data, isSuccess, isError, error }] = useVerifyAadhaarOtpMutation();
+  const [aadhaarOtp,aadhaarRes] = useLazyAadhaarOtpQuery()
 
   // Handle OTP input
   const handleChange = (e, index) => {
@@ -46,8 +47,8 @@ const AadhaarOtpVerification = () => {
   };
 
   const handleResend = () => {
-    setTimeLeft(30); // Reset timer
-    // Add resend OTP logic here
+    aadhaarOtp(lead._id)
+   
   };
 
   // Countdown logic for Resend OTP
@@ -61,7 +62,6 @@ const AadhaarOtpVerification = () => {
   // Handle form submit
   const handleSubmit = () => {
     const data = otp.join('');
-    console.log('lead id',lead)
     verifyAadhaarOtp({id:lead?._id,trx_id:id,otp:data});
   };
 
@@ -72,6 +72,18 @@ const AadhaarOtpVerification = () => {
       
     }
   }, [isSuccess, data]);
+  useEffect(() => {
+    if (aadhaarRes.isSuccess) {
+      Swal.fire({
+        title: 'Otp sent to your mobile!',
+        icon: 'success',
+      });
+      setOtp(Array(6).fill(''))
+      navigate(`/aadhaar-verification/${aadhaarRes?.data?.trx_id}`)
+      setTimeLeft(30); 
+      
+    }
+  }, [aadhaarRes.isSuccess, aadhaarRes.data]);
 
 
   return (
@@ -150,12 +162,17 @@ const AadhaarOtpVerification = () => {
           <Typography variant="body2" color="#ffffff" align="center">
             {timeLeft > 0
               ? `Resend OTP in ${timeLeft}s`
-              : <Button onClick={handleSubmit} sx={{ color: '#ffffff', fontWeight: 'bold' }}>Resend OTP</Button>}
+              : <Button onClick={handleResend} sx={{ color: '#ffffff', fontWeight: 'bold' }}>Resend OTP</Button>}
           </Typography>
 
           {isError && error?.data?.message && (
             <Typography color="error" variant="body1" mb={2}>
               {error.data.message}
+            </Typography>
+          )}
+          {aadhaarRes.isError && aadhaarRes.error?.data?.message && (
+            <Typography color="error" variant="body1" mb={2}>
+              {aadhaarRes.error.data.message}
             </Typography>
           )}
 

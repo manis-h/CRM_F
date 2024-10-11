@@ -47,8 +47,8 @@ const InternalDedupe = ({id}) => {
         name: `${lead.fName} ${lead.mName || ''} ${lead.lName || ''}`,
         loanAmount: lead?.loanAmount,
         salary: lead?.salary,
-        isRejected: lead?.isRejected ? 'NA' : 'Rejected',
-        isApproved: lead?.isApproved ? 'NA' : 'Approved',
+        isRejected: !lead?.isRejected ? '' : 'Rejected',
+        isApproved: !lead?.isApproved ? '' : 'Approved',
     }));
 
     return (

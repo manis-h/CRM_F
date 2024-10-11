@@ -121,9 +121,7 @@ const LeadProfile = () => {
                                         {/* Action Buttons */}
                                         {!leadData?.isRejected &&
                                             <div className='my-3  d-flex justify-content-center'>
-
                                                 <ActionButton leadData={leadData} />
-
                                             </div>}
                                     </>
                                 }

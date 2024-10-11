@@ -20,6 +20,7 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import useStore from "../../Store";
 import { useVerifyAadhaarMutation } from "../../Service/Query";
 import { useNavigate } from "react-router-dom";
+import { compareDates } from "../../utils/helper";
 
 const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
   const navigate = useNavigate()
@@ -30,7 +31,32 @@ const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
   const handleClose = () => setOpen(false);
 
   // Utility function to compare values and return "Matched" or "Unmatched"
-  const compareValues = (value1, value2) => (value1 === value2 ? "Matched" : "Unmatched");
+  const compareValues = (label, value1, value2) => {
+
+    if (label === "DOB" && value1 && value2) {
+      return compareDates(value1, value2) ? "Matched" : "Unmatched";
+    }
+
+
+    if (value1 instanceof Date && value2 instanceof Date) {
+      const year1 = value1.getFullYear();
+      const month1 = value1.getMonth();
+      const day1 = value1.getDate();
+  
+      const year2 = value2.getFullYear();
+      const month2 = value2.getMonth();
+      const day2 = value2.getDate();
+  
+      return year1 === year2 && month1 === month2 && day1 === day2 ? "Matched" : "Unmatched";
+    }
+  
+    if (typeof value1 === "string" && typeof value2 === "string") {
+      return value1.trim().toLowerCase() === value2.trim().toLowerCase() ? "Matched" : "Unmatched";
+    }
+  
+    return value1 === value2 ? "Matched" : "Unmatched";
+  };
+  
 
   // Function to style the comparison text color
   const getTextColor = (result) => (result === "Matched" ? "#00796b" : "#d32f2f");
@@ -46,14 +72,14 @@ const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
   ];
 
   // Function to render table rows dynamically
+  useEffect(() => {
+    if(isSuccess )
+      navigate(`/lead-profile/${lead._id}`)
+  },[isSuccess,data])
   const renderRow = ({ label, leadValue, aadhaarValue }) => {
-    const result = compareValues(leadValue, aadhaarValue);
+    const result = compareValues(label,leadValue, aadhaarValue);
     const textColor = getTextColor(result);
 
-    useEffect(() => {
-      if(isSuccess )
-        navigate(`/lead-profile/${lead._id}`)
-    },[isSuccess,data])
 
     return (
 

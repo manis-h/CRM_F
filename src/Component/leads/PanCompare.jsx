@@ -19,21 +19,46 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import useStore from "../../Store";
 import { useVerifyPanMutation } from "../../Service/Query";
+import { compareDates } from "../../utils/helper";
 
 const PanCompare = ({ open, setOpen, panDetails }) => {
 
-  const {lead} = useStore()
+  const { lead } = useStore()
 
-  const [verifyPan,{data,isSuccess,isError,error}] = useVerifyPanMutation()
+  const [verifyPan, { data, isSuccess, isError, error }] = useVerifyPanMutation()
 
 
 
-   const compareValues = (value1, value2) => (value1 === value2 ? "Matched" : "Unmatched");
+  const compareValues = (label, value1, value2) => {
 
-   const getTextColor = (result) => (result === "Matched" ? "#00796b" : "#d32f2f");
+    if (label === "DOB" && value1 && value2) {
+      return compareDates(value1, value2) ? "Matched" : "Unmatched";
+    }
 
-   // Fields to be compared
-   const comparisonFields = [
+    if (value1 instanceof Date && value2 instanceof Date) {
+      const year1 = value1.getFullYear();
+      const month1 = value1.getMonth();
+      const day1 = value1.getDate();
+
+      const year2 = value2.getFullYear();
+      const month2 = value2.getMonth();
+      const day2 = value2.getDate();
+
+      return year1 === year2 && month1 === month2 && day1 === day2 ? "Matched" : "Unmatched";
+    }
+
+    if (typeof value1 === "string" && typeof value2 === "string") {
+      return value1.trim().toLowerCase() === value2.trim().toLowerCase() ? "Matched" : "Unmatched";
+    }
+
+    return value1 === value2 ? "Matched" : "Unmatched";
+  };
+
+
+  const getTextColor = (result) => (result === "Matched" ? "#00796b" : "#d32f2f");
+
+  // Fields to be compared
+  const comparisonFields = [
     { label: "Name", leadValue: `${lead?.fName} ${lead?.mName} ${lead?.lName}`, panValue: panDetails?.FULLNAME },
     { label: "DOB", leadValue: lead?.dob, panValue: panDetails?.DOB },
   ];
@@ -42,88 +67,16 @@ const PanCompare = ({ open, setOpen, panDetails }) => {
   };
 
   const handleSubmit = () => {
-    verifyPan({id:lead._id,data:panDetails})
+    verifyPan({ id: lead._id, data: panDetails })
   };
 
- 
 
-   // Function to render table rows dynamically
-   const renderRow = ({ label, leadValue, panValue }) => {
-    const result = compareValues(leadValue, panValue);
-    const textColor = getTextColor(result);
 
-    useEffect(() => {
-      if(isSuccess )
-        setOpen(false)
-    },[isSuccess,data])
-
-    return (
-
-      <TableRow
-        key={label}
-        sx={{
-          "&:nth-of-type(odd)": {
-            backgroundColor: "#f5f5f5",
-          },
-        }}
-      >
-        <TableCell
-          sx={{
-            padding: "16px 24px",
-            fontSize: 14,
-            textAlign: "center",
-            color: "#424242",
-            fontWeight: "500",
-          }}
-        >
-          {label}:
-        </TableCell>
-        <TableCell
-          sx={{
-            padding: "16px 24px",
-            fontSize: 14,
-            textAlign: "center",
-            color: "#424242",
-          }}
-        >
-          {leadValue}
-        </TableCell>
-        <TableCell
-          sx={{
-            padding: "16px 24px",
-            fontSize: 14,
-            textAlign: "center",
-            color: "#424242",
-          }}
-        >
-          {panValue}
-        </TableCell>
-        <TableCell
-          sx={{
-            color: textColor,
-            fontWeight: "bold",
-            textAlign: "center",
-            fontSize: 14,
-            padding: "16px 24px",
-          }}
-        >
-          {result === "Matched" ? (
-            <>
-              <CheckCircleOutlineIcon fontSize="small" sx={{ mr: 1, color: "#00796b" }} />
-              Matched
-            </>
-          ) : (
-            <>
-              <HighlightOffIcon fontSize="small" sx={{ mr: 1 }} />
-              Unmatched
-            </>
-          )}
-        </TableCell>
-        {/* {isError && <p>{error?.data?.message}</p>} */}
-      </TableRow>
-    );
-  };
-
+  // Function to render table rows dynamically
+  useEffect(() => {
+    if (isSuccess)
+      setOpen(false)
+  }, [isSuccess, data])
 
   return (
     <Dialog open={open} maxWidth="md" fullWidth>
@@ -166,7 +119,7 @@ const PanCompare = ({ open, setOpen, panDetails }) => {
                       padding: "12px",
                     }}
                   >
-                    User 1
+                    Lead Details
                   </TableCell>
                   <TableCell
                     sx={{
@@ -177,7 +130,7 @@ const PanCompare = ({ open, setOpen, panDetails }) => {
                       padding: "12px",
                     }}
                   >
-                    User 2
+                    Pan Details
                   </TableCell>
                   <TableCell
                     sx={{
@@ -193,12 +146,77 @@ const PanCompare = ({ open, setOpen, panDetails }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {comparisonFields.map(renderRow)}
+                {comparisonFields.map(({ label, leadValue, panValue }) => {
+                  const result = compareValues(label, leadValue, panValue);
+                  const textColor = getTextColor(result);
+
+
+                  return <TableRow
+                    key={label}
+                    sx={{
+                      "&:nth-of-type(odd)": {
+                        backgroundColor: "#f5f5f5",
+                      },
+                    }}
+                  >
+                    <TableCell
+                      sx={{
+                        padding: "16px 24px",
+                        fontSize: 14,
+                        textAlign: "center",
+                        color: "#424242",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {label}:
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        padding: "16px 24px",
+                        fontSize: 14,
+                        textAlign: "center",
+                        color: "#424242",
+                      }}
+                    >
+                      {leadValue}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        padding: "16px 24px",
+                        fontSize: 14,
+                        textAlign: "center",
+                        color: "#424242",
+                      }}
+                    >
+                      {panValue}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        color: textColor,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        fontSize: 14,
+                        padding: "16px 24px",
+                      }}
+                    >
+                      {result === "Matched" ? (
+                        <>
+                          <CheckCircleOutlineIcon fontSize="small" sx={{ mr: 1, color: "#00796b" }} />
+                        </>
+                      ) : (
+                        <>
+                          <HighlightOffIcon fontSize="small" sx={{ mr: 1 }} />
+                        </>
+                      )}
+                    </TableCell>
+                    {/* {isError && <p>{error?.data?.message}</p>} */}
+                  </TableRow>
+                })}
               </TableBody>
             </Table>
           </TableContainer>
         </Box>
-      {isError && <p>{error?.data?.message}</p> }
+        {isError && <p>{error?.data?.message}</p>}
       </DialogContent>
       <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 3 }}>
         <Button

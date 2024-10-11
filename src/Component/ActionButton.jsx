@@ -4,6 +4,7 @@ import { Button, Select, MenuItem, TextField, Box, Alert } from '@mui/material';
 import { useApproveLeadMutation, useHoldLeadMutation, useRejectLeadMutation, useUnholdLeadMutation } from '../Service/Query';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import useAuthStore from './store/authStore';
 
 const loanHoldReasons = [
     { label: "Incomplete Documentation", value: "incomplete_documentation" },
@@ -27,6 +28,7 @@ const loanRejectReasons = [
 const ActionButton = ({ leadData }) => {
     const id = leadData?._id
     const navigate = useNavigate()
+    const { empInfo } = useAuthStore()
 
     const [actionType, setActionType] = useState(''); // To track which action is selected: 'hold', 'reject', 'approve'
     const [selectedReason, setSelectedReason] = useState(''); // To track the selected reason for hold or reject
@@ -44,7 +46,7 @@ const ActionButton = ({ leadData }) => {
     }
     const handleActionClick = (type) => {
         if (type === "unhold") {
-            
+
             setSelectedReason("Other")
         } else {
             if (type === "hold") {
@@ -73,8 +75,8 @@ const ActionButton = ({ leadData }) => {
         } else if (actionType === 'reject') {
             // Perform reject action, include selectedReason and remarks
             rejectLead({ id, reason: remarks })
-        }else if(actionType === "unhold"){
-            unholdLead({id,reason:remarks})
+        } else if (actionType === "unhold") {
+            unholdLead({ id, reason: remarks })
         }
 
         // Reset state after submission
@@ -148,18 +150,18 @@ const ActionButton = ({ leadData }) => {
     return (
         <>
             <Box sx={{ padding: 2 }}>
-            {isApproveError && <Alert severity="error" style={{ marginTop: "10px" }}>
-                {approveLeadError?.data?.message}
-            </Alert>}
-            {isHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
-                {leadHoldError?.data?.message}
-            </Alert>}
-            {isRejectError && <Alert severity="error" style={{ marginTop: "10px" }}>
-                {rejectLeadError?.data?.message}
-            </Alert>}
-            {isUnHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
-                {unleadHoldError?.data?.message}
-            </Alert>}
+                {isApproveError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                    {approveLeadError?.data?.message}
+                </Alert>}
+                {isHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                    {leadHoldError?.data?.message}
+                </Alert>}
+                {isRejectError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                    {rejectLeadError?.data?.message}
+                </Alert>}
+                {isUnHoldError && <Alert severity="error" style={{ marginTop: "10px" }}>
+                    {unleadHoldError?.data?.message}
+                </Alert>}
                 {/* Render buttons if no action is selected */}
                 {!actionType && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
@@ -184,6 +186,14 @@ const ActionButton = ({ leadData }) => {
                         >
                             Reject
                         </Button>
+                        {empInfo !== "screener" &&
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => handleActionClick('sendBack')}
+                            >
+                                Send Back
+                            </Button>}
                     </Box>
                 )}
 

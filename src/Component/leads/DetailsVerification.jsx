@@ -94,7 +94,7 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
                   Mobile:<span style={{ color: isMobileVerified ? 'green' : 'red' }}> {isMobileVerified ? 'Verified' : 'Not Verified'}
                   </span>
                 </Typography>
-                <Button
+                {/* <Button
                   variant="contained"
                   onClick={handleMobileVerification}
                   sx={{
@@ -102,10 +102,10 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
                     '&:hover': { backgroundColor: isMobileVerified ? '#ccc' : '#388e3c' },
                     transition: 'background-color 0.3s'
                   }}
-                  disabled={isMobileVerified} // Disable button if already verified
+                  disabled={isMobileVerified}
                 >
                   Verify Mobile
-                </Button>
+                </Button> */}
               </Box>
 
               {/* Email Verification Section */}
