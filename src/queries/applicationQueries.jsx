@@ -84,7 +84,7 @@ export const applicationApi = createApi({
 
         url: `/applicant/${id}`,
         method: 'PATCH',
-        body:{updates}
+        body:updates
       }),
       invalidatesTags:["getApplication","applicantDetails"]
     }),

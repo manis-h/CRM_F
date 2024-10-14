@@ -72,7 +72,21 @@ const Employment = ({ employmentData }) => {
 
   const handleEmploymentEditToggle = () => {
     setIsEditingEmployment(prev => !prev);
-    reset();
+    if (!isEditingEmployment && employmentData) {
+
+      reset({
+        companyName: employmentData.companyName || '',
+        companyAddress: employmentData.companyAddress || '',
+        state: employmentData.state || '',
+        city: employmentData.city || '',
+        pincode: employmentData.pincode || '',
+        department: employmentData.department || '',
+        designation: employmentData.designation || '',
+        employedSince: employmentData.employedSince ? dayjs(employmentData.employedSince) : null,
+      });
+    }else{
+      reset()
+    }
   };
 
   useEffect(() => {
@@ -269,7 +283,7 @@ const Employment = ({ employmentData }) => {
                   style={buttonStyles}
                   onClick={handleEmploymentEditToggle}
                 >
-                  Edit Employment
+                  Edit 
                 </Button>
               </Box>
             </>

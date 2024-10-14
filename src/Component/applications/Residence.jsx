@@ -63,7 +63,19 @@ const Residence = ({ residence }) => {
 
   const handleResidenceEditToggle = () => {
     setIsEditingResidence(prev => !prev);
-    reset();  // Reset form when toggling edit
+    if (!isEditingResidence && residence) {
+      reset({
+        address: residence?.address || '',
+        state: residence?.state || '',
+        city: residence?.city || '',
+        pincode: residence?.pincode || '',
+        residingSince: residence?.residingSince.split(" ")[0] || '',
+        unit: residence?.residingSince.split(" ")[1] || '',
+      })
+    } else {
+
+      reset();
+    }
   };
 
   useEffect(() => {
@@ -227,6 +239,17 @@ const Residence = ({ residence }) => {
                     </TableBody>
                   </Table>
                 </TableContainer>
+                <Divider sx={{ my: 2 }} />
+
+                <Box display="flex" justifyContent="flex-end">
+                  <Button
+                    variant="contained"
+                    style={buttonStyles}
+                    onClick={handleResidenceEditToggle}
+                  >
+                    Edit
+                  </Button>
+                </Box>
 
               </>
             )}

@@ -26,20 +26,10 @@ const BankDetails = ({ id }) => {
     const [addBank, addBankRes] = useAddBankMutation();
 
     // React Hook Form setup
-    const { handleSubmit, control, reset } = useForm({
-        defaultValues: {
-            bankName: '',
-            branchName: '',
-            bankAccNo: '',
-            ifscCode: '',
-            beneficiaryName: '',
-            accountType: '',
-        }
-    });
+    const { handleSubmit, control, reset } = useForm();
 
     // Handle form submission
     const onSubmit = (data) => {
-        console.log('Saving bank details:', data);
         addBank({id,data});  
         setIsAddingBank(false);
         reset();
@@ -52,14 +42,12 @@ const BankDetails = ({ id }) => {
 
     useEffect(() => {
         if (bankRes.isSuccess) {
-            console.log('bank res', bankRes)
             setBankDetails(bankRes?.data)
             // reset(bankRes.data[1])
 
         }
 
     }, [bankRes.isSuccess, bankRes.data])
-    console.log('bank detaillllll',isAddingBank, !bankDetails)
 
     return (
         <Paper elevation={3} style={{ padding: '10px', marginTop: '20px', borderRadius: '10px' }}>
