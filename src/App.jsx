@@ -4,6 +4,8 @@ import LoginPage from './Component/LoginPage';
 import Dashboard from './Component/dashboard';
 import DynamicTable from './Component/DynamicTable';
 import TableForm from './Component/TableForm'; // Import the new TableForm component
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./theme";
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SearchForm from './Component/SearchForm';
@@ -39,8 +41,11 @@ import CompareUserDetails from './Component/leads/PanCompare';
 function App() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [theme, colorMode] = useMode();
   return (
     <Router>
+      <ColorModeContext.Provider value={colorMode} >
+      <ThemeProvider   theme={theme} >
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
@@ -281,6 +286,8 @@ function App() {
 
       </>
 
+      </ThemeProvider>
+      </ColorModeContext.Provider>
 
     </Router>
   );

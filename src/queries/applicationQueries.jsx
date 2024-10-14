@@ -64,7 +64,6 @@ export const applicationApi = createApi({
     // }),
     allocateApplication: builder.mutation({
       query: (id) => ({
-
         url: `/applications/${id}`,
         method: 'PATCH',
       }),
@@ -74,7 +73,7 @@ export const applicationApi = createApi({
       query: ({id,data}) => ({
 
         url: `/applicant/bankDetails/${id}`,
-        method: 'POST',
+        method: 'PATCH',
         body:data
       }),
       invalidatesTags:["getApplication","bankDetails"]
