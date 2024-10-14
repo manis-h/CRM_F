@@ -186,7 +186,7 @@ const ActionButton = ({ leadData }) => {
                         >
                             Reject
                         </Button>
-                        {empInfo !== "screener" &&
+                        {empInfo?.empRole !== "screener" &&
                             <Button
                                 variant="contained"
                                 color="secondary"

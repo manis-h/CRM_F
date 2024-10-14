@@ -1,82 +1,263 @@
-import React from 'react';
-import { Typography, Grid, Button, Accordion, AccordionSummary, AccordionDetails, Paper, Divider } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Typography, Button, Accordion, AccordionSummary, AccordionDetails, Paper, Divider, TextField, Box, InputLabel, Select, MenuItem, FormControl, FormHelperText, Alert, TableContainer, TableBody, TableRow, TableCell, Table } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { residenceSchema } from '../../utils/validations';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useUpdatePersonalDetailsMutation } from '../../queries/applicationQueries';
+import useStore from '../../Store';
 
-const Residence = () => {
-    return (
-        <>
-            <Accordion>
-                <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel1a-content"
-                    id="panel1a-header"
-                >
-                    <Typography variant="h6">Residence Information</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Paper elevation={3} style={{ padding: '30px', borderRadius: '10px' }}>
-                        <Grid container spacing={2}>
-                            {/* Render lead data here */}
-                            <Grid item xs={12} sm={6}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    <strong>Address: </strong>
-                                    {/* {leadData?.address} */}
-                                </Typography>
-                            </Grid>
+const accordionStyles = {
+  borderRadius: '12px',
+  background: 'linear-gradient(145deg, #8cb4f5, #474e59)',
+  boxShadow: '5px 5px 10px #d1d5db, -5px -5px 10px #ffffff',
+  marginBottom: '20px'
+};
 
-                            <Grid item xs={12} sm={6}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    <strong>State: </strong>
-                                    {/* {leadData?.state} */}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    <strong>City: </strong>
-                                    {/* {leadData?.city} */}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    <strong>Pincode: </strong>
-                                    {/* {leadData?.pincode} */}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                                <Typography variant="subtitle1" gutterBottom>
-                                    <strong>Residence Since: </strong>
-                                    {/* {leadData?.residenceSince} */}
-                                </Typography>
-                            </Grid>
-                        </Grid>
+const paperStyles = {
+  padding: '30px',
+  borderRadius: '15px',
+  backgroundColor: '#fafafa',
+  boxShadow: '5px 5px 15px rgba(0, 0, 0, 0.1)',
+};
 
-                        <Grid container justifyContent="flex-end" spacing={2}>
-                            <Grid item>
-                                <Button
-                                    variant="outlined"
-                                    onClick={() => setLeadEdit(true)}
-                                    sx={{
-                                        backgroundColor: 'primary.main',
-                                        color: 'white',
-                                        padding: '10px 20px',
-                                        '&:hover': {
-                                            backgroundColor: 'darkPrimary',
-                                        },
-                                    }}
-                                >
-                                    Edit
-                                </Button>
-                            </Grid>
-                        </Grid>
+const buttonStyles = {
+  borderRadius: '8px',
+  padding: '10px 20px',
+  background: 'linear-gradient(45deg, #42a5f5, #007bb2)',
+  color: '#fff',
+  '&:hover': {
+    background: 'linear-gradient(45deg, #007bb2, #42a5f5)',
+  },
+};
 
-                        <Divider style={{ margin: '30px 0' }} />
 
-                        {/* Placeholder for additional components or features */}
-                    </Paper>
-                </AccordionDetails>
-            </Accordion>
-        </>
-    );
-}
+const Residence = ({ residence }) => {
+  const { applicationProfile } = useStore()
+  const id = applicationProfile._id
+  const [columns, setColumns] = useState(null)
+  const [isEditingResidence, setIsEditingResidence] = useState(false);
+
+  const [updateResidence, { data, isSuccess, isError, error }] = useUpdatePersonalDetailsMutation()
+
+  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+    resolver: yupResolver(residenceSchema), // Connect Yup with React Hook Form
+    defaultValues: {
+      address: residence?.address || '',
+      state: residence?.state || '',
+      city: residence?.city || '',
+      pincode: residence?.pincode || '',
+      residingSince: residence?.residingSince || '',
+      unit: 'years',
+    }
+  });
+
+  const onSubmit = (data) => {
+    const newData = { residence: { ...data, residingSince: `${data.residingSince} ${data.unit}` } }
+    delete newData.residence.unit
+
+    console.log('new data', newData)
+    updateResidence({ id, updates: newData })
+    // Call API or mutation function here
+  };
+
+  const handleResidenceEditToggle = () => {
+    setIsEditingResidence(prev => !prev);
+    if (!isEditingResidence && residence) {
+      reset({
+        address: residence?.address || '',
+        state: residence?.state || '',
+        city: residence?.city || '',
+        pincode: residence?.pincode || '',
+        residingSince: residence?.residingSince.split(" ")[0] || '',
+        unit: residence?.residingSince.split(" ")[1] || '',
+      })
+    } else {
+
+      reset();
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      setIsEditingResidence(false)
+      reset()
+    }
+  }, [isSuccess, data])
+
+  useEffect(() => {
+    if (residence && Object.keys(residence).length > 0) {
+      setColumns([
+        { label: 'Address', value: `${residence?.address || ''} `, label2: 'State', value2: residence?.state || '' },
+        { label: 'City', value: residence?.city || '', label2: 'Pin Code', value2: residence?.pincode || '' },
+        { label: 'ResidingSince', value: residence.residingSince || '', },
+      ]);
+    }
+  }, [residence])
+
+  return (
+    <>
+      <Accordion style={accordionStyles}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon sx={{ color: '#007bb2' }} />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography variant="h6" style={{ fontWeight: '600' }}>Residence Information</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Paper elevation={3} style={paperStyles}>
+            {(isEditingResidence || !residence) ? (
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Box display="flex" flexDirection="column" gap={2}>
+                  <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={2}>
+                    <Controller
+                      name="address"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          label="Address"
+                          fullWidth
+                          error={!!errors.address}
+                          helperText={errors.address?.message}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="state"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          label="State"
+                          fullWidth
+                          error={!!errors.state}
+                          helperText={errors.state?.message}
+                          {...field}
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={2}>
+                    <Controller
+                      name="city"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          label="City"
+                          fullWidth
+                          error={!!errors.city}
+                          helperText={errors.city?.message}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="pincode"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          label="Pincode"
+                          fullWidth
+                          error={!!errors.pincode}
+                          helperText={errors.pincode?.message}
+                          {...field}
+                        />
+                      )}
+                    />
+                  </Box>
+
+                  <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={2}>
+                    <Controller
+                      name="residingSince"
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          label="Residence Since"
+                          fullWidth
+                          error={!!errors.residingSince}
+                          helperText={errors.residingSince?.message}
+                          {...field}
+                        />
+                      )}
+                    />
+                    <Controller
+                      name="unit"
+                      control={control}
+                      render={({ field }) => (
+                        <FormControl fullWidth error={!!errors.unit}>
+                          <InputLabel id="unit-label">Unit</InputLabel>
+                          <Select
+                            labelId="unit-label"
+                            label="Unit"
+                            {...field}
+                          >
+                            <MenuItem value="days">Days</MenuItem>
+                            <MenuItem value="months">Months</MenuItem>
+                            <MenuItem value="years">Years</MenuItem>
+                          </Select>
+                          {!!errors.unit && (
+                            <FormHelperText>{errors.unit?.message}</FormHelperText>
+                          )}
+                        </FormControl>
+                      )}
+                    />
+
+                    {isError &&
+                      <Alert severity="error" sx={{ borderRadius: '8px', mt: 2 }}>
+                        {error?.data?.message}
+                      </Alert>
+                    }
+                  </Box>
+
+
+
+                  <Box display="flex" justifyContent="flex-end" gap={2} mt={2}>
+                    <Button variant="outlined" onClick={handleResidenceEditToggle}>
+                      Cancel
+                    </Button>
+                    <Button variant="contained" style={buttonStyles} type="submit">
+                      Save
+                    </Button>
+                  </Box>
+                </Box>
+              </form>
+            ) : (
+              <>
+                <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
+                  <Table aria-label="personal details table">
+                    <TableBody>
+                      {columns?.map((row, index) => (
+                        <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                          <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
+                          <TableCell align="left">{row.value || ''}</TableCell>
+                          <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>
+                          <TableCell align="left">{row.value2 || ''}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <Divider sx={{ my: 2 }} />
+
+                <Box display="flex" justifyContent="flex-end">
+                  <Button
+                    variant="contained"
+                    style={buttonStyles}
+                    onClick={handleResidenceEditToggle}
+                  >
+                    Edit
+                  </Button>
+                </Box>
+
+              </>
+            )}
+          </Paper>
+        </AccordionDetails>
+      </Accordion>
+    </>
+  );
+};
 
 export default Residence;
