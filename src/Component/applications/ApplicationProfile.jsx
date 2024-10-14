@@ -40,8 +40,8 @@ const ApplicationProfile = () => {
     if (applicationSuccess) {
       setApplicationProfile(applicationData);
     }
-    if (applicationSuccess && applicationData?.document?.length) {
-      setUploadedDocs(applicationData.document.map(doc => doc.type));
+    if (applicationSuccess && applicationData?.lead?.document?.length) {
+      setUploadedDocs(applicationData?.lead?.document.map(doc => doc.type));
     }
   }, [applicationSuccess, applicationData]);
 
@@ -87,14 +87,19 @@ const ApplicationProfile = () => {
               </>
             }
 
-            {currentPage === "personal" && <PersonalDetails applicationId={id} />}
-            {currentPage === "banking" && <BankDetails />}
+            {applicationData && Object.keys(applicationData).length > 0 &&
+              <>
+                {currentPage === "personal" && <PersonalDetails id={applicationData.applicant}  />}
+                {currentPage === "banking" &&
+                  <BankDetails id={applicationData?.applicant} />}
 
+                {currentPage === "documents" && <UploadDocuments leadData={applicationData?.lead} setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} />}
 
+                {currentPage === "cam" && <Cam />}
+              </>
 
-            {currentPage === "documents" && <UploadDocuments setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} />}
+            }
 
-            {currentPage === "cam" && <Cam />}
 
           </div>
         </>

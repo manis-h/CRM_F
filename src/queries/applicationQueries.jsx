@@ -18,7 +18,7 @@ export const applicationApi = createApi({
     },
 
   }),
-  tagTypes: ["getApplication","getProfile","bankDetails"],
+  tagTypes: ["getApplication","getProfile","bankDetails","applicantDetails"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
 
@@ -79,6 +79,15 @@ export const applicationApi = createApi({
       }),
       invalidatesTags:["getApplication","bankDetails"]
     }),
+    updatePersonalDetails: builder.mutation({
+      query: ({id,updates}) => ({
+
+        url: `/applicant/${id}`,
+        method: 'PATCH',
+        body:{updates}
+      }),
+      invalidatesTags:["getApplication","applicantDetails"]
+    }),
 
    
  
@@ -96,12 +105,13 @@ export const applicationApi = createApi({
     }),
     applicantPersonalDetails: builder.query({
       query: (id) => `/applicant/${id}`,
-      // providesTags: ["getDocs"]
+      providesTags: ["applicantDetails"]
     }),
     getBankDetails: builder.query({
       query: (id) => `/applicant/bankDetails/${id}`,
       providesTags:['bankDetails']
     }),
+   
     // getLeadDocs: builder.query({
     //   query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
     // }),
@@ -129,6 +139,7 @@ export const {
     useRejectApplicationMutation,
     useUnholdApplicationMutation,
     useAddBankMutation,
+    useUpdatePersonalDetailsMutation,
     useGetBankDetailsQuery,
     useFetchAllocatedApplicationQuery,
     useFetchSingleApplicationQuery,

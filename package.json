@@ -10,14 +10,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@date-io/date-fns": "^3.0.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@hookform/resolvers": "^3.9.0",
     "@mui/icons-material": "^6.1.1",
     "@mui/x-data-grid": "^7.17.0",
+    "@mui/x-date-pickers": "^7.20.0",
     "@reduxjs/toolkit": "^2.2.7",
     "@tanstack/react-query": "^5.54.1",
     "axios": "^1.7.7",
     "bootstrap-icons": "^1.11.3",
+    "dayjs": "^1.11.13",
     "mui-one-time-password-input": "^2.0.3",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
@@ -28,6 +32,7 @@
     "react-router-dom": "^6.26.1",
     "sweetalert2": "^11.14.0",
     "universal-cookie": "^7.2.0",
+    "yup": "^1.4.0",
     "zustand": "^4.5.5"
   },
   "devDependencies": {

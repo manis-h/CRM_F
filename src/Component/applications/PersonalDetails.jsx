@@ -11,12 +11,14 @@ import {
   TableHead,
   Divider,
 } from '@mui/material';
-import ResidenceAndEmployment from './ApplicantDetails';
+import ApplicantDetails from './ApplicantDetails';
 import { useApplicantPersonalDetailsQuery } from '../../queries/applicationQueries';
 import useStore from '../../Store';
+import Residence from './Residence';
+import Employment from './Employment';
 
-const PersonalDetails = () => {
-  const { applicationProfile } = useStore();
+const PersonalDetails = ({id,}) => {
+  const { applicationProfile } = useStore()
   const [columns, setColumns] = useState()
   const [personalDetails, setPersonalDetails] = useState({});
   const [residence, setResidence] = useState({});
@@ -24,16 +26,17 @@ const PersonalDetails = () => {
   const [reference, setReference] = useState({});
 
   const { data: applicantData, isSuccess: applicantSuccess } = useApplicantPersonalDetailsQuery(
-    applicationProfile?.applicant,
-    { skip: applicationProfile.applicant === null }
+    id,
+    { skip: id === null }
   );
+
   useEffect(() => {
     if (applicantSuccess) {
       setPersonalDetails(applicantData?.personalDetails);
       setResidence(applicantData?.residence);
-      setEmploymentData(applicantData?.employmentData);
+      setEmploymentData(applicantData?.employment);
       setReference(applicantData?.reference);
-      
+
     }
     setColumns([
       { label: 'Full Name', value: `${personalDetails?.fName || ''} ${personalDetails?.mName || ''} ${personalDetails?.lName || ''}`, label2: 'Date of Birth', value2: personalDetails?.dob || '' },
@@ -41,7 +44,7 @@ const PersonalDetails = () => {
       { label: 'Aadhaar', value: personalDetails?.aadhaar || '', label2: 'Mobile', value2: personalDetails?.mobile || '' },
       { label: 'Personal Email', value: personalDetails?.personalEmail || '', label2: 'Office Email', value2: personalDetails?.officeEmail || '' },
     ]);
-  }, [applicantSuccess, applicantData,personalDetails]);
+  }, [applicantSuccess, applicantData, personalDetails]);
 
   return (
     <>
@@ -65,11 +68,12 @@ const PersonalDetails = () => {
         </TableContainer>
 
       </Paper>
-      <ResidenceAndEmployment
-        residence={residence}
-        reference={reference}
-        employmentData={employmentData}
-      />
+      {applicantData && Object.keys(applicantData).length > 0 &&
+        <>
+        <Residence residence={residence} />
+        <Employment employmentData={employmentData} />
+        </>
+        }
     </>
   );
 };
