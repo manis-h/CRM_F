@@ -72,14 +72,35 @@ const LeadProfile = () => {
                         {currentPage === "lead" &&
                             <>
                                 <Paper
-                                    elevation={3}
-                                    sx={{ padding: '20px', marginTop: '20px', borderRadius: '10px' }}
-                                >
+    elevation={3}
+    sx={{
+        padding: '20px',
+        marginTop: '20px',
+        borderRadius: '10px',
+        color: '#1F2A40',  // Default text color for rows
+        '& .MuiDataGrid-columnHeaders': {
+            backgroundColor: '#1F2A40',  // Optional: Header background color
+            color: 'white',  // White text for the headers
+        },
+        '& .MuiDataGrid-footerContainer': {
+            backgroundColor: '#1F2A40',  // Footer background color
+            color: 'white',  // White text for the footer
+        },
+        '& .MuiDataGrid-row:hover': {
+            backgroundColor: 'white',
+            cursor: 'pointer',
+        },
+        '& .MuiDataGrid-row': {
+            backgroundColor: 'white',
+        },
+    }}
+>
+
                                     <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
                                         <Table aria-label="application details table">
                                             <TableBody>
                                                 {columns.map((row, index) => (
-                                                    <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                                                    <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#141b2d' } }}>
                                                         <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
                                                         <TableCell align="left">{row.value || ''}</TableCell>
                                                         <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>

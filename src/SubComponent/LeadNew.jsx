@@ -3,6 +3,7 @@ import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
 import { useAllocateLeadMutation, useFetchAllLeadsQuery } from '../Service/Query';
 import { useNavigate } from 'react-router-dom';
+import Header from '../Component/Header';
 
 const LeadNew = () => {
   const [leads, setLeads] = useState([]); // Stores lead details
@@ -13,7 +14,7 @@ const LeadNew = () => {
   const [allocateLead, { data: updatedLeads, isSuccess }] = useAllocateLeadMutation();
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize: 5,
+    pageSize: 10,
   });
   const navigate = useNavigate()
 
@@ -133,13 +134,24 @@ const LeadNew = () => {
         </button>
       </div>
 
-      {columns && <div style={{ height: 400, width: '100%' }}>
+      <Header />
+
+      {columns && <div style={{ height: 400, width: '100%',  }}>
         <DataGrid
+        sx={{color: '#1F2A40',  // Default text color for rows
+          '& .MuiDataGrid-columnHeaders': {
+            backgroundColor: '#1F2A40',  // Optional: Header background color
+            color: 'white'  // White text for the headers
+          },
+          '& .MuiDataGrid-footerContainer': {
+            backgroundColor: '#1F2A40',  // Footer background color
+            color: 'white',  // White text for the footer
+          }}}
           rows={rows}
           columns={columns}
           rowCount={totalLeads}
           // loading={isLoading}
-          pageSizeOptions={[5]}
+          pageSizeOptions={[10]}
           paginationModel={paginationModel}
           paginationMode="server"
           onPaginationModelChange={handlePageChange}

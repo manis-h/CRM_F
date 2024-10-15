@@ -13,10 +13,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useApplicationLogsQuery } from '../Service/Query';
 
 const columns = [
-    { field: 'sr', headerName: '#', width: 150 },
-    { field: 'borrower', headerName: 'Borrower', width: 200 },
-    { field: 'logDate', headerName: 'Log Date', width: 100 },
-    { field: 'status', headerName: 'Status', width: 100 },
+    { field: 'sr', headerName: '#', width: 100 },
+    { field: 'borrower', headerName: 'Borrower', width: 150 },
+    { field: 'logDate', headerName: 'Log Date', width: 180 },
+    { field: 'status', headerName: 'Status', width: 200 },
     { field: 'leadRemark', headerName: 'Lead Remark', width: 250 },
     { field: 'reason', headerName: 'Reason', width: 250 },
 ];
@@ -72,9 +72,28 @@ const ApplicationLogHistory = ({ id }) => {
                             // paginationModel={paginationModel}
                             paginationMode="server"
                             onPaginationModelChange={setPaginationModel}
+                            // sx={{
+                            //     '& .MuiDataGrid-row:hover': {
+                            //         cursor: 'pointer',
+                            //     },
+                            // }}
                             sx={{
+                                color: '#1F2A40',  // Default text color for rows
+                                    '& .MuiDataGrid-columnHeaders': {
+                                      backgroundColor: '#1F2A40',  // Optional: Header background color
+                                      color: 'white'  // White text for the headers
+                                    },
+                                    '& .MuiDataGrid-footerContainer': {
+                                      backgroundColor: '#1F2A40',  // Footer background color
+                                      color: 'white',  // White text for the footer
+                                    },
                                 '& .MuiDataGrid-row:hover': {
+                                    backgroundColor: 'white',
                                     cursor: 'pointer',
+                                },
+                                '& .MuiDataGrid-row': {
+                                    backgroundColor: 'white',
+                                    // cursor: 'pointer',
                                 },
                             }}
                         />

@@ -44,7 +44,6 @@ export const leadsApi = createApi({
     // POST request to send data (this should use builder.mutation)
     loginUser: builder.mutation({
       query: (data) => ({
-
         url: 'employees/login',
         method: 'POST',
         body: data,
