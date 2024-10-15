@@ -23,10 +23,11 @@ export const applicationApi = createApi({
     // GET request to fetch a Pokemon by name
 
     holdApplication: builder.mutation({
-      query: (id) => ({
+      query: ({id,reason}) => ({
 
         url: `applications/hold/${id}`,
         method: 'PATCH',
+        body:{reason}
       }),
       invalidatesTags:["getProfile"]
     }),
@@ -46,13 +47,13 @@ export const applicationApi = createApi({
       }),
       invalidatesTags:["getApplication"]
     }),
-    // approveLead: builder.mutation({
-    //   query: (id) => ({
+    forwardApplication: builder.mutation({
+      query: (id) => ({
 
-    //     url: `leads/approve/${id}`,
-    //     method: 'PATCH',
-    //   }),
-    // }),
+        url: `applications/approve/${id}`,
+        method: 'PATCH',
+      }),
+    }),
 
     // addEmployee: builder.mutation({
     //   query: (data) => ({
@@ -99,6 +100,7 @@ export const applicationApi = createApi({
       query: ({page,limit}) => `/applications/allocated/?page=${page}&limit=${limit}`,
       providesTags: ["getApplication"]
     }),
+    
     fetchSingleApplication: builder.query({
       query: (id) => `/applications/${id}`,
       providesTags: ["getProfile"]
@@ -110,6 +112,10 @@ export const applicationApi = createApi({
     getBankDetails: builder.query({
       query: (id) => `/applicant/bankDetails/${id}`,
       providesTags:['bankDetails']
+    }),
+    allHoldApplication: builder.query({
+      query: () => `/applications/hold`,
+      providesTags: ["applicationHeld"]
     }),
    
     // getLeadDocs: builder.query({
@@ -138,11 +144,13 @@ export const {
     useHoldApplicationMutation,
     useRejectApplicationMutation,
     useUnholdApplicationMutation,
+    useForwardApplicationMutation,
     useAddBankMutation,
     useUpdatePersonalDetailsMutation,
     useGetBankDetailsQuery,
     useFetchAllocatedApplicationQuery,
     useFetchSingleApplicationQuery,
     useApplicantPersonalDetailsQuery,
+    useAllHoldApplicationQuery,
   
 } = applicationApi;

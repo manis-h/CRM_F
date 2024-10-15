@@ -35,6 +35,7 @@ import NewApplications from './Component/applications/NewApplications';
 import ProcessingApplication from './Component/applications/ProcessingApplication';
 import AadhaarOtpVerification from './Component/leads/AadhaarOtpVerification';
 import CompareUserDetails from './Component/leads/PanCompare';
+import HoldApplication from './Component/applications/HoldApplication';
 
 function App() {
 
@@ -79,23 +80,9 @@ function App() {
 
               <Route path="/application-process" element={<ProcessingApplication />} />
 
-              <Route path="/application-hold" element={<DynamicTable
-                header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Hold-On", "Sanction Manager"]}
-                rows={[
-                  ["401", "Review", "2024-09-09", "Online", "Liam Johnson", "California", "Sacramento", "Branch E", "555-5555", "MNO123456P", "Individual", "Active", "Yes", "Manager 1"],
-                  ["402", "Edit", "2024-09-08", "Offline", "Emma Wilson", "New York", "Bronx", "Branch F", "555-6666", "PQR789012Q", "Business", "Pending", "No", "Manager 2"],
-                  ["403", "Submit", "2024-09-07", "Referral", "Noah Brown", "Texas", "San Antonio", "Branch G", "555-7777", "STU345678R", "Individual", "Completed", "Yes", "Manager 3"],
-                  ["404", "Reject", "2024-09-06", "Online", "Olivia Taylor", "Florida", "Jacksonville", "Branch H", "555-8888", "VWX901234S", "Business", "Rejected", "No", "Manager 4"]
-                ]} />} />
+              <Route path="/application-hold" element={<HoldApplication />} />
 
-              <Route path="/application-sent-back" element={<DynamicTable
-                header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager"]}
-                rows={[
-                  ["501", "Sent Back", "2024-09-09", "Online", "Grace Lee", "California", "San Diego", "Branch I", "555-9999", "XYZ123456A", "Individual", "Pending", "Manager 1"],
-                  ["502", "Sent Back", "2024-09-08", "Offline", "Ethan King", "New York", "Manhattan", "Branch J", "555-0000", "ABC789012B", "Business", "Review", "Manager 2"],
-                  ["503", "Sent Back", "2024-09-07", "Referral", "Ava Clark", "Texas", "Austin", "Branch K", "555-1111", "DEF345678C", "Individual", "Active", "Manager 3"],
-                  ["504", "Sent Back", "2024-09-06", "Online", "Mason Lewis", "Florida", "Miami", "Branch L", "555-2222", "GHI901234D", "Business", "Completed", "Manager 4"]
-                ]} />} />
+              <Route path="/application-rejected" element={<DynamicTable />} />
 
               <Route path="/application-recommendation" element={<DynamicTable
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager"]}

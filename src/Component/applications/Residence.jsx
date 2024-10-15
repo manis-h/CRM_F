@@ -38,7 +38,7 @@ const Residence = ({ residence }) => {
   const [columns, setColumns] = useState(null)
   const [isEditingResidence, setIsEditingResidence] = useState(false);
 
-  const [updateResidence, { data, isSuccess, isError, error }] = useUpdatePersonalDetailsMutation()
+  const [updatePersonalDetails, { data, isSuccess, isError, error }] = useUpdatePersonalDetailsMutation()
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: yupResolver(residenceSchema), // Connect Yup with React Hook Form
@@ -56,8 +56,7 @@ const Residence = ({ residence }) => {
     const newData = { residence: { ...data, residingSince: `${data.residingSince} ${data.unit}` } }
     delete newData.residence.unit
 
-    console.log('new data', newData)
-    updateResidence({ id, updates: newData })
+    updatePersonalDetails({ id, updates: newData })
     // Call API or mutation function here
   };
 

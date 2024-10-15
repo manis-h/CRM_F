@@ -11,6 +11,8 @@ import useStore from '../../Store';
 import Cam from './Cam';
 import BarButtons from '../BarButtons';
 import ActionButton from '../actionButton';
+import InternalDedupe from '../InternalDedupe';
+import ApplicationLogHistory from '../ApplicationLogHistory';
 
 const barButtonOptions = ['Application', 'Documents', 'Personal', 'Banking', 'Verification', 'Cam']
 
@@ -76,12 +78,20 @@ const ApplicationProfile = () => {
                     </Table>
                   </TableContainer>
                 </Paper>
-                {/* Action Buttons */}
+                {applicationData?.lead?._id &&
+                  <>
+                    <InternalDedupe id={applicationData?.lead?._id} />
+                    <ApplicationLogHistory id={applicationData?.lead?._id} />
 
-                <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
-                  <ActionButton leadData={applicationData?.lead} />
+                    {/* Action Buttons */}
 
-                </Box>
+                    <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
+                      <ActionButton id={applicationData._id} isHold={applicationData.onHold} />
+
+                    </Box>
+                  </>
+
+                }
 
 
               </>
@@ -89,7 +99,7 @@ const ApplicationProfile = () => {
 
             {applicationData && Object.keys(applicationData).length > 0 &&
               <>
-                {currentPage === "personal" && <PersonalDetails id={applicationData.applicant}  />}
+                {currentPage === "personal" && <PersonalDetails id={applicationData.applicant} />}
                 {currentPage === "banking" &&
                   <BankDetails id={applicationData?.applicant} />}
 

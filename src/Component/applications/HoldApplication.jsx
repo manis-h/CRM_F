@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
-import {  useFetchAllocatedApplicationQuery, useFetchSingleApplicationQuery } from '../../queries/applicationQueries';
-
+import { useAllHoldApplicationQuery } from '../../queries/applicationQueries';
 const columns = [
     { field: 'name', headerName: 'Full Name', width: 200 },
     { field: 'mobile', headerName: 'Mobile', width: 150 },
@@ -15,9 +14,9 @@ const columns = [
     { field: 'source', headerName: 'Source', width: 150 },
 ];
 
-const ProcessingApplication = () => {
-    const [processingApplication, setProcessingApplication] = useState()
-    const [totalApplications, setTotalApplications] = useState()
+const HoldApplication = () => {
+    const [holdApplications, setHoldApplications] = useState()
+    const [totalHoldApplcations, setTotalHoldApplications] = useState()
     const [id, setId] = useState(null)
     // const {employeeDetails} = useStore()
     // console.log('emp details',employeeDetails)
@@ -26,32 +25,30 @@ const ProcessingApplication = () => {
         page: 0,
         pageSize: 5,
     });
-
-    const { data, isSuccess, refetch } = useFetchAllocatedApplicationQuery({ page: paginationModel.page + 1, limit: paginationModel.pageSize })
-    // const {data:applicationData,isSuccess:applicationSuccess} = useFetchSingleApplicationQuery(id,{skip:id===null})
+    const {data,isSuccess,isError,error} = useAllHoldApplicationQuery()
     const handlePageChange = (newPaginationModel) => {
         setPaginationModel(newPaginationModel)
-
     }
 
-    const handleLeadClick = (lead) => {
-        setId(lead.id)
-        navigate(`/application-profile/${lead.id}`)
+    const handleLeadClick = (application) => {
+        setId(application.id)
+        navigate(`/application-profile/${application.id}`)
     }
 
 
-    useEffect(() => {
-        refetch({ page: paginationModel.page + 1, limit: paginationModel.pageSize });
-    }, [paginationModel]);
+    // useEffect(() => {
+    //     refetch({ page: paginationModel.page + 1, limit: paginationModel.pageSize });
+    // }, [paginationModel]);
 
     useEffect(() => {
         if (data) {
-            setProcessingApplication(data)
-            setTotalApplications(data?.totalApplications)
+            setHoldApplications(data.applications)
+        setTotalHoldApplications(data?.totalLeads)
         }
     }, [isSuccess, data])
 
-    const rows = processingApplication?.applications?.map(application => ({
+
+    const rows = holdApplications?.map(application => ({
         id: application?._id, 
         name: ` ${application?.lead?.fName}  ${application?.lead?.mName} ${application?.lead?.lName}`,
         mobile: application?.lead?.mobile,
@@ -71,7 +68,7 @@ const ProcessingApplication = () => {
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        rowCount={totalApplications}
+                        rowCount={totalHoldApplcations}
                         // loading={isLoading}
                         pageSizeOptions={[5]}
                         paginationModel={paginationModel}
@@ -85,11 +82,11 @@ const ProcessingApplication = () => {
                         }}
                     />
                 </div>}
+            {/* <OTPVerificationUI /> */}
             </div>
 
         </>
     )
 }
 
-export default ProcessingApplication
-
+export default HoldApplication

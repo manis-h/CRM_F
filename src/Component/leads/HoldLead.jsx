@@ -27,8 +27,7 @@ const HoldLead = () => {
         page: 0,
         pageSize: 5,
     });
-    const {data,isSuccess,isError} = useFetchAllHoldLeadsQuery()
-    const {data:LeadData,isSuccess:leadSuccess} = useFetchSingleLeadQuery(id,{skip:id===null})
+    const {data,isSuccess,isError,error} = useFetchAllHoldLeadsQuery()
     const handlePageChange = (newPaginationModel) => {
         setPaginationModel(newPaginationModel)
     }

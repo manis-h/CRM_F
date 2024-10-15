@@ -11,13 +11,13 @@ import {
   TableHead,
   Divider,
 } from '@mui/material';
-import ApplicantDetails from './ApplicantDetails';
 import { useApplicantPersonalDetailsQuery } from '../../queries/applicationQueries';
 import useStore from '../../Store';
 import Residence from './Residence';
 import Employment from './Employment';
+import Reference from './Reference';
 
-const PersonalDetails = ({id,}) => {
+const PersonalDetails = ({ id }) => {
   const { applicationProfile } = useStore()
   const [columns, setColumns] = useState()
   const [personalDetails, setPersonalDetails] = useState({});
@@ -66,14 +66,14 @@ const PersonalDetails = ({id,}) => {
             </TableBody>
           </Table>
         </TableContainer>
-
       </Paper>
       {applicantData && Object.keys(applicantData).length > 0 &&
         <>
-        <Residence residence={residence} />
-        <Employment employmentData={employmentData} />
+          <Residence residence={residence} />
+          <Employment employmentData={employmentData} />
+          <Reference reference={reference} />
         </>
-        }
+      }
     </>
   );
 };
