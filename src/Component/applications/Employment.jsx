@@ -42,7 +42,7 @@ const Employment = ({ employmentData }) => {
   const [columns, setColumns] = useState(null);
   const [isEditingEmployment, setIsEditingEmployment] = useState(false);
 
-  const [updateEmployment, { data, isSuccess, isError, error }] = useUpdatePersonalDetailsMutation();
+  const [updatePersonalDetails, { data, isSuccess, isError, error }] = useUpdatePersonalDetailsMutation();
 
   const defaultValues = {
     companyName: employmentData?.companyName || '',
@@ -67,7 +67,7 @@ const Employment = ({ employmentData }) => {
         employedSince: data.employedSince ? data.employedSince.toISOString().split('T')[0] : '', // Format as YYYY-MM-DD
       },
     };
-    updateEmployment({ id, updates: newData });
+    updatePersonalDetails({ id, updates: newData });
   };
 
   const handleEmploymentEditToggle = () => {

@@ -63,7 +63,6 @@ const BankDetails = ({ id }) => {
                             <Controller
                                 name="bankName"
                                 control={control}
-                                defaultValue={bankDetails?.bankName}
                                 render={({ field }) => {
                                     console.log('field', field)
                                     return (
@@ -74,7 +73,6 @@ const BankDetails = ({ id }) => {
                             <Controller
                                 name="branchName"
                                 control={control}
-                                defaultValue={bankDetails?.branchName}
                                 render={({ field }) => (
                                     <TextField label="Branch Name" fullWidth {...field} />
                                 )}
@@ -84,7 +82,6 @@ const BankDetails = ({ id }) => {
                             <Controller
                                 name="bankAccNo"
                                 control={control}
-                                defaultValue={bankDetails?.bankAccNo}
                                 render={({ field }) => (
                                     <TextField label="Bank Account Number" fullWidth {...field} />
                                 )}
@@ -92,7 +89,6 @@ const BankDetails = ({ id }) => {
                             <Controller
                                 name="ifscCode"
                                 control={control}
-                                defaultValue={bankDetails?.ifscCode}
                                 render={({ field }) => (
                                     <TextField label="IFSC Code" fullWidth {...field} />
                                 )}
@@ -102,7 +98,6 @@ const BankDetails = ({ id }) => {
                             <Controller
                                 name="beneficiaryName"
                                 control={control}
-                                defaultValue={bankDetails?.beneficiaryName}
                                 render={({ field }) => (
                                     <TextField label="Beneficiary Name" fullWidth {...field} />
                                 )}
@@ -110,7 +105,6 @@ const BankDetails = ({ id }) => {
                             <Controller
                                 name="accountType"
                                 control={control}
-                                defaultValue={bankDetails?.accountType}
                                 render={({ field }) => (
                                     <TextField label="Account Type" fullWidth {...field} />
                                 )}
@@ -119,6 +113,14 @@ const BankDetails = ({ id }) => {
                     </Box>
 
                     <Box display="flex" justifyContent="flex-end" marginTop="20px">
+                    <Button
+                            variant="outlined"
+                            color="secondary"
+                            sx={{ marginRight: '10px' }}
+                            onClick={() => setIsAddingBank(false)}
+                        >
+                            Cancel
+                        </Button>
                         <Button
                             variant="contained"
                             color="primary"
@@ -127,13 +129,7 @@ const BankDetails = ({ id }) => {
                         >
                             Save
                         </Button>
-                        <Button
-                            variant="outlined"
-                            color="secondary"
-                            onClick={() => setIsAddingBank(false)}
-                        >
-                            Cancel
-                        </Button>
+                        
                     </Box>
                 </form>
             </>

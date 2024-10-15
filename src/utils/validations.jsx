@@ -48,4 +48,30 @@ export const residenceSchema = Yup.object().shape({
       .required('Employment start date is required')
       .max(new Date(), 'Employment start date cannot be in the future'),
   });
+
+
+
+export const referenceSchema = Yup.object().shape({
+  reference1: Yup.object().shape({
+    name: Yup.string()
+      .required('Reference 1 Name is required')
+      .min(2, 'Name must be at least 2 characters long'),
+    mobile: Yup.string()
+      .required('Reference 1 Mobile is required')
+      .matches(/^[0-9]{10}$/, 'Mobile must be a valid 10-digit number'),
+    relation: Yup.string()
+      .required('Reference 1 Relation is required'),
+  }),
+  reference2: Yup.object().shape({
+    name: Yup.string()
+      .required('Reference 2 Name is required')
+      .min(2, 'Name must be at least 2 characters long'),
+    mobile: Yup.string()
+      .required('Reference 2 Mobile is required')
+      .matches(/^[0-9]{10}$/, 'Mobile must be a valid 10-digit number'),
+    relation: Yup.string()
+      .required('Reference 2 Relation is required'),
+  }),
+});
+
   
