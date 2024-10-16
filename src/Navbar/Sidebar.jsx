@@ -33,7 +33,8 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                             </Accordion.Item>
                         </Accordion>}
 
-                        {empInfo?.empRole === "creditManager" && <Accordion defaultActiveKey="0">
+                        {empInfo?.empRole === "creditManager" && 
+                        <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="1">
                                 <Accordion.Header> <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Application</Accordion.Header>
                                 <Accordion.Body>
@@ -45,8 +46,86 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                     </ul>
                                 </Accordion.Body>
                             </Accordion.Item>
-                        </Accordion>}
-                        <Accordion defaultActiveKey="0">
+                        </Accordion>
+                        }
+
+
+<>
+  {empInfo?.empRole === "sanctionHead" && (
+    <Accordion defaultActiveKey="0">
+      <Accordion.Item eventKey="1">
+        <Accordion.Header>
+          <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Application
+        </Accordion.Header>
+        <Accordion.Body>
+          <ul className="sidebar-text">
+            <li>
+              <Link to="/new-application">New</Link>
+            </li>
+            <li>
+              <Link to="/application-process">Inprocess</Link>
+            </li>
+            <li>
+              <Link to="/application-hold">Hold</Link>
+            </li>
+            <li>
+              <Link to="/application-sent-back">Sent-Back</Link>
+            </li>
+          </ul>
+        </Accordion.Body>
+      </Accordion.Item>
+    </Accordion>
+  )}
+
+  <Accordion defaultActiveKey="0">
+    <Accordion.Item eventKey="4">
+      <Accordion.Header>
+        <i className="bi bi-check" style={{ marginRight: '8px' }}></i> Sanction
+      </Accordion.Header>
+      <Accordion.Body>
+        <ul className="sidebar-text">
+          <li>
+            <Link to="/sanction-approve">Approve</Link>
+          </li>
+          <li>
+            <Link to="/sanction-reject">Reject</Link>
+          </li>
+          <li>
+            <Link to="/sanction-sentback">SentBack</Link>
+          </li>
+        </ul>
+      </Accordion.Body>
+    </Accordion.Item>
+  </Accordion>
+</>
+
+
+                        {/* {
+                            empInfo?.empRole === "sanctionHead" && <Accordion defaultActiveKey="0">
+                            <Accordion.Item eventKey="1">
+                                <Accordion.Header> <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Application</Accordion.Header>
+                                <Accordion.Body>
+                                    <ul className='sidebar-text'>
+                                        <li><Link to="/new-application"> New</Link></li>
+                                        <li><Link to="/application-process">Inprocess</Link></li>
+                                        <li><Link to="/application-hold">Hold</Link></li>
+                                        <li><Link to="/application-sent-back">Sent-Back</Link></li>
+                                    </ul>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion> || <Accordion defaultActiveKey="0">
+                            <Accordion.Item eventKey="4">
+                                <Accordion.Header> <i className="bi bi-check" style={{ marginRight: '8px' }}></i> Sanction</Accordion.Header>
+                                <Accordion.Body>
+                                    <ul className='sidebar-text'>
+                                        <li><Link to='/sanction'>Sanction</Link></li>
+                                    </ul>
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                        
+                        } */}
+                        {/* <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="3">
                                 <Accordion.Header> <i className="bi bi-x" style={{ marginRight: '8px' }}></i> Reject App</Accordion.Header>
                                 <Accordion.Body>
@@ -107,7 +186,6 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
-
                         <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="8">
                                 <Accordion.Header> <i className="bi bi-people" style={{ marginRight: '8px' }}></i> Legal</Accordion.Header>
@@ -157,7 +235,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                     </div>
                                 </Accordion.Body>
                             </Accordion.Item>
-                        </Accordion>
+                        </Accordion> */}
 
 
                     </ul></div>

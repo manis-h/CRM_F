@@ -168,7 +168,7 @@ export const {
     useApplicantPersonalDetailsQuery,
     useAllHoldApplicationQuery,
     useGetCamDetailsQuery,
-    useUpdateCamDetailsMutation
+    useUpdateCamDetailsMutation,
     useSendBackMutation,
 
 } = applicationApi;

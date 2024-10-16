@@ -485,7 +485,58 @@ const Dashboard = ({ isSidebarOpen }) => {
         no : 10
       },
     },
-    sanctionHead: {}
+    sanctionHead: {
+      leadNew: {
+        icon: <NewReleasesIcon className='mt-3'
+        sx={{ color: '#4caf50', width:'100%', height:'30%' }} />, // Green color
+        path: "/lead-new",
+        title: 'New Leads',
+        no : 10
+      },
+      leadProcess: {
+        icon: <PlayArrowIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
+        path: "/lead-process",
+        title: 'Leads In Process',
+        no : 10
+      },
+      leadHold: {
+        icon: <PauseIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
+        path: "/lead-hold",
+        title: 'Leads Held',
+        no : 10
+      },
+      leadRejected: {
+        icon: <CancelIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
+        path: "/rejected-leads",
+        title: 'Leads Rejected',
+        no : 10
+      },
+      newApplication: {
+        icon: <NewReleasesIcon className='mt-3'
+        sx={{ color: '#4caf50', width:'100%', height:'30%' }} />, // Green color
+        path: "/new-applications",
+        title: 'New Applications',
+        no : 10
+      },
+      applicationProcess: {
+        icon: <PlayArrowIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
+        path: "/application-process",
+        title: 'Applications In Process',
+        no : 10
+      },
+      applicationHold: {
+        icon: <PauseIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
+        path: "/applications-held",
+        title: 'Applications Held',
+        no : 10
+      },
+      applicationRejected: {
+        icon: <CancelIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
+        path: "/rejected-applications",
+        title: 'Applications Rejected',
+        no : 10
+      },
+    }
   };
 
   // Fetch and set employee details on component load
@@ -536,8 +587,8 @@ const Dashboard = ({ isSidebarOpen }) => {
 
   return (
     <div>
-      <Navbar />
-      <Sidebar />
+      {/* <Navbar />
+      <Sidebar /> */}
       <Box m="70px">
         {/* HEADER */}
         <Box display="flex" justifyContent="space-between" alignItems="center">
