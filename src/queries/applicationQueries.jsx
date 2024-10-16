@@ -12,16 +12,13 @@ export const applicationApi = createApi({
 
     credentials:"include",
     prepareHeaders: (headers, { getState }) => {
-     
-
       return headers;
     },
 
   }),
-  tagTypes: ["getApplication","getProfile","bankDetails","applicantDetails"],
+  tagTypes: ["getApplication","getProfile","bankDetails","applicantDetails","getCamDetails"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
-
     holdApplication: builder.mutation({
       query: ({id,reason}) => ({
 
@@ -88,9 +85,6 @@ export const applicationApi = createApi({
       }),
       invalidatesTags:["getApplication","applicantDetails"]
     }),
-
-   
- 
     fetchAllApplication: builder.query({
       query: ({ page, limit }) => `/applications/?page=${page}&limit=${limit}`,
       providesTags:["getApplication"]
@@ -116,7 +110,19 @@ export const applicationApi = createApi({
       query: () => `/applications/hold`,
       providesTags: ["applicationHeld"]
     }),
-   
+    getCamDetails : builder.query({
+      query : (id) => `/applications/cam/${id}`,
+      providesTags:["getCamDetails"]
+    }),
+    updateCamDetails : builder.mutation({
+      query: ({id,updates}) => ({
+
+        url: `/applications/cam/${id}`,
+        method: 'PATCH',
+        body:updates
+      }),
+      invalidatesTags : ['getCamDetails']
+    })
     // getLeadDocs: builder.query({
     //   query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
     // }),
@@ -151,5 +157,7 @@ export const {
     useFetchSingleApplicationQuery,
     useApplicantPersonalDetailsQuery,
     useAllHoldApplicationQuery,
-  
+    useGetCamDetailsQuery,
+    useUpdateCamDetailsMutation
+
 } = applicationApi;
