@@ -5,7 +5,8 @@ import { useApproveLeadMutation, useHoldLeadMutation, useRejectLeadMutation, use
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from './store/authStore';
-import { useForwardApplicationMutation, useHoldApplicationMutation, useRejectApplicationMutation, useUnholdApplicationMutation } from '../queries/applicationQueries';
+import { useForwardApplicationMutation, useHoldApplicationMutation, useRejectApplicationMutation, useSendBackMutation, useUnholdApplicationMutation } from '../queries/applicationQueries';
+import useStore from '../Store';
 
 const loanHoldReasons = [
     { label: "Incomplete Documentation", value: "incomplete_documentation" },
@@ -30,9 +31,11 @@ const ActionButton = ({ id, isHold }) => {
 
     const navigate = useNavigate()
     const { empInfo } = useAuthStore()
+    const { applicationProfile } = useStore()
 
     const [actionType, setActionType] = useState(''); // To track which action is selected: 'hold', 'reject', 'approve'
     const [selectedReason, setSelectedReason] = useState(''); // To track the selected reason for hold or reject
+    const [selectedRecipient,setSelectedRecipient] = useState()
     const [reasonList, setReasonList] = useState(null)
     const [remarks, setRemarks] = useState('');
 
@@ -47,6 +50,9 @@ const ActionButton = ({ id, isHold }) => {
     const [unholdLead, { data: unholdLeadData, isSuccess: unholdLeadSuccess, isError: isUnHoldError, error: unHoldleadError }] = useUnholdLeadMutation();
     const [approveLead, { data: approveLeadData, isSuccess: approveLeadSuccess, isError: isApproveError, error: approveLeadError }] = useApproveLeadMutation();
     const [rejectLead, { data: rejectLeadData, isSuccess: rejectLeadSuccess, isError: isRejectError, error: rejectLeadError }] = useRejectLeadMutation();
+
+    // Send back mutation -------
+    const [sendBack,{data:sendBackData,isSuccess:SendBackSuccess,isError:isSendBackError,error:sendBackError}] = useSendBackMutation()
 
 
     const handleApprove = () => {
@@ -65,8 +71,8 @@ const ActionButton = ({ id, isHold }) => {
         }
         setActionType(type); // Set the action to either 'hold' or 'reject'
     };
-    const handleBarButtons = status => setApplicationStatus(status);
 
+    console.log('action type', actionType)
     const handleReasonChange = (event) => {
         const reason = event.target.value;
         setSelectedReason(reason);
@@ -78,19 +84,30 @@ const ActionButton = ({ id, isHold }) => {
     const handleSubmit = () => {
         // Submit logic for hold/reject based on actionType
         if (actionType === 'hold') {
-            if(empInfo.empRole === "screener"){
+            if (empInfo.empRole === "screener") {
 
                 holdLead({ id, reason: remarks })
-            }else if(empInfo.empRole === "creditManager"){
-                console.log('hold id',id)
+            } else if (empInfo.empRole === "creditManager") {
                 holdApplication({ id, reason: remarks })
             }
 
         } else if (actionType === 'reject') {
-            // Perform reject action, include selectedReason and remarks
-            rejectLead({ id, reason: remarks })
+            if (empInfo.empRole === "screener") {
+                rejectLead({ id, reason: remarks })
+            } else if (empInfo.empRole === "creditManager") {
+                rejectApplication({ id, reason: remarks })
+            }
+
         } else if (actionType === "unhold") {
-            unholdLead({ id, reason: remarks })
+            if (empInfo.empRole === "screener") {
+
+                unholdLead({ id, reason: remarks })
+            } else if (empInfo.empRole === "creditManager") {
+                unholdApplication({ id, reason: remarks })
+            }
+        }else if(actionType === "sendBack"){
+            sendBack({id:applicationProfile.lead._id,reason:remarks,sendTo:selectedRecipient})
+
         }
 
         // Reset state after submission
@@ -160,6 +177,8 @@ const ActionButton = ({ id, isHold }) => {
 
     }, [holdLeadSuccess])
 
+    console.log('selected reason',selectedReason)
+
 
     return (
         <>
@@ -205,7 +224,7 @@ const ActionButton = ({ id, isHold }) => {
                 )}
 
                 {/* Render dropdown, input, and submit/cancel buttons when Hold or Reject is selected */}
-                {(actionType === 'hold' || actionType === "unhold" || actionType === 'reject') && (
+                {(actionType === 'hold' || actionType === "unhold" || actionType === 'reject' || actionType === "sendBack") && (
                     <Box sx={{ marginTop: 3 }}>
                         {(actionType === "hold" || actionType === "reject") &&
                             <Select
@@ -225,19 +244,42 @@ const ActionButton = ({ id, isHold }) => {
                             </Select>
                         }
 
-                        {selectedReason === 'Other' && (
-                            <TextField
-                                label="Remarks"
-                                value={remarks}
-                                onChange={(e) => setRemarks(e.target.value)}
-                                fullWidth
-                                multiline
-                                rows={3}
-                                sx={{ marginBottom: 2 }}
-                            />
+                        {(selectedReason === 'Other' || actionType === "sendBack") && (
+                            <>
+                                <TextField
+                                    label="Remarks"
+                                    value={remarks}
+                                    onChange={(e) => setRemarks(e.target.value)}
+                                    fullWidth
+                                    multiline
+                                    rows={3}
+                                    sx={{ marginBottom: 2, width: '100%' }}
+                                />
+                                {actionType === "sendBack" && (
+                                    <Select
+                                        label="Send Back"
+                                        variant="standard"
+                                        fullWidth
+                                        value={selectedRecipient} // Ensure the placeholder is shown initially
+                                        onChange={(e) => setSelectedRecipient(e.target.value)}
+                                        sx={{ marginBottom: 2, width: '200px', padding: '8px' }}
+                                        displayEmpty // This is important to show the placeholder when no value is selected
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Select recipient to send back
+                                        </MenuItem>
+                                        <MenuItem value="screener">Screener</MenuItem>
+                                        <MenuItem value="creditManager">Credit Manager</MenuItem>
+                                    </Select>
+                                )}
+                            </>
                         )}
 
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
+
+
+
+
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: "15px" }}>
                             <Button
                                 variant="outlined"
                                 color="secondary"
