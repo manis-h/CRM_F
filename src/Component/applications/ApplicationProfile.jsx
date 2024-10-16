@@ -3,7 +3,6 @@ import { Typography, Button, Paper, Table, TableBody, TableCell, TableContainer,
 import { useNavigate, useParams } from 'react-router-dom';
 import UploadDocuments from '../UploadDocuments';
 import LeadDetails from '../LeadDetails';
-import { useApproveLeadMutation, useHoldLeadMutation, useRejectLeadMutation, useUnholdLeadMutation } from '../../Service/Query';
 import PersonalDetails from './PersonalDetails';
 import BankDetails from './BankDetails';
 import { useFetchSingleApplicationQuery } from '../../queries/applicationQueries';
@@ -86,7 +85,11 @@ const ApplicationProfile = () => {
                     {/* Action Buttons */}
 
                     <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
-                      <ActionButton id={applicationData._id} isHold={applicationData.onHold} />
+                      <ActionButton 
+                      id={applicationData._id} 
+                      isHold={applicationData.onHold}  
+                      isRejected={applicationData.isRejected}  
+                      />
 
                     </Box>
                   </>

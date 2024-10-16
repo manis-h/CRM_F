@@ -32,12 +32,13 @@ export const applicationApi = createApi({
       invalidatesTags:["getProfile"]
     }),
     rejectApplication: builder.mutation({
-      query: (id) => ({
+      query: ({id,reason}) => ({
 
         url: `applications/reject/${id}`,
         method: 'PATCH',
+        body:{reason}
       }),
-      invalidatesTags:["getProfile"]
+      invalidatesTags:["getProfile","getApplication"]
     }),
     unholdApplication: builder.mutation({
       query: ({id,reason}) => ({
@@ -55,12 +56,12 @@ export const applicationApi = createApi({
         method: 'PATCH',
         body:{sendTo,reason}
       }),
-      invalidatesTags:["getProfile"]
+      invalidatesTags:["getApplication"]
     }),
-    forwardApplication: builder.mutation({
+    recommendApplication: builder.mutation({
       query: (id) => ({
 
-        url: `applications/approve/${id}`,
+        url: `applications/recommend/${id}`,
         method: 'PATCH',
       }),
     }),
@@ -141,10 +142,10 @@ export const applicationApi = createApi({
     //   query: () => `/leads/hold`,
     //   providesTags:["getApplication"]
     // }),
-    // fetchAllRejectedLeads: builder.query({
-    //   query: () => `/leads/reject`,
-    //   providesTags:["rejectedLeads"]
-    // }),
+    getRejectedApplications: builder.query({
+      query: () => `/applications/rejected`,
+      providesTags:["getApplication"]
+    }),
     
   }),
 });
@@ -154,14 +155,16 @@ export const {
     useHoldApplicationMutation,
     useRejectApplicationMutation,
     useUnholdApplicationMutation,
-    useForwardApplicationMutation,
+    useRecommendApplicationMutation,
     useAddBankMutation,
+    useSendBackMutation,
     useUpdatePersonalDetailsMutation,
     useGetBankDetailsQuery,
     useFetchAllocatedApplicationQuery,
     useFetchSingleApplicationQuery,
     useApplicantPersonalDetailsQuery,
     useAllHoldApplicationQuery,
-    useSendBackMutation,
+    useGetRejectedApplicationsQuery,
+
   
 } = applicationApi;

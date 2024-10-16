@@ -36,6 +36,7 @@ import ProcessingApplication from './Component/applications/ProcessingApplicatio
 import AadhaarOtpVerification from './Component/leads/AadhaarOtpVerification';
 import CompareUserDetails from './Component/leads/PanCompare';
 import HoldApplication from './Component/applications/HoldApplication';
+import RejectedApplication from './Component/applications/RejectedApplication';
 
 function App() {
 
@@ -82,7 +83,7 @@ function App() {
 
               <Route path="/application-hold" element={<HoldApplication />} />
 
-              <Route path="/application-rejected" element={<DynamicTable />} />
+              <Route path="/rejected-Applications" element={<RejectedApplication />} />
 
               <Route path="/application-recommendation" element={<DynamicTable
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager"]}
