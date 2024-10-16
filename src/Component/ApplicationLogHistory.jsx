@@ -11,11 +11,12 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useApplicationLogsQuery } from '../Service/Query';
+import { formatDateTime } from '../utils/helper';
 
 const columns = [
     { field: 'sr', headerName: '#', width: 150 },
     { field: 'borrower', headerName: 'Borrower', width: 200 },
-    { field: 'logDate', headerName: 'Log Date', width: 100 },
+    { field: 'logDate', headerName: 'Log Date', width: 200 },
     { field: 'status', headerName: 'Status', width: 100 },
     { field: 'leadRemark', headerName: 'Lead Remark', width: 250 },
     { field: 'reason', headerName: 'Reason', width: 250 },
@@ -41,7 +42,7 @@ const ApplicationLogHistory = ({ id }) => {
         id: log._id,
         sr: index + 1,
         borrower: log?.borrower,
-        logDate: log?.logDate,
+        logDate: formatDateTime(log?.logDate),
         status: log?.status,
         leadRemark: log?.leadRemark,
         reason: log?.reason,

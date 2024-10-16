@@ -33,3 +33,25 @@ export const compareDates = (dateString1, dateString2) => {
 
     return date1.getTime() === date2.getTime() 
 };
+
+
+// convert Date
+export function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    
+    // Extract the date components
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based in JS
+    const year = date.getFullYear();
+    
+    // Extract the time components
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+    // Format as dd/mm/yyyy and time as hh:mm:ss
+    const formattedDate = `${day}/${month}/${year}`;
+    const formattedTime = `${hours}:${minutes}:${seconds}`;
+  
+    return `${formattedDate} ${formattedTime}`;
+  }

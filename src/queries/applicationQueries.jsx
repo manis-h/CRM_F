@@ -40,12 +40,22 @@ export const applicationApi = createApi({
       invalidatesTags:["getProfile"]
     }),
     unholdApplication: builder.mutation({
-      query: (id) => ({
+      query: ({id,reason}) => ({
 
         url: `applications/unhold/${id}`,
         method: 'PATCH',
+        body:{reason}
       }),
-      invalidatesTags:["getApplication"]
+      invalidatesTags:["getProfile"]
+    }),
+    sendBack: builder.mutation({
+      query: ({id,reason,sendTo}) => ({
+
+        url: `applications/sent-back/${id}`,
+        method: 'PATCH',
+        body:{sendTo,reason}
+      }),
+      invalidatesTags:["getProfile"]
     }),
     forwardApplication: builder.mutation({
       query: (id) => ({
@@ -152,5 +162,6 @@ export const {
     useFetchSingleApplicationQuery,
     useApplicantPersonalDetailsQuery,
     useAllHoldApplicationQuery,
+    useSendBackMutation,
   
 } = applicationApi;
