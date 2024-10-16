@@ -66,7 +66,7 @@ const ApplicationProfile = () => {
                     <Table aria-label="application details table">
                       <TableBody>
                         {columns.map((row, index) => (
-                          <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                          <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#141b2d' } }}>
                             <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
                             <TableCell align="left">{row.value || ''}</TableCell>
                             <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>

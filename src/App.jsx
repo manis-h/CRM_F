@@ -4,6 +4,8 @@ import LoginPage from './Component/LoginPage';
 import Dashboard from './Component/dashboard';
 import DynamicTable from './Component/DynamicTable';
 import TableForm from './Component/TableForm'; // Import the new TableForm component
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./theme";
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SearchForm from './Component/SearchForm';
@@ -37,12 +39,19 @@ import AadhaarOtpVerification from './Component/leads/AadhaarOtpVerification';
 import CompareUserDetails from './Component/leads/PanCompare';
 import HoldApplication from './Component/applications/HoldApplication';
 import RejectedApplication from './Component/applications/RejectedApplication';
+import SanctionApprove from './Component/sanction/SanctionApprove';
+import SanctionReject from './Component/sanction/SanctionReject';
+import SanctionSentBack from './Component/sanction/SanctionSentBack';
+
 
 function App() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [theme, colorMode] = useMode();
   return (
     <Router>
+      <ColorModeContext.Provider value={colorMode} >
+      <ThemeProvider   theme={theme} >
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
@@ -94,13 +103,16 @@ function App() {
                   ["604", "Recommend", "2024-09-06", "Online", "Sophia Wilson", "Florida", "Orlando", "Branch P", "555-6666", "STU901234P", "Business", "Completed", "Manager 4"]
                 ]} />} />
               <Route path="/sanction" element={<DynamicTable
-                header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager", "Sanction-On", "Sanction-Amount"]}
-                rows={[
-                  ["701", "Approved", "2024-09-09", "Online", "Mia Robinson", "California", "San Francisco", "Branch Q", "555-7777", "UVW123456X", "Individual", "Active", "Manager 1", "2024-09-10", "$5000"],
-                  ["702", "Approved", "2024-09-08", "Offline", "Ethan Clark", "New York", "Staten Island", "Branch R", "555-8888", "XYZ789012Y", "Business", "Pending", "Manager 2", "2024-09-12", "$7500"],
-                  ["703", "Approved", "2024-09-07", "Referral", "Olivia Martinez", "Texas", "Fort Worth", "Branch S", "555-9999", "ABC345678Z", "Individual", "Completed", "Manager 3", "2024-09-11", "$6000"],
-                  ["704", "Approved", "2024-09-06", "Online", "Noah Lee", "Florida", "Tampa", "Branch T", "555-0000", "DEF901234A", "Business", "Active", "Manager 4", "2024-09-14", "$5500"]
-                ]} />} />
+                 />} />
+                  <Route path="/sanction-approve" element={
+                  <SanctionApprove />
+                 } />
+                  <Route path="/sanction-reject" element={
+                    <DynamicTable
+                 />
+                 } />
+                  <Route path="/sanction-sentback" element={<DynamicTable
+                 />} />
               <Route path="/disbursal-new" element={<DynamicTable
                 header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager", "Sanction-On", "Sanction-Amount"]}
                 rows={[
@@ -269,6 +281,8 @@ function App() {
 
       </>
 
+      </ThemeProvider>
+      </ColorModeContext.Provider>
 
     </Router>
   );

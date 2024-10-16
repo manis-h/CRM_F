@@ -149,6 +149,25 @@ const NewApplications = () => {
           paginationModel={paginationModel}
           paginationMode="server"
           onPaginationModelChange={handlePageChange}
+          sx={{
+            color: '#1F2A40',  // Default text color for rows
+                '& .MuiDataGrid-columnHeaders': {
+                  backgroundColor: '#1F2A40',  // Optional: Header background color
+                  color: 'white'  // White text for the headers
+                },
+                '& .MuiDataGrid-footerContainer': {
+                  backgroundColor: '#1F2A40',  // Footer background color
+                  color: 'white',  // White text for the footer
+                },
+            '& .MuiDataGrid-row:hover': {
+                backgroundColor: 'white',
+                cursor: 'pointer',
+            },
+            '& .MuiDataGrid-row': {
+                backgroundColor: 'white',
+                // cursor: 'pointer',
+            },
+        }}
         />
       </div>}
     </div>
