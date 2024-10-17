@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useAllocateLeadMutation, useFetchAllLeadsQuery } from '../Service/Query';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Component/Header';
+import useAuthStore from '../Component/store/authStore';
 
 const LeadNew = () => {
   const [leads, setLeads] = useState([]); // Stores lead details
@@ -16,8 +17,8 @@ const LeadNew = () => {
     page: 0,
     pageSize: 10,
   });
+  const {empInfo} = useAuthStore()
   const navigate = useNavigate()
-
   const { data: allLeads, refetch } = useFetchAllLeadsQuery({page:paginationModel.page+1,limit:paginationModel.pageSize})
 
   useEffect(() => {
@@ -59,6 +60,7 @@ const LeadNew = () => {
       headerName: '',
       width: 50,
       renderCell: (params) => (
+        empInfo?.empRole === "screener" &&
         <input
           type="checkbox"
           checked={selectedLeads === params.row.id}
@@ -118,7 +120,7 @@ const LeadNew = () => {
         </div>
 
         {/* Action button for selected leads */}
-        <button
+        {empInfo?.empRole === "screener" &&  <button
           onClick={handleAllocate}
           style={{
             marginLeft: '20px',
@@ -131,7 +133,7 @@ const LeadNew = () => {
           }}
         >
           Allocate
-        </button>
+        </button>}
       </div>
 
       <Header />

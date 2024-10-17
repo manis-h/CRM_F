@@ -151,6 +151,10 @@ export const applicationApi = createApi({
       query: () => `/applications/rejected`,
       providesTags:["getApplication"]
     }),
+    recommendedApplications: builder.query({
+      query: () => `/sanction/recommended`,
+      // providesTags:["getApplication"]
+    }),
     
   }),
 });
@@ -172,5 +176,6 @@ export const {
     useGetRejectedApplicationsQuery,  
     useGetCamDetailsQuery,
     useUpdateCamDetailsMutation,
+    useRecommendedApplicationsQuery
 
 } = applicationApi;

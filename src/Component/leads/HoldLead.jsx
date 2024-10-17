@@ -4,24 +4,14 @@ import { useFetchAllHoldLeadsQuery, useFetchSingleLeadQuery } from '../../Servic
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import OTPVerificationUI from './OtpVerification';
-const columns = [
-    { field: 'name', headerName: 'Full Name', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
-    { field: 'pan', headerName: 'Pan No.', width: 150 },
-    { field: 'city', headerName: 'City', width: 150 },
-    { field: 'state', headerName: 'State', width: 150 },
-    { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
-    { field: 'salary', headerName: 'Salary', width: 150 },
-    { field: 'source', headerName: 'Source', width: 150 },
-];
+import useAuthStore from '../store/authStore';
+
 
 const HoldLead = () => {
     const [holdLeads, setHoldLeads] = useState()
     const [totalHoldLeads, setTotalHoldLeads] = useState()
     const [id, setId] = useState(null)
-    // const {employeeDetails} = useStore()
-    // console.log('emp details',employeeDetails)
+    const {empInfo} = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -44,10 +34,25 @@ const HoldLead = () => {
 
     useEffect(() => {
         if (data) {
-            setHoldLeads(data)
-        setTotalHoldLeads(data?.totalLeads)
+            setHoldLeads(data?.heldLeads)
+        setTotalHoldLeads(data?.heldLeads?.totalLeads)
         }
     }, [isSuccess, data])
+    const columns = [
+        { field: 'name', headerName: 'Full Name', width: 200 },
+        { field: 'mobile', headerName: 'Mobile', width: 150 },
+        { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
+        { field: 'pan', headerName: 'Pan No.', width: 150 },
+        { field: 'city', headerName: 'City', width: 150 },
+        { field: 'state', headerName: 'State', width: 150 },
+        { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
+        { field: 'salary', headerName: 'Salary', width: 150 },
+        { field: 'source', headerName: 'Source', width: 150 },
+        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin" 
+            ? [{ field: 'heldBy', headerName: 'Held By', width: 150 }] 
+            : [])
+    ];
+    
 
     const rows = holdLeads?.leads?.map(lead => ({
         id: lead?._id, 
@@ -60,7 +65,11 @@ const HoldLead = () => {
         loanAmount: lead?.loanAmount,
         salary: lead?.salary,
         source: lead?.source,
+        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        { heldBy: `${lead?.heldBy?.fName}${lead?.heldBy?.mName ? ` ${lead?.heldBy?.mName}` :``} ${lead?.heldBy?.lName}`,})
+        
     }));
+
 
     return (
         <>

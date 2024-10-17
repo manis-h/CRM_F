@@ -88,7 +88,7 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
               {/* Mobile Verification Section */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="body1">
+                <Typography variant="body1" sx={{ color: '#898b8c'}}>
 
 
                   Mobile:<span style={{ color: isMobileVerified ? 'green' : 'red' }}> {isMobileVerified ? 'Verified' : 'Not Verified'}
@@ -110,7 +110,7 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
 
               {/* Email Verification Section */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,mb:2 }}>
-                <Typography variant="body1">
+                <Typography variant="body1" sx={{ color: '#898b8c', }}>
                   Email:
                   <span style={{ color: isEmailVerified ? 'green' : 'red' }}>
                     {isEmailVerified ? ' Verified' : ' Not Verified'}
@@ -132,7 +132,7 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
               </Box>
               {/* Aadhaar Verification Section */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,mb:2 }}>
-                <Typography variant="body1">
+                <Typography variant="body1" sx={{ color: '#898b8c'}}>
                   Adhaar:
                   <span style={{ color: isAadhaarVerified ? 'green' : 'red' }}>
                     {isAadhaarVerified ? ' Verified' : ' Not Verified'}
@@ -154,7 +154,7 @@ const VerifyContactDetails = ({isMobileVerified, isEmailVerified, isAadhaarVerif
               </Box>
               {/* Pan Verification Section */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' ,mb:2 }}>
-                <Typography variant="body1">
+                <Typography variant="body1" sx={{ color: '#898b8c'}}>
                   Pan:
                   <span style={{ color: isPanVerified ? 'green' : 'red' }}>
                     {isPanVerified ? ' Verified' : ' Not Verified'}

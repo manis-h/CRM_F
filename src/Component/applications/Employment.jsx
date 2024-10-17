@@ -22,7 +22,7 @@ const accordionStyles = {
 const paperStyles = {
   padding: '30px',
   borderRadius: '15px',
-  backgroundColor: '#fafafa',
+  backgroundColor: '#918f8e',
   boxShadow: '5px 5px 15px rgba(0, 0, 0, 0.1)',
 };
 

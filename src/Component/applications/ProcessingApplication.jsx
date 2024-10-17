@@ -2,25 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import {  useFetchAllocatedApplicationQuery, useFetchSingleApplicationQuery } from '../../queries/applicationQueries';
+import useAuthStore from '../store/authStore';
 
-const columns = [
-    { field: 'name', headerName: 'Full Name', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
-    { field: 'pan', headerName: 'Pan No.', width: 150 },
-    { field: 'city', headerName: 'City', width: 150 },
-    { field: 'state', headerName: 'State', width: 150 },
-    { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
-    { field: 'salary', headerName: 'Salary', width: 150 },
-    { field: 'source', headerName: 'Source', width: 150 },
-];
+
 
 const ProcessingApplication = () => {
     const [processingApplication, setProcessingApplication] = useState()
     const [totalApplications, setTotalApplications] = useState()
     const [id, setId] = useState(null)
-    // const {employeeDetails} = useStore()
-    // console.log('emp details',employeeDetails)
+    const {empInfo} = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -51,6 +41,21 @@ const ProcessingApplication = () => {
         }
     }, [isSuccess, data])
 
+    const columns = [
+        { field: 'name', headerName: 'Full Name', width: 200 },
+        { field: 'mobile', headerName: 'Mobile', width: 150 },
+        { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
+        { field: 'pan', headerName: 'Pan No.', width: 150 },
+        { field: 'city', headerName: 'City', width: 150 },
+        { field: 'state', headerName: 'State', width: 150 },
+        { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
+        { field: 'salary', headerName: 'Salary', width: 150 },
+        { field: 'source', headerName: 'Source', width: 150 },
+        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin"
+            ? [{ field: 'creditManagerId', headerName: 'Credit Manager', width: 150 }]
+            : [])
+    ];
+
     const rows = processingApplication?.applications?.map(application => ({
         id: application?._id, 
         name: ` ${application?.lead?.fName}  ${application?.lead?.mName} ${application?.lead?.lName}`,
@@ -62,6 +67,9 @@ const ProcessingApplication = () => {
         loanAmount: application?.lead?.loanAmount,
         salary: application?.lead?.salary,
         source: application?.lead?.source,
+        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        { creditManagerId: `${application?.creditManagerId?.fName}${application?.creditManagerId?.mName ? ` ${application?.creditManagerId?.mName}` : ``} ${application?.creditManagerId?.lName}`, })
+  
     }));
 
     return (

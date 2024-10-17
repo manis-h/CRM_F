@@ -3,20 +3,13 @@ import LeadProfile from '../../page/LeadProfile'
 import { useFetchAllHoldLeadsQuery, useFetchAllRejectedLeadsQuery, useFetchSingleLeadQuery } from '../../Service/Query';
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
-const columns = [
-    { field: 'name', headerName: 'Full Name', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
-    { field: 'pan', headerName: 'Pan No.', width: 150 },
-    { field: 'city', headerName: 'City', width: 150 },
-    { field: 'state', headerName: 'State', width: 150 },
-    { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
-    { field: 'salary', headerName: 'Salary', width: 150 },
-];
+import useAuthStore from '../store/authStore';
+
 
 const RejectedLeads = () => {
     const [rejectedLeads, setRejectedLeads] = useState()
     const [totalRejectedLeads, setTotalRejectedLeads] = useState()
+    const {empInfo} = useAuthStore()
     const [id, setId] = useState(null)
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
@@ -38,10 +31,24 @@ const RejectedLeads = () => {
 
     useEffect(() => {
         if (data) {
-            setRejectedLeads(data)
-            setTotalRejectedLeads(data?.totalLeads)
+            setRejectedLeads(data?.rejectedLeads)
+            setTotalRejectedLeads(data?.rejectedLeads?.totalLeads)
         }
     }, [isSuccess, data])
+
+    const columns = [
+        { field: 'name', headerName: 'Full Name', width: 200 },
+        { field: 'mobile', headerName: 'Mobile', width: 150 },
+        { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
+        { field: 'pan', headerName: 'Pan No.', width: 150 },
+        { field: 'city', headerName: 'City', width: 150 },
+        { field: 'state', headerName: 'State', width: 150 },
+        { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
+        { field: 'salary', headerName: 'Salary', width: 150 },
+        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin" 
+            ? [{ field: 'rejectedBy', headerName: 'Rejected By', width: 150 }] 
+            : [])
+    ];
 
     const rows = rejectedLeads?.leads?.map(lead => ({
         id: lead?._id,
@@ -54,6 +61,8 @@ const RejectedLeads = () => {
         loanAmount: lead?.loanAmount,
         salary: lead?.salary,
         source: lead?.source,
+        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        { rejectedBy: `${lead?.rejectedBy?.fName}${lead?.rejectedBy?.mName ? ` ${lead?.rejectedBy?.mName}` :``} ${lead?.rejectedBy?.lName}`,})
     }));
 
     return (

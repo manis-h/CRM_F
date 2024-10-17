@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Select, MenuItem, TextField, Box, Alert } from '@mui/material';
+import { Button, Select, MenuItem, TextField, Box, Alert, Typography, FormControl, InputLabel } from '@mui/material';
 
 import { useHoldLeadMutation, useRecommendLeadMutation, useRejectLeadMutation, useUnholdLeadMutation } from '../Service/Query';
 import Swal from 'sweetalert2';
@@ -28,7 +28,7 @@ const loanRejectReasons = [
     // { label: "Unclear Purpose of Loan", value: "unclear_loan_purpose" }
 ];
 
-const ActionButton = ({ id, isHold, isRejected }) => {
+const ActionButton = ({ id, isHold }) => {
 
     const navigate = useNavigate()
     const { empInfo } = useAuthStore()
@@ -210,14 +210,14 @@ const ActionButton = ({ id, isHold, isRejected }) => {
                         {recommendLeadError?.data?.message} || {leadHoldError?.data?.message} || {rejectLeadError?.data?.message} || {unHoldleadError?.data?.message} || {sendBackError?.data?.message}
                     </Alert>
                 }
-                {(isApplicationRecommendError || isApplicationHoldError || isApplicationRejectError || isApplicationUnHoldError ) &&
+                {(isApplicationRecommendError || isApplicationHoldError || isApplicationRejectError || isApplicationUnHoldError) &&
                     <Alert severity="error" style={{ marginTop: "10px" }}>
                         {recommendApplicationError?.data?.message} || {applicationHoldError?.data?.message} || {rejectApplicationError?.data?.message} || {unHoldApplicationError?.data?.message}
                     </Alert>
                 }
 
                 {/* Render buttons if no action is selected */}
-                {(!isRejected && !actionType) && (
+                {(!actionType) && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
                         <Button
                             variant="contained"
@@ -252,66 +252,122 @@ const ActionButton = ({ id, isHold, isRejected }) => {
                 )}
 
                 {/* Render dropdown, input, and submit/cancel buttons when Hold or Reject is selected */}
-                {(actionType === 'hold' || actionType === "unhold" || actionType === 'reject' || actionType === "sendBack") && (
-                    <Box sx={{ marginTop: 3 }}>
-                        {(actionType === "hold" || actionType === "reject") &&
-                            <Select
-                                value={selectedReason}
-                                onChange={handleReasonChange}
-                                displayEmpty
-                                fullWidth
-                                sx={{ marginBottom: 2 }}
-                            >
-                                <MenuItem value="" disabled>
-                                    Select a reason
-                                </MenuItem>
-                                {reasonList && reasonList.length > 0 && reasonList.map((reason, index) => {
-                                    return <MenuItem key={index} value={reason.label}>{reason.label}</MenuItem>
-                                })}
 
-                            </Select>
-                        }
+
+
+                {(actionType === 'hold' || actionType === "unhold" || actionType === 'reject' || actionType === "sendBack") && (
+                    <Box
+                        sx={{
+                            marginTop: 3,
+                            padding: 4,
+                            backgroundColor: '#f9f9f9', // Light background for the entire form
+                            borderRadius: 2,
+                            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+                        }}
+                    >
+                        {(actionType === "hold" || actionType === "reject") && (
+                            <>
+                                <FormControl fullWidth sx={{ marginBottom: 3 }}>
+                                    <InputLabel>Select a Reason</InputLabel>
+                                    <Select
+                                        value={selectedReason}
+                                        onChange={handleReasonChange}
+                                        displayEmpty
+                                        fullWidth
+                                        label="Select a Reason"
+                                        sx={{
+                                            borderRadius: 1,
+                                            color: '#000',              // Ensure text is black or dark
+                                            backgroundColor: '#f0f0f0', // Light background for better contrast
+                                            '& .MuiOutlinedInput-notchedOutline': { borderColor: '#c4c4c4' }, // Border color
+                                            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#1976d2' }, // Border on hover
+                                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#1976d2' }, // Border on focus
+                                        }}
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Select a reason
+                                        </MenuItem>
+                                        {reasonList && reasonList.length > 0 && reasonList.map((reason, index) => (
+                                            <MenuItem key={index} value={reason.label}>
+                                                {reason.label}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </>
+                        )}
 
                         {(selectedReason === 'Other' || actionType === "sendBack") && (
                             <>
+                                <Typography variant="h6" gutterBottom>
+                                    Remarks
+                                </Typography>
                                 <TextField
-                                    label="Remarks"
+                                    label="Add your remarks"
                                     value={remarks}
                                     onChange={(e) => setRemarks(e.target.value)}
                                     fullWidth
                                     multiline
                                     rows={3}
-                                    sx={{ marginBottom: 2, width: '100%' }}
+                                    sx={{
+                                        marginBottom: 3,
+                                        color: '#000',                // Ensure text is black or dark
+                                        backgroundColor: '#f0f0f0',   // Light background for text area
+                                        borderRadius: 1,
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: '#c4c4c4',
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: '#1976d2',
+                                            },
+                                            '&.Mui-focused fieldset': {
+                                                borderColor: '#1976d2',
+                                            },
+                                        },
+                                    }}
                                 />
                                 {actionType === "sendBack" && (
-                                    <Select
-                                        label="Send Back"
-                                        variant="standard"
-                                        fullWidth
-                                        value={selectedRecipient} // Ensure the placeholder is shown initially
-                                        onChange={(e) => setSelectedRecipient(e.target.value)}
-                                        sx={{ marginBottom: 2, width: '200px', padding: '8px' }}
-                                        displayEmpty // This is important to show the placeholder when no value is selected
-                                    >
-                                        <MenuItem value="" disabled>
-                                            Select recipient to send back
-                                        </MenuItem>
-                                        <MenuItem value="screener">Screener</MenuItem>
-                                        <MenuItem value="creditManager">Credit Manager</MenuItem>
-                                    </Select>
+                                    <>
+                                        <FormControl fullWidth sx={{ marginBottom: 3 }}>
+                                            <InputLabel>Send Back to</InputLabel>
+                                            <Select
+                                                value={selectedRecipient}
+                                                onChange={(e) => setSelectedRecipient(e.target.value)}
+                                                label="Send Back to"
+                                                sx={{
+                                                    color: '#000',               // Ensure text is black or dark
+                                                    backgroundColor: '#f0f0f0',  // Light background for the dropdown
+                                                    borderRadius: 1,
+                                                    '& .MuiOutlinedInput-notchedOutline': { borderColor: '#c4c4c4' },
+                                                    '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#1976d2' },
+                                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: '#1976d2' },
+                                                }}
+                                            >
+                                                <MenuItem value="" disabled>
+                                                    Select recipient to send back
+                                                </MenuItem>
+                                                <MenuItem value="screener">Screener</MenuItem>
+                                                <MenuItem value="creditManager">Credit Manager</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </>
                                 )}
                             </>
                         )}
 
-
-
-
-
-                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: "15px" }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 3 }}>
                             <Button
                                 variant="outlined"
                                 color="secondary"
                                 onClick={handleCancel}
+                                sx={{
+                                    padding: '10px 20px',
+                                    borderRadius: 2,
+                                    fontWeight: 'bold',
+                                    backgroundColor: '#f5f5f5',
+                                    ':hover': { backgroundColor: '#e0e0e0' },
+                                }}
                             >
                                 Cancel
                             </Button>
@@ -319,13 +375,22 @@ const ActionButton = ({ id, isHold, isRejected }) => {
                                 variant="contained"
                                 color="primary"
                                 onClick={handleSubmit}
+                                sx={{
+                                    padding: '10px 20px',
+                                    borderRadius: 2,
+                                    fontWeight: 'bold',
+                                    backgroundColor: '#1976d2',
+                                    ':hover': { backgroundColor: '#1565c0' },
+                                }}
                             >
                                 Submit
                             </Button>
-
                         </Box>
                     </Box>
                 )}
+
+
+
             </Box>
 
         </>

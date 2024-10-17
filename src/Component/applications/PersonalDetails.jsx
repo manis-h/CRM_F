@@ -46,6 +46,8 @@ const PersonalDetails = ({ id }) => {
     ]);
   }, [applicantSuccess, applicantData, personalDetails]);
 
+  console.log('applicant data',applicantData,residence)
+
   return (
     <>
       <Paper elevation={3} sx={{ padding: '20px', marginTop: '20px', borderRadius: '10px', marginBottom: "20px" }}>
@@ -56,7 +58,7 @@ const PersonalDetails = ({ id }) => {
           <Table aria-label="personal details table">
             <TableBody>
               {columns?.map((row, index) => (
-                <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#918f8e' } }}>
                   <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
                   <TableCell align="left">{row.value || ''}</TableCell>
                   <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>

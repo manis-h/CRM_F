@@ -55,3 +55,19 @@ export function formatDateTime(dateString) {
   
     return `${formattedDate} ${formattedTime}`;
   }
+
+  export function formatDate(dateString) {
+    const date = new Date(dateString);
+    
+    // Extract the date components
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based in JS
+    const year = date.getFullYear();
+    
+    // Format as dd/mm/yyyy and time as hh:mm:ss
+    const formattedDate = `${day}/${month}/${year}`;
+
+    console.log('date',formattedDate)
+  
+    return formattedDate;
+  }
