@@ -129,7 +129,9 @@ export const applicationApi = createApi({
 
         url: `/applications/cam/${id}`,
         method: 'PATCH',
-        body:updates
+        body: {
+          details: updates,  // Ensure updates is sent under the 'details' key
+        },
       }),
       invalidatesTags : ['getCamDetails']
     })
