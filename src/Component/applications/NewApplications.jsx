@@ -4,13 +4,16 @@ import { DataGrid } from '@mui/x-data-grid';
 // import { useAllocateLeadMutation, useFetchAllLeadsQuery } from '../Service/Query';
 import { useNavigate } from 'react-router-dom';
 import { useAllocateApplicationMutation, useFetchAllApplicationQuery } from '../../queries/applicationQueries';
+import Header from '../Header';
+import useAuthStore from '../store/authStore';
 
 const NewApplications = () => {
-  const [applications, setApplications] = useState([]); 
-  const [totalApplications, setTotalApplications] = useState(0); 
-  const [page, setPage] = useState(1); 
+  const [applications, setApplications] = useState([]);
+  const [totalApplications, setTotalApplications] = useState(0);
+  const [page, setPage] = useState(1);
   const [selectedApplication, setSelectedApplication] = useState(null);
-//   const apiUrl = import.meta.env.VITE_API_URL;
+  const { empInfo } = useAuthStore()
+  //   const apiUrl = import.meta.env.VITE_API_URL;
   const [allocateApplication, { data: updateApplication, isSuccess }] = useAllocateApplicationMutation();
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
@@ -19,28 +22,22 @@ const NewApplications = () => {
   const navigate = useNavigate()
 
 
-  const { data: allApplication,isSuccess:applicationSuccess, refetch } = useFetchAllApplicationQuery({page:paginationModel.page+1,limit:paginationModel.pageSize})
+  const { data: allApplication, isSuccess: applicationSuccess, refetch } = useFetchAllApplicationQuery({ page: paginationModel.page + 1, limit: paginationModel.pageSize })
 
-  useEffect(() => {
-    if(applicationSuccess){
 
-        setApplications(allApplication);
-        setTotalApplications(applications?.totalApplications)
-    }
 
-  }, [page,allApplication,applicationSuccess]);
 
-  
-  
+
   const handleAllocate = async () => {
     // Perform action based on selected leads
     allocateApplication(selectedApplication);
-    
+
   };
 
   const handleCheckboxChange = (id) => {
     setSelectedApplication(selectedApplication === id ? null : id);
   }
+
 
   const handlePageChange = (newPaginationModel) => {
     // Fetch new data based on the new page
@@ -49,23 +46,34 @@ const NewApplications = () => {
   };
 
   useEffect(() => {
-    if(isSuccess){
-        navigate("/application-process")
+    if (isSuccess) {
+      navigate("/application-process")
 
     }
 
-  },[isSuccess,allApplication])
+  }, [isSuccess, allApplication])
+
+
 
   useEffect(() => {
     refetch()
   }, [page, allApplication])
+
+  useEffect(() => {
+    if (applicationSuccess) {
+
+      setApplications(allApplication);
+      setTotalApplications(allApplication?.totalApplications)
+    }
+
+  }, [allApplication]);
   const columns = [
     {
       field: 'select',
       headerName: '',
       width: 50,
       renderCell: (params) => (
-        
+        empInfo?.empRole === "creditManager" &&
         <input
           type="checkbox"
           checked={selectedApplication === params.row.id}
@@ -74,40 +82,39 @@ const NewApplications = () => {
         />
       ),
     },
-    { field: 'fName', headerName: 'First Name', width: 150 },
-    { field: 'lName', headerName: 'Last Name', width: 150 },
-    { field: 'gender', headerName: 'Gender', width: 100 },
-    { field: 'personalEmail', headerName: 'Personal Email', width: 200 },
+    { field: 'name', headerName: 'Full Name', width: 200 },
     { field: 'mobile', headerName: 'Mobile', width: 150 },
+    { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
+    { field: 'pan', headerName: 'Pan No.', width: 150 },
     { field: 'city', headerName: 'City', width: 150 },
     { field: 'state', headerName: 'State', width: 150 },
     { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
     { field: 'salary', headerName: 'Salary', width: 150 },
+    { field: 'source', headerName: 'Source', width: 150 },
+    ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin"
+      ? [{ field: 'recommendedBy', headerName: 'Recommended By', width: 150 }]
+      : [])
   ];
 
   const rows = applications?.applications?.map(application => ({
     id: application?._id, // Unique ID for each lead
-    fName: application?.lead?.fName,
-    lName: application?.lead?.lName,
-    gender: application?.lead?.gender,
-    personalEmail: application?.lead?.personalEmail,
+    name: `${application?.lead?.fName} ${application?.lead?.mName} ${application?.lead?.lName}`,
     mobile: application?.lead?.mobile,
+    aadhaar: application?.lead?.aadhaar,
+    pan: application?.lead?.pan,
     city: application?.lead?.city,
     state: application?.lead?.state,
     loanAmount: application?.lead?.loanAmount,
     salary: application?.lead?.salary,
+    source: application?.lead?.source,
+    ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+      { recommendedBy: `${application?.lead?.recommendedBy?.fName}${application?.lead?.recommendedBy?.mName ? ` ${application?.lead?.recommendedBy?.mName}` : ``} ${application?.lead?.recommendedBy?.lName}`, })
+
   }));
 
   return (
-    <div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginTop: '70px',
-          marginLeft: '20px',
-        }}
-      >
+    <>
+      <div className='crm-container'>
         <div
           style={{
             padding: '10px 20px',
@@ -123,7 +130,7 @@ const NewApplications = () => {
         </div>
 
         {/* Action button for selected leads */}
-        <button
+        {empInfo?.empRole === "creditManager" && <button
           onClick={handleAllocate}
           style={{
             marginLeft: '20px',
@@ -136,8 +143,10 @@ const NewApplications = () => {
           }}
         >
           Allocate
-        </button>
+        </button>}
       </div>
+
+      <Header />
 
       {columns && <div style={{ height: 400, width: '100%' }}>
         <DataGrid
@@ -151,26 +160,26 @@ const NewApplications = () => {
           onPaginationModelChange={handlePageChange}
           sx={{
             color: '#1F2A40',  // Default text color for rows
-                '& .MuiDataGrid-columnHeaders': {
-                  backgroundColor: '#1F2A40',  // Optional: Header background color
-                  color: 'white'  // White text for the headers
-                },
-                '& .MuiDataGrid-footerContainer': {
-                  backgroundColor: '#1F2A40',  // Footer background color
-                  color: 'white',  // White text for the footer
-                },
+            '& .MuiDataGrid-columnHeaders': {
+              backgroundColor: '#1F2A40',  // Optional: Header background color
+              color: 'white'  // White text for the headers
+            },
+            '& .MuiDataGrid-footerContainer': {
+              backgroundColor: '#1F2A40',  // Footer background color
+              color: 'white',  // White text for the footer
+            },
             '& .MuiDataGrid-row:hover': {
-                backgroundColor: 'white',
-                cursor: 'pointer',
+              backgroundColor: 'white',
+              cursor: 'pointer',
             },
             '& .MuiDataGrid-row': {
-                backgroundColor: 'white',
-                // cursor: 'pointer',
+              backgroundColor: 'white',
+              // cursor: 'pointer',
             },
-        }}
+          }}
         />
       </div>}
-    </div>
+    </>
   );
 };
 

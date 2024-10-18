@@ -13,12 +13,14 @@ import useStore from '../Store';
 import PanComapare from '../Component/leads/PanCompare';
 import ActionButton from '../Component/actionButton';
 import BarButtons from '../Component/BarButtons';
+import useAuthStore from '../Component/store/authStore';
 
 const barButtonOptions = ['Lead', 'Documents', 'Verification',]
 
 
 const LeadProfile = () => {
     const { id } = useParams();
+    const {empInfo} = useAuthStore()
     const navigate = useNavigate()
 
     const [currentPage, setCurrentPage] = useState("lead");
@@ -72,29 +74,29 @@ const LeadProfile = () => {
                         {currentPage === "lead" &&
                             <>
                                 <Paper
-    elevation={3}
-    sx={{
-        padding: '20px',
-        marginTop: '20px',
-        borderRadius: '10px',
-        color: '#1F2A40',  // Default text color for rows
-        '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: '#1F2A40',  // Optional: Header background color
-            color: 'white',  // White text for the headers
-        },
-        '& .MuiDataGrid-footerContainer': {
-            backgroundColor: '#1F2A40',  // Footer background color
-            color: 'white',  // White text for the footer
-        },
-        '& .MuiDataGrid-row:hover': {
-            backgroundColor: 'white',
-            cursor: 'pointer',
-        },
-        '& .MuiDataGrid-row': {
-            backgroundColor: 'white',
-        },
-    }}
->
+                                    elevation={3}
+                                    sx={{
+                                        padding: '20px',
+                                        marginTop: '20px',
+                                        borderRadius: '10px',
+                                        color: '#1F2A40',  // Default text color for rows
+                                        '& .MuiDataGrid-columnHeaders': {
+                                            backgroundColor: '#1F2A40',  // Optional: Header background color
+                                            color: 'white',  // White text for the headers
+                                        },
+                                        '& .MuiDataGrid-footerContainer': {
+                                            backgroundColor: '#1F2A40',  // Footer background color
+                                            color: 'white',  // White text for the footer
+                                        },
+                                        '& .MuiDataGrid-row:hover': {
+                                            backgroundColor: 'white',
+                                            cursor: 'pointer',
+                                        },
+                                        '& .MuiDataGrid-row': {
+                                            backgroundColor: 'white',
+                                        },
+                                    }}
+                                >
 
                                     <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
                                         <Table aria-label="application details table">
@@ -140,7 +142,7 @@ const LeadProfile = () => {
                                         <InternalDedupe id={leadData._id} />
                                         <ApplicationLogHistory id={leadData._id} />
                                         {/* Action Buttons */}
-                                        {!leadData?.isRejected &&
+                                        {(!leadData?.isRejected && empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin" ) &&
                                             <div className='my-3  d-flex justify-content-center'>
                                                 <ActionButton id={leadData._id} isHold={leadData.onHold} />
                                             </div>}

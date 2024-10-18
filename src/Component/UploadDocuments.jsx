@@ -21,7 +21,6 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
         panCard: null,
         salarySlip: null,
         bankStatement: null,
-        verificationVideo: null,
     });
 
     const fileInputRefs = {
@@ -30,7 +29,6 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
         panCard: useRef(null),
         salarySlip: useRef(null),
         bankStatement: useRef(null),
-        verificationVideo: useRef(null),
     };
 
     const handleChange = (e) => {
@@ -44,13 +42,7 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
                     alert('Please upload a PDF file for salary slip or bank statement.');
                     return;
                 }
-            } else if (name === 'verificationVideo') {
-                const validVideoTypes = ['video/mp4', 'video/avi', 'video/mov'];
-                if (!validVideoTypes.includes(file.type)) {
-                    alert('Please upload a valid video file (mp4, avi, mov).');
-                    return;
-                }
-            }
+            } 
             setDocuments({ ...documents, [name]: file });
         }
     };
@@ -71,7 +63,6 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
             panCard: null,
             salarySlip: null,
             bankStatement: null,
-            verificationVideo: null,
         });
     };
 
@@ -155,14 +146,12 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
 
                                 if (key === 'salarySlip' || key === 'bankStatement') {
                                     acceptType = 'application/pdf';  // Only PDF files
-                                } else if (key === 'verificationVideo') {
-                                    acceptType = 'video/mp4, video/avi, video/mov';  // Only video files
                                 } else {
                                     acceptType = 'image/jpg, image/png, image/jpeg';  // General file types for other fields
                                 }
                                 return (
                                     <Box key={key} display="flex" flexDirection="column" gap={1} mb={3}>
-                                        <Typography variant="subtitle1" style={{ fontWeight: '600' }}>
+                                        <Typography variant="subtitle1" style={{ fontWeight: '600' , color:'#898b8c' }}>
                                             {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:
                                         </Typography>
                                         <Box
@@ -171,6 +160,7 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
                                             alignItems="center"
                                             justifyContent="space-between"
                                             sx={{
+                                                
                                                 padding: '12px',
                                                 border: '2px solid #dfe3e8',
                                                 borderRadius: '12px',
@@ -188,9 +178,11 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
                                                 fullWidth
                                                 InputProps={{
                                                     sx: {
+                                                        cursor:"pointer",
                                                         borderRadius: '6px',
                                                         padding: '8px',
-                                                        backgroundColor: '#f4f6f8',
+                                                        color:"#898b8c",
+                                                        backgroundColor: '#e0e3e7',
                                                         '&:hover': {
                                                             backgroundColor: '#e0e3e7',
                                                         },

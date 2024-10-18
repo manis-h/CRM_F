@@ -40,7 +40,6 @@ const UserProfileForm = () => {
       }
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log('Password updated:', result.value);
         Swal.fire('Success', 'Your password has been updated', 'success');
       }
     });

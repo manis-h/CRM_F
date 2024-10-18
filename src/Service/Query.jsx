@@ -90,10 +90,10 @@ export const leadsApi = createApi({
       }),
       invalidatesTags:["leadProfile","logs"]
     }),
-    approveLead: builder.mutation({
+    recommendLead: builder.mutation({
       query: (id) => ({
 
-        url: `leads/approve/${id}`,
+        url: `leads/recommend/${id}`,
         method: 'PATCH',
       }),
     }),
@@ -229,7 +229,7 @@ export const {
   useHoldLeadMutation,
   useFetchAllHoldLeadsQuery,
   useUnholdLeadMutation,
-  useApproveLeadMutation,
+  useRecommendLeadMutation,
   useGetEmailOtpMutation,
   useVerifyEmailOtpMutation,
   useLazyAadhaarOtpQuery,

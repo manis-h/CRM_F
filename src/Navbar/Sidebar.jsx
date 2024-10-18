@@ -6,7 +6,7 @@ import useAuthStore from '../Component/store/authStore';
 
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
-    const {empInfo} = useAuthStore()
+    const { empInfo } = useAuthStore()
     // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
     const toggleSidebar = () => {
@@ -19,7 +19,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
                 <div className='sidebar-margin'>
                     <ul className="sidebar-links">
-                        {(empInfo?.empRole === "screener" || empInfo?.empRole === "admin" || empInfo?.empRole === "sanctionHead")&&<Accordion defaultActiveKey="0">
+                        {(empInfo?.empRole === "screener" || empInfo?.empRole === "admin" || empInfo?.empRole === "sanctionHead") && <Accordion defaultActiveKey="0">
                             <Accordion.Item eventKey="0">
                                 <Accordion.Header> <i className="bi bi-person" style={{ marginRight: '8px' }}></i>  Lead</Accordion.Header>
                                 <Accordion.Body>
@@ -33,71 +33,49 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                             </Accordion.Item>
                         </Accordion>}
 
-                        {empInfo?.empRole === "creditManager" && 
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="1">
-                                <Accordion.Header> <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Application</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/new-application"> New</Link></li>
-                                        <li><Link to="/application-process">Inprocess</Link></li>
-                                        <li><Link to="/application-hold">Hold</Link></li>
-                                        <li><Link to="/application-sent-back">Sent-Back</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
+                        {(empInfo?.empRole === "creditManager" || empInfo?.empRole === "sanctionHead") &&
+                            <Accordion defaultActiveKey="0">
+                                <Accordion.Item eventKey="1">
+                                    <Accordion.Header>  Application</Accordion.Header>
+                                    <Accordion.Body>
+                                        <ul className='sidebar-text'>
+                                            <li><Link to="/new-application"> New</Link></li>
+                                            <li><Link to="/application-process">Inprocess</Link></li>
+                                            <li><Link to="/application-hold">Hold</Link></li>
+                                            <li><Link to="/rejected-applications">Rejected Applications</Link></li>
+                                        </ul>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            </Accordion>
                         }
 
 
-<>
-  {empInfo?.empRole === "sanctionHead" && (
-    <Accordion defaultActiveKey="0">
-      <Accordion.Item eventKey="1">
-        <Accordion.Header>
-          <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Application
-        </Accordion.Header>
-        <Accordion.Body>
-          <ul className="sidebar-text">
-            <li>
-              <Link to="/new-application">New</Link>
-            </li>
-            <li>
-              <Link to="/application-process">Inprocess</Link>
-            </li>
-            <li>
-              <Link to="/application-hold">Hold</Link>
-            </li>
-            <li>
-              <Link to="/application-sent-back">Sent-Back</Link>
-            </li>
-          </ul>
-        </Accordion.Body>
-      </Accordion.Item>
-    </Accordion>
-  )}
+                        <>
+                            {empInfo?.empRole === "sanctionHead" && (
+                                <Accordion defaultActiveKey="0">
+                                <Accordion.Item eventKey="4">
+                                    <Accordion.Header>
+                                        <i className="bi bi-check" style={{ marginRight: '8px' }}></i> Sanction
+                                    </Accordion.Header>
+                                    <Accordion.Body>
+                                        <ul className="sidebar-text">
+                                            <li>
+                                                <Link to="/recommended-application">Recommended </Link>
+                                            </li>
+                                            {/* <li>
+                                                <Link to="/sanction-reject">Rejected Application</Link>
+                                            </li>
+                                            <li>
+                                                <Link to="/sanction-sentback">SentBack</Link>
+                                            </li> */}
+                                        </ul>
+                                    </Accordion.Body>
+                                </Accordion.Item>
+                            </Accordion>
+                            )}
 
-  <Accordion defaultActiveKey="0">
-    <Accordion.Item eventKey="4">
-      <Accordion.Header>
-        <i className="bi bi-check" style={{ marginRight: '8px' }}></i> Sanction
-      </Accordion.Header>
-      <Accordion.Body>
-        <ul className="sidebar-text">
-          <li>
-            <Link to="/sanction-approve">Approve</Link>
-          </li>
-          <li>
-            <Link to="/sanction-reject">Reject</Link>
-          </li>
-          <li>
-            <Link to="/sanction-sentback">SentBack</Link>
-          </li>
-        </ul>
-      </Accordion.Body>
-    </Accordion.Item>
-  </Accordion>
-</>
+                            
+                        </>
 
 
                         {/* {

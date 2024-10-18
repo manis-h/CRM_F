@@ -4,24 +4,14 @@ import { useFetchAllHoldLeadsQuery, useFetchSingleLeadQuery } from '../../Servic
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import OTPVerificationUI from './OtpVerification';
-const columns = [
-    { field: 'name', headerName: 'Full Name', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
-    { field: 'pan', headerName: 'Pan No.', width: 150 },
-    { field: 'city', headerName: 'City', width: 150 },
-    { field: 'state', headerName: 'State', width: 150 },
-    { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
-    { field: 'salary', headerName: 'Salary', width: 150 },
-    { field: 'source', headerName: 'Source', width: 150 },
-];
+import useAuthStore from '../store/authStore';
+
 
 const HoldLead = () => {
     const [holdLeads, setHoldLeads] = useState()
     const [totalHoldLeads, setTotalHoldLeads] = useState()
     const [id, setId] = useState(null)
-    // const {employeeDetails} = useStore()
-    // console.log('emp details',employeeDetails)
+    const {empInfo} = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -44,10 +34,25 @@ const HoldLead = () => {
 
     useEffect(() => {
         if (data) {
-            setHoldLeads(data)
-        setTotalHoldLeads(data?.totalLeads)
+            setHoldLeads(data?.heldLeads)
+        setTotalHoldLeads(data?.heldLeads?.totalRecords)
         }
     }, [isSuccess, data])
+    const columns = [
+        { field: 'name', headerName: 'Full Name', width: 200 },
+        { field: 'mobile', headerName: 'Mobile', width: 150 },
+        { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
+        { field: 'pan', headerName: 'Pan No.', width: 150 },
+        { field: 'city', headerName: 'City', width: 150 },
+        { field: 'state', headerName: 'State', width: 150 },
+        { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
+        { field: 'salary', headerName: 'Salary', width: 150 },
+        { field: 'source', headerName: 'Source', width: 150 },
+        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin" 
+            ? [{ field: 'heldBy', headerName: 'Held By', width: 150 }] 
+            : [])
+    ];
+    
 
     const rows = holdLeads?.leads?.map(lead => ({
         id: lead?._id, 
@@ -60,11 +65,30 @@ const HoldLead = () => {
         loanAmount: lead?.loanAmount,
         salary: lead?.salary,
         source: lead?.source,
+        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        { heldBy: `${lead?.heldBy?.fName}${lead?.heldBy?.mName ? ` ${lead?.heldBy?.mName}` :``} ${lead?.heldBy?.lName}`,})
+        
     }));
+
 
     return (
         <>
             <div className="crm-container">
+            <div
+                    style={{
+                        padding: '10px 20px',
+                        fontWeight: 'bold',
+                        backgroundColor: '#007bff',
+                        color: '#fff',
+                        borderRadius: '5px',
+                        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                        cursor: 'pointer',
+                        marginBottom:"15px"
+                    }}
+                >
+                    Total Applicattion: {totalHoldLeads || 0} {/* Defaults to 0 if no leads */}
+                </div>
+                </div>
                 {columns && <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
                         rows={rows}
@@ -97,8 +121,7 @@ const HoldLead = () => {
                         }}
                     />
                 </div>}
-            <OTPVerificationUI />
-            </div>
+            {/* </div> */}
 
         </>
     )

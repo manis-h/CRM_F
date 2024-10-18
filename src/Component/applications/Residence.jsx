@@ -17,7 +17,7 @@ const accordionStyles = {
 const paperStyles = {
   padding: '30px',
   borderRadius: '15px',
-  backgroundColor: '#fafafa',
+  backgroundColor: '#918f8e',
   boxShadow: '5px 5px 15px rgba(0, 0, 0, 0.1)',
 };
 
@@ -84,6 +84,7 @@ const Residence = ({ residence }) => {
     }
   }, [isSuccess, data])
 
+  
   useEffect(() => {
     if (residence && Object.keys(residence).length > 0) {
       setColumns([
@@ -228,7 +229,7 @@ const Residence = ({ residence }) => {
                   <Table aria-label="personal details table">
                     <TableBody>
                       {columns?.map((row, index) => (
-                        <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                        <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#918f8e' } }}>
                           <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
                           <TableCell align="left">{row.value || ''}</TableCell>
                           <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>

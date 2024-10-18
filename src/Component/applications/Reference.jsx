@@ -17,7 +17,7 @@ const accordionStyles = {
 const paperStyles = {
   padding: '30px',
   borderRadius: '15px',
-  backgroundColor: '#fafafa',
+  backgroundColor: '#918f8e',
   boxShadow: '5px 5px 15px rgba(0, 0, 0, 0.1)',
 };
 
@@ -65,7 +65,8 @@ const Reference = ({ reference }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Paper elevation={3} style={paperStyles}>
-            {!reference ? (
+            {console.log('refer cond',!reference)}
+            {Object.keys(reference).length === 0 ? (
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Box display="flex" flexDirection="column" gap={4}>
                   {/* Reference 1 */}

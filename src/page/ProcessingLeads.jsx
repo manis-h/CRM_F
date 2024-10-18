@@ -3,25 +3,15 @@ import { useFetchAllocatedLeadsQuery, useFetchSingleLeadQuery, useGetEmployeesQu
 import { DataGrid } from '@mui/x-data-grid';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../Store';
+import useAuthStore from '../Component/store/authStore';
 
-const columns = [
-    { field: 'name', headerName: 'Full Name', width: 200 },
-    { field: 'mobile', headerName: 'Mobile', width: 150 },
-    { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
-    { field: 'pan', headerName: 'Pan No.', width: 150 },
-    { field: 'city', headerName: 'City', width: 150 },
-    { field: 'state', headerName: 'State', width: 150 },
-    { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
-    { field: 'salary', headerName: 'Salary', width: 150 },
-    { field: 'source', headerName: 'Source', width: 150 },
-];
+
 
 const ProcessingLeads = () => {
     const [processingLeads, setProcessingLeads] = useState()
     const [totalLeads, setTotalLeads] = useState()
     const [id, setId] = useState(null)
-    // const {employeeDetails} = useStore()
-    // console.log('emp details',employeeDetails)
+    const {empInfo} = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -35,22 +25,28 @@ const ProcessingLeads = () => {
     }
 
     const handleLeadClick = (lead) => {
-        console.log('lead click', lead)
         setId(lead.id)
         navigate(`/lead-profile/${lead.id}`)
     }
 
+    
 
-    useEffect(() => {
-        refetch({ page: paginationModel.page + 1, limit: paginationModel.pageSize });
-    }, [paginationModel]);
 
-    useEffect(() => {
-        if (data) {
-            setProcessingLeads(data)
-            setTotalLeads(data?.totalLeads)
-        }
-    }, [isSuccess, data])
+    const columns = [
+        { field: 'name', headerName: 'Full Name', width: 200 },
+        { field: 'mobile', headerName: 'Mobile', width: 150 },
+        { field: 'aadhaar', headerName: 'Aadhaar No.', width: 150 },
+        { field: 'pan', headerName: 'Pan No.', width: 150 },
+        { field: 'city', headerName: 'City', width: 150 },
+        { field: 'state', headerName: 'State', width: 150 },
+        { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
+        { field: 'salary', headerName: 'Salary', width: 150 },
+        { field: 'source', headerName: 'Source', width: 150 },
+        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin" 
+            ? [{ field: 'screener', headerName: 'Screener', width: 150 }] 
+            : [])
+
+    ];
 
     const rows = processingLeads?.leads?.map(lead => ({
         id: lead?._id,
@@ -63,11 +59,40 @@ const ProcessingLeads = () => {
         loanAmount: lead?.loanAmount,
         salary: lead?.salary,
         source: lead?.source,
+        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        { screener: `${lead?.screenerId?.fName}${lead?.screenerId?.mName ? ` ${lead?.screenerId?.mName}` :``} ${lead?.screenerId?.lName}`,})
     }));
+
+    useEffect(() => {
+        refetch({ page: paginationModel.page + 1, limit: paginationModel.pageSize });
+    }, [paginationModel]);
+
+    useEffect(() => {
+        if (data) {
+            setProcessingLeads(data)
+            setTotalLeads(data?.totalLeads)
+        }
+    }, [isSuccess, data])
+
 
     return (
         <>
             <div className="crm-container">
+            <div
+                    style={{
+                        padding: '10px 20px',
+                        fontWeight: 'bold',
+                        backgroundColor: '#007bff',
+                        color: '#fff',
+                        borderRadius: '5px',
+                        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                        cursor: 'pointer',
+                        marginBottom:"15px"
+                    }}
+                >
+                    Total Applicattion: {totalLeads || 0} {/* Defaults to 0 if no leads */}
+                </div>
+                </div>
                 {columns && <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
                         rows={rows}
@@ -95,7 +120,7 @@ const ProcessingLeads = () => {
                         }}
                     />
                 </div>}
-            </div>
+            {/* </div> */}
 
         </>
     )
