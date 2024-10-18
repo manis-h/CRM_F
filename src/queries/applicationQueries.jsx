@@ -155,6 +155,10 @@ export const applicationApi = createApi({
       query: () => `/sanction/recommended`,
       // providesTags:["getApplication"]
     }),
+    sanctionProfile: builder.query({
+      query: (id) => `/sanction/${id}`,
+      // providesTags:["getApplication"]
+    }),
     
   }),
 });
@@ -176,6 +180,7 @@ export const {
     useGetRejectedApplicationsQuery,  
     useGetCamDetailsQuery,
     useUpdateCamDetailsMutation,
-    useRecommendedApplicationsQuery
+    useRecommendedApplicationsQuery,
+    useSanctionProfileQuery,
 
 } = applicationApi;

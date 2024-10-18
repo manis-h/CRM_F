@@ -57,6 +57,11 @@ const RecommendedApp = () => {
 // useEffect(() => {
 //   refetch()
 // }, [page, allApplication])
+
+const handleLeadClick = (lead) => {
+  console.log('lead id san',lead)
+  navigate(`/sanction-profile/${lead.id}`)
+}
   const columns = [
     { field: 'name', headerName: 'Full Name', width: 200 },
     { field: 'mobile', headerName: 'Mobile', width: 150 },
@@ -103,26 +108,12 @@ const RecommendedApp = () => {
             borderRadius: '5px',
             boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
             cursor: 'pointer',
+            marginBottom:"15px"
           }}
         >
           Total Applicattion: {totalApplications || 0} {/* Defaults to 0 if no leads */}
         </div>
 
-        {/* Action button for selected leads */}
-        <button
-          onClick={handleAllocate}
-          style={{
-            marginLeft: '20px',
-            padding: '10px 20px',
-            backgroundColor: '#28a745',
-            color: '#fff',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
-        >
-          Allocate
-        </button>
       </div>
 
       {columns && <div style={{ height: 400, width: '100%' }}>
@@ -135,6 +126,7 @@ const RecommendedApp = () => {
           paginationModel={paginationModel}
           paginationMode="server"
           onPaginationModelChange={handlePageChange}
+          onRowClick={(params) => handleLeadClick(params)}
           sx={{
             color: '#1F2A40',  // Default text color for rows
                 '& .MuiDataGrid-columnHeaders': {

@@ -7,7 +7,7 @@ import useAuthStore from '../store/authStore';
 
 const HoldApplication = () => {
     const [holdApplications, setHoldApplications] = useState()
-    const [totalHoldApplcations, setTotalHoldApplications] = useState()
+    const [totalHoldApplications, setTotalHoldApplications] = useState()
     const [id, setId] = useState(null)
     const {empInfo} = useAuthStore()
     const navigate = useNavigate()
@@ -33,7 +33,7 @@ const HoldApplication = () => {
     useEffect(() => {
         if (data) {
             setHoldApplications(data?.heldApplications?.applications)
-        setTotalHoldApplications(data?.heldApplications?.totalApplications)
+        setTotalHoldApplications(data?.heldApplications?.totalRecords)
         }
     }, [isSuccess, data])
 
@@ -72,11 +72,26 @@ const HoldApplication = () => {
     return (
         <>
             <div className="crm-container">
+            <div
+                    style={{
+                        padding: '10px 20px',
+                        fontWeight: 'bold',
+                        backgroundColor: '#007bff',
+                        color: '#fff',
+                        borderRadius: '5px',
+                        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                        cursor: 'pointer',
+                        marginBottom:"15px"
+                    }}
+                >
+                    Total Applicattion: {totalHoldApplications || 0} {/* Defaults to 0 if no leads */}
+                </div>
+                </div>
                 {columns && <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}
-                        rowCount={totalHoldApplcations}
+                        rowCount={totalHoldApplications}
                         // loading={isLoading}
                         pageSizeOptions={[5]}
                         paginationModel={paginationModel}
@@ -100,7 +115,7 @@ const HoldApplication = () => {
                     />
                 </div>}
             {/* <OTPVerificationUI /> */}
-            </div>
+            {/* </div> */}
 
         </>
     )

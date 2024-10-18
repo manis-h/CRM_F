@@ -113,15 +113,8 @@ const NewApplications = () => {
   }));
 
   return (
-    <div>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          marginTop: '70px',
-          marginLeft: '20px',
-        }}
-      >
+    <>
+      <div className='crm-container'>
         <div
           style={{
             padding: '10px 20px',
@@ -186,7 +179,7 @@ const NewApplications = () => {
           }}
         />
       </div>}
-    </div>
+    </>
   );
 };
 

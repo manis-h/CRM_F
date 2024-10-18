@@ -67,7 +67,6 @@ export function formatDateTime(dateString) {
     // Format as dd/mm/yyyy and time as hh:mm:ss
     const formattedDate = `${day}/${month}/${year}`;
 
-    console.log('date',formattedDate)
   
     return formattedDate;
   }

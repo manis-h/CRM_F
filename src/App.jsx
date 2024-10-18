@@ -42,6 +42,7 @@ import RejectedApplication from './Component/applications/RejectedApplication';
 import SanctionReject from './Component/sanction/SanctionReject';
 import SanctionSentBack from './Component/sanction/SanctionSentBack';
 import RecommendedApp from './Component/sanction/RecommendedApp';
+import SanctionProfile from './Component/sanction/SanctionProfile';
 
 
 function App() {
@@ -101,9 +102,8 @@ function App() {
                       ["604", "Recommend", "2024-09-06", "Online", "Sophia Wilson", "Florida", "Orlando", "Branch P", "555-6666", "STU901234P", "Business", "Completed", "Manager 4"]
                     ]} />} />
                   <Route path="/sanction" element={<DynamicTable />} />
-                  <Route path="/recommended-application" element={
-                    <RecommendedApp />
-                  } />
+                  <Route path="/recommended-application" element={<RecommendedApp />} />
+                  <Route path="/sanction-profile/:id" element={<SanctionProfile />} />
                   <Route path="/sanction-reject" element={
                     <DynamicTable
                     />

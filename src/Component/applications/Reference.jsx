@@ -65,7 +65,8 @@ const Reference = ({ reference }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Paper elevation={3} style={paperStyles}>
-            {!reference ? (
+            {console.log('refer cond',!reference)}
+            {Object.keys(reference).length === 0 ? (
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Box display="flex" flexDirection="column" gap={4}>
                   {/* Reference 1 */}

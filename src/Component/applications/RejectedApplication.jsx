@@ -64,6 +64,21 @@ const RejectedApplication = () => {
     return (
         <>
             <div className="crm-container">
+            <div
+                    style={{
+                        padding: '10px 20px',
+                        fontWeight: 'bold',
+                        backgroundColor: '#007bff',
+                        color: '#fff',
+                        borderRadius: '5px',
+                        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                        cursor: 'pointer',
+                        marginBottom:"15px"
+                    }}
+                >
+                    Total Applicattion: {totalRejectedApplcations || 0} {/* Defaults to 0 if no leads */}
+                </div>
+                </div>
                 {columns && <div style={{ height: 400, width: '100%' }}>
                     <DataGrid
                         rows={rows}
@@ -91,7 +106,6 @@ const RejectedApplication = () => {
                         }}
                     />
                 </div>}
-            </div>
             {isError &&
                 <Alert severity="error" style={{ marginTop: "10px" }}>
                     {error?.data?.message}
