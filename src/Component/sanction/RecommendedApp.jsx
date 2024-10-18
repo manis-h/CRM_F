@@ -59,7 +59,6 @@ const RecommendedApp = () => {
 // }, [page, allApplication])
 
 const handleLeadClick = (lead) => {
-  console.log('lead id san',lead)
   navigate(`/sanction-profile/${lead.id}`)
 }
   const columns = [

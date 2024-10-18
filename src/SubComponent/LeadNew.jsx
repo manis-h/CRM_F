@@ -24,7 +24,6 @@ const LeadNew = () => {
   useEffect(() => {
     setLeads(allLeads);
   }, [page]);
-  console.log('lotal ', totalLeads,paginationModel)
 
   
   

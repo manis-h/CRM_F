@@ -28,7 +28,7 @@ const loanRejectReasons = [
     // { label: "Unclear Purpose of Loan", value: "unclear_loan_purpose" }
 ];
 
-const ActionButton = ({ id, isHold }) => {
+const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview }) => {
 
     const navigate = useNavigate()
     const { empInfo } = useAuthStore()
@@ -129,6 +129,9 @@ const ActionButton = ({ id, isHold }) => {
         setRemarks('');
     };
 
+    const handlePreview = () => {
+      sanctionPreview(id)
+    };
     const handleCancel = () => {
         // Reset all states to go back to initial state
         setActionType('');
@@ -248,6 +251,15 @@ const ActionButton = ({ id, isHold }) => {
                 {/* Render buttons if no action is selected */}
                 {(!actionType) && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
+                        {empInfo?.empRole === "sanctionHead" && <Button
+                            variant="contained"
+                            color="success"
+                            onClick={() => handlePreview()}
+                        >
+                            Preview
+                        </Button>}
+                        {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && 
+                        <>
                         <Button
                             variant="contained"
                             color="success"
@@ -255,13 +267,15 @@ const ActionButton = ({ id, isHold }) => {
                         >
                             Forward
                         </Button>
-                        {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Button
+                        <Button
                             variant="contained"
                             color="warning"
                             onClick={() => handleActionClick(isHold ? "unhold" : 'hold')}
                         >
                             {isHold ? "Unhold" : "Hold"}
-                        </Button>}
+                        </Button>
+                        </>
+                        }
                         <Button
                             variant="contained"
                             color="error"

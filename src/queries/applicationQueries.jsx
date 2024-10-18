@@ -73,6 +73,14 @@ export const applicationApi = createApi({
       }),
       invalidatesTags:["getApplication","recommendedApplication"]
     }),
+    approveApplication: builder.mutation({
+      query: (id) => ({
+
+        url: `sanction/approve/${id}`,
+        method: 'PATCH',
+      }),
+      invalidatesTags:["getApplication","recommendedApplication"]
+    }),
     recommendApplication: builder.mutation({
       query: (id) => ({
 
@@ -172,6 +180,10 @@ export const applicationApi = createApi({
       query: (id) => `/sanction/${id}`,
       // providesTags:["getApplication"]
     }),
+    sanctionPreview: builder.query({
+      query: (id) => `/sanction/preview/${id}`,
+      // providesTags:["getApplication"]
+    }),
     
   }),
 });
@@ -186,6 +198,7 @@ export const {
     useAddBankMutation,
     useSendBackMutation,
     useSanctionSendBackMutation,
+    useApproveApplicationMutation,
     useUpdatePersonalDetailsMutation,
     useGetBankDetailsQuery,
     useFetchAllocatedApplicationQuery,
@@ -197,5 +210,6 @@ export const {
     useUpdateCamDetailsMutation,
     useRecommendedApplicationsQuery,
     useSanctionProfileQuery,
+    useLazySanctionPreviewQuery,
 
 } = applicationApi;

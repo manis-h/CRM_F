@@ -18,7 +18,6 @@ export default function EmployeeList() {
 
   const { data } = useFetchAllEmployeeQuery()
 
-  console.log('res', data)
 
   const rows = data?.map(lead => ({
     id: lead._id, // Unique ID for each lead
