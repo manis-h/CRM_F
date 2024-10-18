@@ -6,59 +6,156 @@ import { useParams } from 'react-router-dom';
 
 const EditableForm = () => {
   const { id }= useParams();
-  const { data  } = useGetCamDetailsQuery(id , { skip : id === null});
+  const { data   , isLoading : camGetloading , isError : camGetError  , isSuccess : getCamSuccess } = useGetCamDetailsQuery(id , { skip : id === null});
   // const updatData = useUpdateCamDetailsMutation();
   const [isEditing, setIsEditing] = useState(false);
   // const response = useGetCamDetailsQuery(id, { skip: id === null });  // Fetch data
   const [formData, setFormData] = useState({
-    leadId: data?.details?.leadId,
-    loanNo:  '-',
-    salaryDate1: '',
-    salaryAmount1: 0,
-    salaryDate2: '',
-    salaryAmount2: 0,
-    salaryDate3: '',
-    salaryAmount3: 0,
-    nextPayDate: '',
-    averageSalary: 0,
-    actualNetSalary: 0,
+    leadId: data?.details?.leadId || 0,
+    // Corrected the paths for all fields to access the nested 'details.details'
+    loanNo: data?.details?.details?.loanNo || '-',
+    salaryDate1: data?.details?.details?.salaryDate1 || '',
+    salaryAmount1: data?.details?.details?.salaryAmount1 || 0,
+    salaryDate2: data?.details?.details?.salaryDate2 || '',
+    salaryAmount2: data?.details?.details?.salaryAmount2 || 0,
+    salaryDate3: data?.details?.details?.salaryDate3 || '',
+    salaryAmount3: data?.details?.details?.salaryAmount3 || 0,
+    nextPayDate: data?.details?.details?.nextPayDate || '',
+    averageSalary: data?.details?.details?.averageSalary || 0,
+    actualNetSalary: data?.details?.details?.actualNetSalary || 0,
+  
+    // Keeping these fields from 'details.details'
     creditBureauScore: data?.details?.details?.cibilScore || '-',
-    customerType: 'NEW',
-    dedupeCheck: 'NO',
-    customerCategory: '-',
-    repeatTimes: 0,
-    obligations: 100,
-    eligibleFoirPercentage: '0%',
-    eligibleLoan: 0,
-    netDisbursalAmount: 0,
-    eligibleTenure: '-',
-    disbursalDate: '-',
-    repaymentDate: '-',
-    foir: '0%',
-    loanAmount: 0,
-    roi: '0%',
-    adminFeePercentage: '0%',
-    netAdminFeeAmount: 0,
-    gstPercentage: '0%',
-    totalAdminFeeAmount: 0,
-    panelRoi: 0,
-    remarks: '-',
-    // Missing fields added
-    eligibleRoi: '1%',                   // Eligible ROI
-    eligibleAdminFee: '10%',               // Eligible Admin Fee
-    adminFeeGst: '18%',                    // Admin Fee GST
-    adminFeeGstAmount: 0,                 // Admin Fee GST Amount
-    finalFoirPercentage: '0%',            // Final FOIR Percentage
-    loanRecommended: 0,                   // Loan Recommended
-    repaymentAmount: 0                    // Repayment Amount
+    customerType: data?.details?.details?.customerType || 'NEW',
+    dedupeCheck: data?.details?.details?.dedupeCheck || 'NO',
+    customerCategory: data?.details?.details?.customerCategory || '-',
+    repeatTimes: data?.details?.details?.repeatTimes || 0,
+    obligations: data?.details?.details?.obligations || 100,
+    eligibleFoirPercentage: data?.details?.details?.eligibleFoirPercentage || '0%',
+    eligibleLoan: data?.details?.details?.eligibleLoan || 0,
+    netDisbursalAmount: data?.details?.details?.netDisbursalAmount || 0,
+    eligibleTenure: data?.details?.details?.eligibleTenure || '-',
+    disbursalDate: data?.details?.details?.disbursalDate || '-',
+    repaymentDate: data?.details?.details?.repaymentDate || '-',
+    foir: data?.details?.details?.foir || '0%',
+    loanAmount: data?.details?.details?.loanAmount || 0,
+    roi: data?.details?.details?.roi || '0%',
+    adminFeePercentage: data?.details?.details?.adminFeePercentage || '0%',
+    netAdminFeeAmount: data?.details?.details?.netAdminFeeAmount || 0,
+    gstPercentage: data?.details?.details?.gstPercentage || '0%',
+    totalAdminFeeAmount: data?.details?.details?.totalAdminFeeAmount || 0,
+    panelRoi: data?.details?.details?.panelRoi || 0,
+    remarks: data?.details?.details?.remarks || '-',
+  
+    // Additional nested fields
+    eligibleRoi: data?.details?.details?.eligibleRoi || '1%',
+    eligibleAdminFee: data?.details?.details?.eligibleAdminFee || '10%',
+    adminFeeGst: data?.details?.details?.adminFeeGst || '18%',
+    adminFeeGstAmount: data?.details?.details?.adminFeeGstAmount || 0,
+    finalFoirPercentage: data?.details?.details?.finalFoirPercentage || '0%',
+    loanRecommended: data?.details?.details?.loanRecommended || 0,
+    repaymentAmount: data?.details?.details?.repaymentAmount || 0,
   });
+  
+    // Use useEffect to update formData once data is fetched
+    useEffect(() => {
+      if (isSuccess && data?.details) {
+        const details = data.details.details;  // Access the deeply nested object
+        setFormData({
+          leadId: data.details?.leadId || 0,
+          loanNo: data.details?.details?.loanNo || '-',
+          salaryDate1: details?.salaryDate1 || '',
+          salaryAmount1: details?.salaryAmount1 || 0,
+          salaryDate2: details?.salaryDate2 || '',
+          salaryAmount2: details?.salaryAmount2 || 0,
+          salaryDate3: details?.salaryDate3 || '',
+          salaryAmount3: details?.salaryAmount3 || 0,
+          nextPayDate: details?.nextPayDate || '',
+          averageSalary: details?.averageSalary || 0,
+          actualNetSalary: details?.actualNetSalary || 0,
+          creditBureauScore: details?.cibilScore || '-',
+          customerType: details?.customerType || 'NEW',
+          dedupeCheck: details?.dedupeCheck || 'NO',
+          customerCategory: details?.customerCategory || '-',
+          repeatTimes: details?.repeatTimes || 0,
+          obligations: details?.obligations || 100,
+          eligibleFoirPercentage: details?.eligibleFoirPercentage || '0%',
+          eligibleLoan: details?.eligibleLoan || 0,
+          netDisbursalAmount: details?.netDisbursalAmount || 0,
+          eligibleTenure: data.details?.details?.eligibleTenure || '-',
+          disbursalDate: details?.disbursalDate || '-',
+          repaymentDate: details?.repaymentDate || '-',
+          foir: details?.foir || '0%',
+          loanAmount: details?.loanAmount || 0,
+          roi: details?.roi || '0%',
+          adminFeePercentage: details?.adminFeePercentage || '0%',
+          netAdminFeeAmount: details?.netAdminFeeAmount || 0,
+          gstPercentage: details?.gstPercentage || '0%',
+          totalAdminFeeAmount: details?.totalAdminFeeAmount || 0,
+          panelRoi: details?.panelRoi || 0,
+          remarks: details?.remarks || '-',
+          // Missing fields added
+          eligibleRoi: details?.eligibleRoi || '1%',
+          eligibleAdminFee: details?.eligibleAdminFee || '10%',
+          adminFeeGst: details?.adminFeeGst || '18%',
+          adminFeeGstAmount: details?.adminFeeGstAmount || 0,
+          finalFoirPercentage: details?.finalFoirPercentage || '0%',
+          loanRecommended: details?.loanRecommended || 0,
+          repaymentAmount: details?.repaymentAmount || 0,
+        });
+  
+        // setFormData({
+        //   leadId: data?.details?.leadId || 0,
+        //   loanNo: data?.details?.loanNo || '-',
+        //   salaryDate1: data?.details?.salaryDate1 || '',
+        //   salaryAmount1: data?.details?.salaryAmount1 || 0,
+        //   salaryDate2: data?.details?.salaryDate2 || '',
+        //   salaryAmount2: data?.details?.salaryAmount2 || 0,
+        //   salaryDate3: data?.details?.salaryDate3 || '',
+        //   salaryAmount3: data?.details?.salaryAmount3 || 0,
+        //   nextPayDate: data?.details?.nextPayDate || '',
+        //   averageSalary: data?.details?.averageSalary || 0,
+        //   actualNetSalary: data?.details?.actualNetSalary || 0,
+        //   creditBureauScore: data?.details?.details?.cibilScore || '-',
+        //   customerType: data?.details?.customerType || 'NEW',
+        //   dedupeCheck: data?.details?.dedupeCheck || 'NO',
+        //   customerCategory: data?.details?.customerCategory || '-',
+        //   repeatTimes: data?.details?.repeatTimes || 0,
+        //   obligations: data?.details?.obligations || 100,
+        //   eligibleFoirPercentage: data?.details?.eligibleFoirPercentage || '0%',
+        //   eligibleLoan: data?.details?.eligibleLoan || 0,
+        //   netDisbursalAmount: data?.details?.netDisbursalAmount || 0,
+        //   eligibleTenure: data?.details?.eligibleTenure || '-',
+        //   disbursalDate: data?.details?.disbursalDate || '-',
+        //   repaymentDate: data?.details?.repaymentDate || '-',
+        //   foir: data?.details?.foir || '0%',
+        //   loanAmount: data?.details?.loanAmount || 0,
+        //   roi: data?.details?.roi || '0%',
+        //   adminFeePercentage: data?.details?.adminFeePercentage || '0%',
+        //   netAdminFeeAmount: data?.details?.netAdminFeeAmount || 0,
+        //   gstPercentage: data?.details?.gstPercentage || '0%',
+        //   totalAdminFeeAmount: data?.details?.totalAdminFeeAmount || 0,
+        //   panelRoi: data?.details?.panelRoi || 0,
+        //   remarks: data?.details?.remarks || '-',
+        //   // Missing fields added
+        //   eligibleRoi: data?.details?.eligibleRoi || '1%',
+        //   eligibleAdminFee: data?.details?.eligibleAdminFee || '10%',
+        //   adminFeeGst: data?.details?.adminFeeGst || '18%',
+        //   adminFeeGstAmount: data?.details?.adminFeeGstAmount || 0,
+        //   finalFoirPercentage: data?.details?.finalFoirPercentage || '0%',
+        //   loanRecommended: data?.details?.loanRecommended || 0,
+        //   repaymentAmount: data?.details?.repaymentAmount || 0,
+        // });
+      }
+    }, [getCamSuccess, data]);  // Re-run the effect when `isSuccess` or `data` changes
+  
 
   // helperText={errorMessage}
   const [errorMessage,setErrorMessage]=useState("")
   
 
-  // / Initialize the mutation hook
-  const [updateCamDetails, { isLoading, isSuccess, isError }] = useUpdateCamDetailsMutation();
+  //  Initialize the mutation hook
+  const [updateCamDetails,  isLoading, isSuccess, isError ] = useUpdateCamDetailsMutation();
   
   const calculateDaysDifference = (disbursalDate, repaymentDate) => {
     console.log("The loan amount is calculateDaysDifference",disbursalDate,repaymentDate)
@@ -193,124 +290,133 @@ const EditableForm = () => {
         <div>
           {/* Display the table with data */}
           <TableContainer component={Paper}>
-  <Table>
-    <TableBody>
-      <TableRow>
-        <TableCell>Lead Id</TableCell>
-        <TableCell>{formData.leadId}</TableCell>
-        <TableCell>Loan No</TableCell>
-        <TableCell>{formData.loanNo}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Salary Date 1</TableCell>
-        <TableCell>{formData.salaryDate1 || '-'}</TableCell>
-        <TableCell>Salary Amount 1</TableCell>
-        <TableCell>{formData.salaryAmount1}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Salary Date 2</TableCell>
-        <TableCell>{formData.salaryDate2 || '-'}</TableCell>
-        <TableCell>Salary Amount 2</TableCell>
-        <TableCell>{formData.salaryAmount2}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Salary Date 3</TableCell>
-        <TableCell>{formData.salaryDate3 || '-'}</TableCell>
-        <TableCell>Salary Amount 3</TableCell>
-        <TableCell>{formData.salaryAmount3}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Next Salary Date</TableCell>
-        <TableCell>{formData.nextPayDate || '-'}</TableCell>
-        <TableCell>Median Salary Amount</TableCell>
-        <TableCell>{formData.averageSalary}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Actual Net Salary</TableCell>
-        <TableCell>{formData.actualNetSalary}</TableCell>
-        <TableCell>Credit Bureau Score</TableCell>
-        <TableCell>{formData.creditBureauScore}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Customer Type</TableCell>
-        <TableCell>{formData.customerType}</TableCell>
-        <TableCell>Dedupe Check</TableCell>
-        <TableCell>{formData.dedupeCheck}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Obligations (Rs)</TableCell>
-        <TableCell>{formData.obligations}</TableCell>
-        <TableCell>Eligible FOIR</TableCell>
-        <TableCell>{formData.eligibleFoirPercentage}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Eligible Loan Amount</TableCell>
-        <TableCell>{formData.eligibleLoan}</TableCell>
-        <TableCell>Net Disbursal</TableCell>
-        <TableCell>{formData.netDisbursalAmount}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Tenure</TableCell>
-        <TableCell>{formData.eligibleTenure}</TableCell>
-        <TableCell>Disbursal Date</TableCell>
-        <TableCell>{formData.disbursalDate}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Repayment Date</TableCell>
-        <TableCell>{formData.repaymentDate}</TableCell>
-        <TableCell>FOIR</TableCell>
-        <TableCell>{formData.foir}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Loan Amount</TableCell>
-        <TableCell>{formData.loanAmount}</TableCell>
-        <TableCell>ROI</TableCell>
-        <TableCell>{formData.roi}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Admin Fee (%)</TableCell>
-        <TableCell>{formData.adminFeePercentage}</TableCell>
-        <TableCell>Net Admin Fee Amount</TableCell>
-        <TableCell>{formData.netAdminFeeAmount}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>GST (%)</TableCell>
-        <TableCell>{formData.gstPercentage}</TableCell>
-        <TableCell>Total Admin Fee Amount</TableCell>
-        <TableCell>{formData.totalAdminFeeAmount}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Panel ROI</TableCell>
-        <TableCell>{formData.panelRoi}</TableCell>
-        <TableCell>Remarks</TableCell>
-        <TableCell>{formData.remarks}</TableCell>
-      </TableRow>
+          <Table>
+  <TableBody>
+    <TableRow>
+      <TableCell>Lead Id</TableCell>
+      <TableCell>{formData.leadId}</TableCell>
+      <TableCell>Loan No</TableCell>
+      <TableCell>{formData.loanNo}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Salary Date 1</TableCell>
+      <TableCell>{formData.salaryDate1 || '-'}</TableCell>
+      <TableCell>Salary Amount 1</TableCell>
+      <TableCell>{formData.salaryAmount1}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Salary Date 2</TableCell>
+      <TableCell>{formData.salaryDate2 || '-'}</TableCell>
+      <TableCell>Salary Amount 2</TableCell>
+      <TableCell>{formData.salaryAmount2}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Salary Date 3</TableCell>
+      <TableCell>{formData.salaryDate3 || '-'}</TableCell>
+      <TableCell>Salary Amount 3</TableCell>
+      <TableCell>{formData.salaryAmount3}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Next Salary Date</TableCell>
+      <TableCell>{formData.nextPayDate || '-'}</TableCell>
+      <TableCell>Median Salary Amount</TableCell>
+      <TableCell>{formData.averageSalary}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Actual Net Salary</TableCell>
+      <TableCell>{formData.actualNetSalary}</TableCell>
+      <TableCell>Credit Bureau Score</TableCell>
+      <TableCell>{formData.creditBureauScore}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Customer Type</TableCell>
+      <TableCell>{formData.customerType}</TableCell>
+      <TableCell>Dedupe Check</TableCell>
+      <TableCell>{formData.dedupeCheck}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Obligations (Rs)</TableCell>
+      <TableCell>{formData.obligations}</TableCell>
+      <TableCell>Eligible FOIR</TableCell>
+      <TableCell>{formData.eligibleFoirPercentage}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Eligible Loan Amount</TableCell>
+      <TableCell>{formData.eligibleLoan}</TableCell>
+      <TableCell>Net Disbursal</TableCell>
+      <TableCell>{formData.netDisbursalAmount}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Tenure</TableCell>
+      <TableCell>{formData.eligibleTenure}</TableCell>
+      <TableCell>Disbursal Date</TableCell>
+      <TableCell>{formData.disbursalDate}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Repayment Date</TableCell>
+      <TableCell>{formData.repaymentDate}</TableCell>
+      <TableCell>FOIR</TableCell>
+      <TableCell>{formData.foir}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Loan Amount</TableCell>
+      <TableCell>{formData.loanAmount}</TableCell>
+      <TableCell>ROI</TableCell>
+      <TableCell>{formData.roi}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Admin Fee (%)</TableCell>
+      <TableCell>{formData.adminFeePercentage}</TableCell>
+      <TableCell>Net Admin Fee Amount</TableCell>
+      <TableCell>{formData.netAdminFeeAmount}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>GST (%)</TableCell>
+      <TableCell>{formData.gstPercentage}</TableCell>
+      <TableCell>Total Admin Fee Amount</TableCell>
+      <TableCell>{formData.totalAdminFeeAmount}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Panel ROI</TableCell>
+      <TableCell>{formData.panelRoi}</TableCell>
+      <TableCell>Remarks</TableCell>
+      <TableCell>{formData.remarks}</TableCell>
+    </TableRow>
 
-      {/* Added Missing Fields */}
-      <TableRow>
-        <TableCell>Eligible ROI</TableCell>
-        <TableCell>{formData.eligibleRoi}</TableCell>
-        <TableCell>Eligible Admin Fee</TableCell>
-        <TableCell>{formData.eligibleAdminFee}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Admin Fee GST</TableCell>
-        <TableCell>{formData.adminFeeGst}</TableCell>
-        <TableCell>Admin Fee GST Amount</TableCell>
-        <TableCell>{formData.adminFeeGstAmount}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Final FOIR Percentage</TableCell>
-        <TableCell>{formData.finalFoirPercentage}</TableCell>
-        <TableCell>Loan Recommended</TableCell>
-        <TableCell>{formData.loanRecommended}</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Repayment Amount</TableCell>
-        <TableCell>{formData.repaymentAmount}</TableCell>
-      </TableRow>
-    </TableBody>
-  </Table>
+    {/* Added Missing Fields */}
+    <TableRow>
+      <TableCell>Eligible ROI</TableCell>
+      <TableCell>{formData.eligibleRoi}</TableCell>
+      <TableCell>Eligible Admin Fee</TableCell>
+      <TableCell>{formData.eligibleAdminFee}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Admin Fee GST</TableCell>
+      <TableCell>{formData.adminFeeGst}</TableCell>
+      <TableCell>Admin Fee GST Amount</TableCell>
+      <TableCell>{formData.adminFeeGstAmount}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Final FOIR Percentage</TableCell>
+      <TableCell>{formData.finalFoirPercentage}</TableCell>
+      <TableCell>Loan Recommended</TableCell>
+      <TableCell>{formData.loanRecommended}</TableCell>
+    </TableRow>
+    <TableRow>
+      <TableCell>Repayment Amount</TableCell>
+      <TableCell>{formData.repaymentAmount}</TableCell>
+    </TableRow>
+
+    {/* Additional missing fields based on your formData object */}
+    <TableRow>
+      <TableCell>Eligible Tenure</TableCell>
+      <TableCell>{formData.eligibleTenure}</TableCell>
+      <TableCell>Eligible FOIR Percentage</TableCell>
+      <TableCell>{formData.eligibleFoirPercentage}</TableCell>
+    </TableRow>
+  </TableBody>
+</Table>
+
 </TableContainer>
 
 
