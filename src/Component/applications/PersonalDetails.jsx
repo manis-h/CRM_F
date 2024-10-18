@@ -46,7 +46,6 @@ const PersonalDetails = ({ id }) => {
     ]);
   }, [applicantSuccess, applicantData, personalDetails]);
 
-  console.log('applicant data',applicantData,residence)
 
   return (
     <>

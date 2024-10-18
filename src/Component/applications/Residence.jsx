@@ -6,6 +6,7 @@ import { residenceSchema } from '../../utils/validations';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useUpdatePersonalDetailsMutation } from '../../queries/applicationQueries';
 import useStore from '../../Store';
+import useAuthStore from '../store/authStore';
 
 const accordionStyles = {
   borderRadius: '12px',
@@ -34,6 +35,7 @@ const buttonStyles = {
 
 const Residence = ({ residence }) => {
   const { applicationProfile } = useStore()
+  const {empInfo} = useAuthStore()
   const id = applicationProfile._id
   const [columns, setColumns] = useState(null)
   const [isEditingResidence, setIsEditingResidence] = useState(false);
@@ -240,8 +242,8 @@ const Residence = ({ residence }) => {
                   </Table>
                 </TableContainer>
                 <Divider sx={{ my: 2 }} />
-
-                <Box display="flex" justifyContent="flex-end">
+ 
+                {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "sanctionHead" ) && <Box display="flex" justifyContent="flex-end">
                   <Button
                     variant="contained"
                     style={buttonStyles}
@@ -249,7 +251,7 @@ const Residence = ({ residence }) => {
                   >
                     Edit
                   </Button>
-                </Box>
+                </Box>}
 
               </>
             )}

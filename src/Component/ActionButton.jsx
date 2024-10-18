@@ -5,7 +5,7 @@ import { useHoldLeadMutation, useRecommendLeadMutation, useRejectLeadMutation, u
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from './store/authStore';
-import { useHoldApplicationMutation, useRecommendApplicationMutation, useRejectApplicationMutation, useSendBackMutation, useUnholdApplicationMutation } from '../queries/applicationQueries';
+import { useHoldApplicationMutation, useRecommendApplicationMutation, useRejectApplicationMutation, useSanctionSendBackMutation, useSendBackMutation, useUnholdApplicationMutation } from '../queries/applicationQueries';
 import useStore from '../Store';
 import RejectedLeads from './leads/RejectedLeads';
 
@@ -51,9 +51,11 @@ const ActionButton = ({ id, isHold }) => {
     const [unholdLead, { data: unholdLeadData, isSuccess: unholdLeadSuccess, isError: isUnHoldError, error: unHoldleadError }] = useUnholdLeadMutation();
     const [recommendLead, { data: recommendLeadData, isSuccess: recommendLeadSuccess, isError: isRecommendLeadError, error: recommendLeadError }] = useRecommendLeadMutation();
     const [rejectLead, { data: rejectLeadData, isSuccess: rejectLeadSuccess, isError: isRejectError, error: rejectLeadError }] = useRejectLeadMutation();
-
-    // Send back mutation -------
     const [sendBack, { data: sendBackData, isSuccess: SendBackSuccess, isError: isSendBackError, error: sendBackError }] = useSendBackMutation()
+
+    // sanction Action mutation -------
+    const [sanctionSendBack, { data: sanctionSendBackData, isSuccess: sanctionSendBackSuccess, isError: isSanctionSendBackError, error: sanctionSendBackError }] = useSanctionSendBackMutation()
+    const [sanctionReject, { data: sanctionRejectData, isSuccess: sanctionRejectSuccess, isError: isSanctionRejectError, error: sanctionRejectError }] = useRejectLeadMutation();
 
 
     const handleApprove = () => {
@@ -100,6 +102,8 @@ const ActionButton = ({ id, isHold }) => {
                 rejectLead({ id, reason: remarks })
             } else if (empInfo.empRole === "creditManager") {
                 rejectApplication({ id, reason: remarks })
+            } else {
+                sanctionReject({ id, reason: remarks })
             }
 
         } else if (actionType === "unhold") {
@@ -110,7 +114,12 @@ const ActionButton = ({ id, isHold }) => {
                 unholdApplication({ id, reason: remarks })
             }
         } else if (actionType === "sendBack") {
-            sendBack({ id: applicationProfile.lead._id, reason: remarks, sendTo: selectedRecipient })
+            if (empInfo.empRole === "sanctionHead") {
+
+                sanctionSendBack({ id: applicationProfile.lead._id, reason: remarks, sendTo: selectedRecipient })
+            } else if (empInfo.empRole === "creditManager") {
+                sendBack({ id: applicationProfile.lead._id, reason: remarks, sendTo: selectedRecipient })
+            }
 
         }
 
@@ -166,8 +175,16 @@ const ActionButton = ({ id, isHold }) => {
             });
             navigate("/application-process")
         }
+        if (sanctionSendBackSuccess && sanctionSendBackData) {
+            Swal.fire({
+                text: "Application successfully send back!",
+                icon: "success"
+            });
+            navigate("/recommended-application")
+        }
 
-    }, [sendBackData])
+
+    }, [sendBackData, sanctionSendBackData])
     useEffect(() => {
         if (holdApplicationSuccess && holdApplicationData) {
             Swal.fire({
@@ -197,8 +214,15 @@ const ActionButton = ({ id, isHold }) => {
             });
             navigate("/application-process")
         }
+        if (sanctionRejectSuccess && sanctionRejectData) {
+            Swal.fire({
+                text: "Application Forwarded!",
+                icon: "success"
+            });
+            navigate("/recommended-application")
+        }
 
-    }, [holdApplicationData, unholdApplicationData, rejectApplicationData, recommendApplicationData])
+    }, [holdApplicationData, unholdApplicationData, rejectApplicationData, recommendApplicationData,sanctionRejectData])
 
 
 
@@ -215,6 +239,11 @@ const ActionButton = ({ id, isHold }) => {
                         {recommendApplicationError?.data?.message} || {applicationHoldError?.data?.message} || {rejectApplicationError?.data?.message} || {unHoldApplicationError?.data?.message}
                     </Alert>
                 }
+                {(isSanctionSendBackError) &&
+                    <Alert severity="error" style={{ marginTop: "10px" }}>
+                        {sanctionSendBackError?.data?.message}
+                    </Alert>
+                }
 
                 {/* Render buttons if no action is selected */}
                 {(!actionType) && (
@@ -226,13 +255,13 @@ const ActionButton = ({ id, isHold }) => {
                         >
                             Forward
                         </Button>
-                        <Button
+                        {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Button
                             variant="contained"
                             color="warning"
                             onClick={() => handleActionClick(isHold ? "unhold" : 'hold')}
                         >
                             {isHold ? "Unhold" : "Hold"}
-                        </Button>
+                        </Button>}
                         <Button
                             variant="contained"
                             color="error"

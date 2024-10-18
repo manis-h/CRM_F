@@ -11,6 +11,7 @@ import ActionButton from '../actionButton';
 import PersonalDetails from '../applications/PersonalDetails';
 import BankDetails from '../applications/BankDetails';
 import UploadDocuments from '../UploadDocuments';
+import Cam from '../applications/Cam'
 
 
 const barButtonOptions = ['Application', 'Documents', 'Personal', 'Banking', 'Verification', 'Cam']

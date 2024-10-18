@@ -6,9 +6,11 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useLazyGetLeadDocsQuery, useUploadDocumentsMutation } from '../Service/Query';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import useAuthStore from './store/authStore';
 
 const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
     const { id } = useParams();
+    const {empInfo} = useAuthStore()
     const [selectedFileType, setSelectedFileType] = useState(null);
 
     const [uploadDocuments, { isSuccess: docSuccess, isError: isDocError, error: docError }] = useUploadDocumentsMutation();
@@ -84,7 +86,6 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
         if (docsSuccess) {
             const fileUrl = docsData?.url;
             const mimeType = docsData?.mimeType?.split('/').pop().toLowerCase();
-            console.log('docs check', fileUrl, docsData, mimeType)
 
             if (['jpg', 'jpeg', 'png'].includes(mimeType)) {
                 Swal.fire({
@@ -169,7 +170,7 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
                                                 marginBottom: '20px',
                                             }}
                                         >
-                                            <TextField
+                                            {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin" ) && <TextField
                                                 type="file"
                                                 name={key}
                                                 accept={acceptType}
@@ -191,7 +192,7 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
                                                         },
                                                     },
                                                 }}
-                                            />
+                                            />}
 
                                             {uploadedDocs.includes(key) && (
                                                 <Button

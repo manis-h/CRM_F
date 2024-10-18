@@ -11,6 +11,7 @@ import { useUpdatePersonalDetailsMutation } from '../../queries/applicationQueri
 import { employmentSchema } from '../../utils/validations';
 import { Alert } from '@mui/material'; // Import Alert component
 import dayjs from 'dayjs';
+import useAuthStore from '../store/authStore';
 
 const accordionStyles = {
   borderRadius: '12px',
@@ -38,6 +39,7 @@ const buttonStyles = {
 
 const Employment = ({ employmentData }) => {
   const { applicationProfile } = useStore();
+  const {empInfo} = useAuthStore()
   const id = applicationProfile._id;
   const [columns, setColumns] = useState(null);
   const [isEditingEmployment, setIsEditingEmployment] = useState(false);
@@ -277,7 +279,7 @@ const Employment = ({ employmentData }) => {
 
               <Divider sx={{ my: 2 }} />
 
-              <Box display="flex" justifyContent="flex-end">
+              {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin" ) && <Box display="flex" justifyContent="flex-end">
                 <Button
                   variant="contained"
                   style={buttonStyles}
@@ -285,7 +287,7 @@ const Employment = ({ employmentData }) => {
                 >
                   Edit 
                 </Button>
-              </Box>
+              </Box>}
             </>
           )}
         </Paper>

@@ -25,7 +25,6 @@ const AddUserForm = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         
-        console.log('form data',formData)
         if (formData.password !== formData.confPassword) {
             setError('Passwords do not match');
             return;
@@ -43,7 +42,6 @@ const AddUserForm = () => {
             empId: ''
         })
 
-        console.log('Form Data Submitted: ', formData);
         // Add logic to save the user data
     };
 
