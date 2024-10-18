@@ -40,7 +40,8 @@ const Navbar = () => {
   return (
     <>
       {
-        empInfo?.empRole === "sanctionHead" ? <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        empInfo?.empRole === "sanctionHead" ? 
+        <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
           <Link className="navbar-brand" to="/">
             QuickMoney4U
@@ -171,9 +172,11 @@ const Navbar = () => {
                 onChange={handleRoleChange}
               >
                 {/* <option value="Guest">AUDIT</option> */}
-                <option value="Admin">ADMIN</option>
-                <option value="Screener">SCREENER</option>
-                <option value="Credit-manager">CREDIT MANAGER</option>
+                { empInfo.empRole === 'admin' ? ( <option value="Admin">ADMIN</option>) : "" }
+                {/* <option value="Screener">SCREENER</option> */}
+                { empInfo.empRole === 'screener' ? ( <option value="Screener">SCREENER</option>) : "" }
+                { empInfo.empRole === 'creditManager' ? (<option value="Credit-manager">CREDIT MANAGER</option>) : ("") }
+                 
               </select>
             </li>
 
