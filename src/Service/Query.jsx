@@ -204,6 +204,10 @@ export const leadsApi = createApi({
       query: (id) => `verify/pan/${id}`,
       // providesTags:["leadProfile"]
     }),
+    // get the lead numbers
+    getLeadTotalRecords : builder.query({
+      query : () => `leads/totalRecords`
+    }),
     
   }),
 });
@@ -240,4 +244,5 @@ export const {
   useRejectLeadMutation,
   useLazyFetchCibilScoreQuery,
   useFetchAllRejectedLeadsQuery,
+  useGetLeadTotalRecordsQuery
 } = leadsApi;

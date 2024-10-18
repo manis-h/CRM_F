@@ -369,6 +369,7 @@ import { tokens } from '../theme';
 import useAuthStore from './store/authStore';
 import useStore from '../Store';
 import Header from "./Header";
+import { useGetLeadTotalRecordsQuery } from '../Service/Query';
 const Dashboard = ({ isSidebarOpen }) => {
   const { login, setEmployeeDetails } = useStore();
   const { data: employeeDetails, isSuccess: empDetailsSuccess, refetch } = useGetEmployeesQuery();
@@ -377,8 +378,13 @@ const Dashboard = ({ isSidebarOpen }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Define Employee roles with icons and paths
-  const Employee = {
+ 
+
+  const { data}  = useGetLeadTotalRecordsQuery();
+
+
+   // Define Employee roles with icons and paths
+   const Employee = {
     admin: {
       leadNew: {
         icon: <NewReleasesIcon className='mt-3'
@@ -437,25 +443,27 @@ const Dashboard = ({ isSidebarOpen }) => {
         sx={{ color: '#4caf50', width:'100%', height:'30%' }} />, // Green color
         path: "/lead-new",
         title: 'New Leads',
-        no : 10
+        no : data?.leads?.newLeads || 0
       },
       leadProcess: {
         icon: <PlayArrowIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/lead-process",
         title: 'Leads In Process',
-        no : 10
+        no : data?.leads?.
+        allocatedLeads || 0
       },
       leadHold: {
         icon: <PauseIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/lead-hold",
         title: 'Leads Held',
-        no : 10
+        no : data?.leads?.heldLeads || 0
       },
       leadRejected: {
         icon: <CancelIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/rejected-leads",
         title: 'Leads Rejected',
-        no : 10
+        no : data?.leads?.
+        rejectedLeads || 0
       },
     },
     creditManager: {
@@ -464,25 +472,27 @@ const Dashboard = ({ isSidebarOpen }) => {
         sx={{ color: '#4caf50', width:'100%', height:'30%' }} />, // Green color
         path: "/new-applications",
         title: 'New Applications',
-        no : 10
+        no : data?.applications?.newApplications || 0
+
       },
       applicationProcess: {
         icon: <PlayArrowIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/application-process",
         title: 'Applications In Process',
-        no : 10
+        no : data?.applications?.allocatedApplications || 0
       },
       applicationHold: {
         icon: <PauseIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/applications-held",
         title: 'Applications Held',
-        no : 10
+        no : data?.applications?.
+        heldApplications || 0
       },
       applicationRejected: {
         icon: <CancelIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/rejected-applications",
         title: 'Applications Rejected',
-        no : 10
+        no : data?.applications?.rejectedApplications || 0
       },
     },
     sanctionHead: {
@@ -491,50 +501,54 @@ const Dashboard = ({ isSidebarOpen }) => {
         sx={{ color: '#4caf50', width:'100%', height:'30%' }} />, // Green color
         path: "/lead-new",
         title: 'New Leads',
-        no : 10
+        no : data?.leads?.newLeads || 0
       },
       leadProcess: {
         icon: <PlayArrowIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/lead-process",
         title: 'Leads In Process',
-        no : 10
+        no : data?.leads?.
+        allocatedLeads || 0
       },
       leadHold: {
         icon: <PauseIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/lead-hold",
         title: 'Leads Held',
-        no : 10
+        no : data?.leads?.heldLeads  || 0
       },
       leadRejected: {
         icon: <CancelIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/rejected-leads",
         title: 'Leads Rejected',
-        no : 10
+        no : data?.leads?.
+        rejectedLeads || 0
       },
       newApplication: {
         icon: <NewReleasesIcon className='mt-3'
         sx={{ color: '#4caf50', width:'100%', height:'30%' }} />, // Green color
         path: "/new-applications",
         title: 'New Applications',
-        no : 10
+        no : data?.applications?.newApplications || 0
+
       },
       applicationProcess: {
         icon: <PlayArrowIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/application-process",
         title: 'Applications In Process',
-        no : 10
+        no : data?.applications?.allocatedApplications || 0
       },
       applicationHold: {
         icon: <PauseIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/applications-held",
         title: 'Applications Held',
-        no : 10
+        no : data?.applications?.
+        heldApplications || 0
       },
       applicationRejected: {
         icon: <CancelIcon className='mt-3' sx={{ color: '#4caf50', width:'100%', height:'30%' }} />,
         path: "/rejected-applications",
         title: 'Applications Rejected',
-        no : 10
+        no : data?.applications?.rejectedApplications || 0
       },
     }
   };
