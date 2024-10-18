@@ -16,7 +16,6 @@ const ImportCSV = () => {
     if (file) {
       formData.append("csv",file)
       bulkUpload(formData)
-      console.log('CSV file to be uploaded:', file);
     } else {
       alert('Please select a file to upload');
     }

@@ -42,7 +42,6 @@ const LoginPage = () => {
     if (loginSuccess) {
       setLogin(true)
       setEmpInfo(loginData)
-      console.log('login navigation', loginData)
 
       navigate('/')
 
