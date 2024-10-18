@@ -117,7 +117,7 @@ const LeadProfile = () => {
                                             {error?.data?.message}
                                         </Alert>
                                     }
-                                    <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
+                                    {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
                                         <Button
                                             variant="outlined"
                                             onClick={() => setLeadEdit(true)}
@@ -132,7 +132,7 @@ const LeadProfile = () => {
                                         >
                                             Edit
                                         </Button>
-                                    </Box>
+                                    </Box>}
 
 
                                 </Paper>

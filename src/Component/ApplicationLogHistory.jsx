@@ -14,11 +14,11 @@ import { useApplicationLogsQuery } from '../Service/Query';
 import { formatDateTime } from '../utils/helper';
 
 const columns = [
-    { field: 'sr', headerName: '#', width: 150 },
-    { field: 'borrower', headerName: 'Borrower', width: 200 },
-    { field: 'logDate', headerName: 'Log Date', width: 200 },
-    { field: 'status', headerName: 'Status', width: 100 },
-    { field: 'leadRemark', headerName: 'Lead Remark', width: 250 },
+    { field: 'sr', headerName: '#', width: 50 },
+    { field: 'borrower', headerName: 'Borrower', width: 150 },
+    { field: 'logDate', headerName: 'Log Date', width: 150 },
+    { field: 'status', headerName: 'Action', width: 200 },
+    { field: 'leadRemark', headerName: 'Lead Remark', width: 300 },
     { field: 'reason', headerName: 'Reason', width: 250 },
 ];
 

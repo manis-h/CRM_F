@@ -92,6 +92,11 @@ function App() {
                   <Route path="/application-hold" element={<HoldApplication />} />
 
                   <Route path="/rejected-Applications" element={<RejectedApplication />} />
+                  <Route path="/sanction" element={<DynamicTable />} />
+                  <Route path="/recommended-application" element={<RecommendedApp />} />
+                  <Route path="/sanction-profile/:id" element={<SanctionProfile />} />
+                  <Route path="/sanction-reject" element={<DynamicTable />} />
+                  <Route path="/sanction-sentback" element={<DynamicTable />} />
 
                   <Route path="/application-recommendation" element={<DynamicTable
                     header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager"]}
@@ -101,15 +106,7 @@ function App() {
                       ["603", "Recommend", "2024-09-07", "Referral", "Liam Davis", "Texas", "Houston", "Branch O", "555-5555", "PQR345678O", "Individual", "Active", "Manager 3"],
                       ["604", "Recommend", "2024-09-06", "Online", "Sophia Wilson", "Florida", "Orlando", "Branch P", "555-6666", "STU901234P", "Business", "Completed", "Manager 4"]
                     ]} />} />
-                  <Route path="/sanction" element={<DynamicTable />} />
-                  <Route path="/recommended-application" element={<RecommendedApp />} />
-                  <Route path="/sanction-profile/:id" element={<SanctionProfile />} />
-                  <Route path="/sanction-reject" element={
-                    <DynamicTable
-                    />
-                  } />
-                  <Route path="/sanction-sentback" element={<DynamicTable
-                  />} />
+                  
                   <Route path="/disbursal-new" element={<DynamicTable
                     header={["Lead Id", "Action", "Applied On", "Source", "Name", "State", "City", "Branch", "Mobile", "Pan", "UserType", "Status", "Sanction Manager", "Sanction-On", "Sanction-Amount"]}
                     rows={[

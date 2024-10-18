@@ -11,7 +11,6 @@ const ViewUsersForm = () => {
     rows: [] // Default empty rows
   };
   const {data}=useGetEmployeesQuery();
-  console.log(data)
 
   // Internal CSS styles for the table
   const tableStyles = {

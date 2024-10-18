@@ -16,7 +16,7 @@ export const applicationApi = createApi({
     },
 
   }),
-  tagTypes: ["getApplication","getProfile","bankDetails","applicantDetails","getCamDetails"],
+  tagTypes: ["getApplication","getProfile","bankDetails","applicantDetails","getCamDetails","recommendedApplication"],
   endpoints: (builder) => ({
     // GET request to fetch a Pokemon by name
     holdApplication: builder.mutation({
@@ -37,6 +37,15 @@ export const applicationApi = createApi({
       }),
       invalidatesTags:["getProfile","getApplication"]
     }),
+    sanctionReject: builder.mutation({
+      query: ({id,reason}) => ({
+
+        url: `sanction/reject/${id}`,
+        method: 'PATCH',
+        body:{reason}
+      }),
+      invalidatesTags:["getProfile","getApplication","recommendedApplication"]
+    }),
     unholdApplication: builder.mutation({
       query: ({id,reason}) => ({
 
@@ -55,6 +64,15 @@ export const applicationApi = createApi({
       }),
       invalidatesTags:["getApplication"]
     }),
+    sanctionSendBack: builder.mutation({
+      query: ({id,reason,sendTo}) => ({
+
+        url: `sanction/sent-back/${id}`,
+        method: 'PATCH',
+        body:{sendTo,reason}
+      }),
+      invalidatesTags:["getApplication","recommendedApplication"]
+    }),
     recommendApplication: builder.mutation({
       query: (id) => ({
 
@@ -63,14 +81,7 @@ export const applicationApi = createApi({
       }),
     }),
 
-    // addEmployee: builder.mutation({
-    //   query: (data) => ({
 
-    //     url: 'employees/register',
-    //     method: 'POST',
-    //     body: data,
-    //   }),
-    // }),
     allocateApplication: builder.mutation({
       query: (id) => ({
         url: `/applications/${id}`,
@@ -155,7 +166,7 @@ export const applicationApi = createApi({
     }),
     recommendedApplications: builder.query({
       query: () => `/sanction/recommended`,
-      // providesTags:["getApplication"]
+      providesTags:["recommendedApplicatio"]
     }),
     sanctionProfile: builder.query({
       query: (id) => `/sanction/${id}`,
@@ -169,10 +180,12 @@ export const {
     useAllocateApplicationMutation,
     useHoldApplicationMutation,
     useRejectApplicationMutation,
+    useSanctionRejectMutation,
     useUnholdApplicationMutation,
     useRecommendApplicationMutation,
     useAddBankMutation,
     useSendBackMutation,
+    useSanctionSendBackMutation,
     useUpdatePersonalDetailsMutation,
     useGetBankDetailsQuery,
     useFetchAllocatedApplicationQuery,

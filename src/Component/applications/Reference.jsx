@@ -6,6 +6,7 @@ import { useUpdatePersonalDetailsMutation } from '../../queries/applicationQueri
 import useStore from '../../Store';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { referenceSchema } from '../../utils/validations';
+import useAuthStore from '../store/authStore';
 
 const accordionStyles = {
   borderRadius: '12px',
@@ -23,6 +24,7 @@ const paperStyles = {
 
 const Reference = ({ reference }) => {
   const { applicationProfile } = useStore();
+  const {empInfo} = useAuthStore()
   const id = applicationProfile._id;
   const [referenceDetails,setReferenceDetails] = useState()
 
@@ -33,7 +35,6 @@ const Reference = ({ reference }) => {
   });
 
   const onSubmit = (data) => {
-    console.log('data', data);
     const newData = { reference: [ {...data.reference1},{...data.reference2} ] };
 
     // Call API or mutation here
@@ -65,7 +66,6 @@ const Reference = ({ reference }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Paper elevation={3} style={paperStyles}>
-            {console.log('refer cond',!reference)}
             {Object.keys(reference).length === 0 ? (
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Box display="flex" flexDirection="column" gap={4}>

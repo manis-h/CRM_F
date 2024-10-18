@@ -3,6 +3,7 @@ import { TextField, FormControl, InputLabel, Select, MenuItem, Button, Typograph
 import { useParams } from 'react-router-dom';
 import { useUpdateLeadMutation } from '../Service/Query';
 import { formatDate } from '../utils/helper';
+import useAuthStore from './store/authStore';
 
 const LeadDetails = ({ leadData, setLeadEdit }) => {
   const { id } = useParams();
@@ -18,7 +19,6 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
     setLeadEdit(false);
     updateLead({ id, formData });
   };
-console.log('form data',formData)
   const convertToISODate = (dob) => {
     if (!dob) return '';
     const [day, month, year] = dob.split('-');
