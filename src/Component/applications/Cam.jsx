@@ -57,9 +57,11 @@ const EditableForm = () => {
     repaymentAmount: data?.details?.details?.repaymentAmount || 0,
   });
   
+  console.log("The formdata ia",formData)
+  // console.log"The for",formdaata))
     // Use useEffect to update formData once data is fetched
     useEffect(() => {
-      if (isSuccess && data?.details) {
+      if (getCamSuccess && data?.details) {
         const details = data.details.details;  // Access the deeply nested object
         setFormData({
           leadId: data.details?.leadId || 0,
@@ -150,6 +152,12 @@ const EditableForm = () => {
     }, [getCamSuccess, data]);  // Re-run the effect when `isSuccess` or `data` changes
   
 
+    // if( camGetloading ){
+    //   return (
+    //     <h1>Loading ...</h1>
+    //   )
+    // }
+
   // helperText={errorMessage}
   const [errorMessage,setErrorMessage]=useState("")
   
@@ -223,22 +231,37 @@ const EditableForm = () => {
     console.log("the form data is ",formData)
     // Add save logic here
     e.preventDefault();
+    // try {
+    //   // Call the mutation function with necessary data
+    //   await updateCamDetails({
+    //     id: id, // ID of the CAM (assuming this is passed as a prop)
+    //     updates: formData  // The updated data from the form
+    //   }).unwrap();
+
+    //   // Handle success or do further actions, like showing a notification
+    //   console.log('Update successful');
+    // } catch (error) {
+    //   // Handle error, maybe show an error message
+    //   console.error('Error updating CAM details:', error);
+    // }
+
     try {
-      // Call the mutation function with necessary data
-      await updateCamDetails({
+      const response = await await updateCamDetails({
         id: id, // ID of the CAM (assuming this is passed as a prop)
         updates: formData  // The updated data from the form
       }).unwrap();
 
-      // Handle success or do further actions, like showing a notification
-      console.log('Update successful');
+      if (response?.data?.success) {
+        setIsEditing(false); // Stop editing after successful update
+        setErrorMessage(""); // Clear any error message
+      } else {
+        setErrorMessage("Failed to update the data. Please try again.");
+      }
     } catch (error) {
-      // Handle error, maybe show an error message
-      console.error('Error updating CAM details:', error);
+      setErrorMessage("An error occurred while updating the data.");
     }
-
     console.log('Form data saved:', formData);
-    setIsEditing(false);
+    // setIsEditing(false);
   };
 
   const handleCancel = () => {
@@ -285,532 +308,540 @@ const EditableForm = () => {
   
 
   return (
-    <div>
-      {!isEditing ? (
-        <div>
-          {/* Display the table with data */}
-          <TableContainer component={Paper}>
-          <Table>
-  <TableBody>
-    <TableRow>
-      <TableCell>Lead Id</TableCell>
-      <TableCell>{formData.leadId}</TableCell>
-      <TableCell>Loan No</TableCell>
-      <TableCell>{formData.loanNo}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Salary Date 1</TableCell>
-      <TableCell>{formData.salaryDate1 || '-'}</TableCell>
-      <TableCell>Salary Amount 1</TableCell>
-      <TableCell>{formData.salaryAmount1}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Salary Date 2</TableCell>
-      <TableCell>{formData.salaryDate2 || '-'}</TableCell>
-      <TableCell>Salary Amount 2</TableCell>
-      <TableCell>{formData.salaryAmount2}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Salary Date 3</TableCell>
-      <TableCell>{formData.salaryDate3 || '-'}</TableCell>
-      <TableCell>Salary Amount 3</TableCell>
-      <TableCell>{formData.salaryAmount3}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Next Salary Date</TableCell>
-      <TableCell>{formData.nextPayDate || '-'}</TableCell>
-      <TableCell>Median Salary Amount</TableCell>
-      <TableCell>{formData.averageSalary}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Actual Net Salary</TableCell>
-      <TableCell>{formData.actualNetSalary}</TableCell>
-      <TableCell>Credit Bureau Score</TableCell>
-      <TableCell>{formData.creditBureauScore}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Customer Type</TableCell>
-      <TableCell>{formData.customerType}</TableCell>
-      <TableCell>Dedupe Check</TableCell>
-      <TableCell>{formData.dedupeCheck}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Obligations (Rs)</TableCell>
-      <TableCell>{formData.obligations}</TableCell>
-      <TableCell>Eligible FOIR</TableCell>
-      <TableCell>{formData.eligibleFoirPercentage}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Eligible Loan Amount</TableCell>
-      <TableCell>{formData.eligibleLoan}</TableCell>
-      <TableCell>Net Disbursal</TableCell>
-      <TableCell>{formData.netDisbursalAmount}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Tenure</TableCell>
-      <TableCell>{formData.eligibleTenure}</TableCell>
-      <TableCell>Disbursal Date</TableCell>
-      <TableCell>{formData.disbursalDate}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Repayment Date</TableCell>
-      <TableCell>{formData.repaymentDate}</TableCell>
-      <TableCell>FOIR</TableCell>
-      <TableCell>{formData.foir}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Loan Amount</TableCell>
-      <TableCell>{formData.loanAmount}</TableCell>
-      <TableCell>ROI</TableCell>
-      <TableCell>{formData.roi}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Admin Fee (%)</TableCell>
-      <TableCell>{formData.adminFeePercentage}</TableCell>
-      <TableCell>Net Admin Fee Amount</TableCell>
-      <TableCell>{formData.netAdminFeeAmount}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>GST (%)</TableCell>
-      <TableCell>{formData.gstPercentage}</TableCell>
-      <TableCell>Total Admin Fee Amount</TableCell>
-      <TableCell>{formData.totalAdminFeeAmount}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Panel ROI</TableCell>
-      <TableCell>{formData.panelRoi}</TableCell>
-      <TableCell>Remarks</TableCell>
-      <TableCell>{formData.remarks}</TableCell>
-    </TableRow>
-
-    {/* Added Missing Fields */}
-    <TableRow>
-      <TableCell>Eligible ROI</TableCell>
-      <TableCell>{formData.eligibleRoi}</TableCell>
-      <TableCell>Eligible Admin Fee</TableCell>
-      <TableCell>{formData.eligibleAdminFee}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Admin Fee GST</TableCell>
-      <TableCell>{formData.adminFeeGst}</TableCell>
-      <TableCell>Admin Fee GST Amount</TableCell>
-      <TableCell>{formData.adminFeeGstAmount}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Final FOIR Percentage</TableCell>
-      <TableCell>{formData.finalFoirPercentage}</TableCell>
-      <TableCell>Loan Recommended</TableCell>
-      <TableCell>{formData.loanRecommended}</TableCell>
-    </TableRow>
-    <TableRow>
-      <TableCell>Repayment Amount</TableCell>
-      <TableCell>{formData.repaymentAmount}</TableCell>
-    </TableRow>
-
-    {/* Additional missing fields based on your formData object */}
-    <TableRow>
-      <TableCell>Eligible Tenure</TableCell>
-      <TableCell>{formData.eligibleTenure}</TableCell>
-      <TableCell>Eligible FOIR Percentage</TableCell>
-      <TableCell>{formData.eligibleFoirPercentage}</TableCell>
-    </TableRow>
-  </TableBody>
-</Table>
-
-</TableContainer>
-
-
-          {/* Edit CAM Button */}
-          <Button variant="contained" onClick={() => setIsEditing(true)} style={{ marginTop: '20px' }}>
-            Edit CAM
-          </Button>
-        </div>
-      ) : (
-        // <form>
-        <form style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', background: '#808080', padding: '10px' }}>
-  {/* First Row (4 items) */}
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Lead ID"
-      name="leadId"
-      type="number"
-      fullWidth
-      value={formData.leadId}
-      onChange={handleChange}
-      InputProps={{ readOnly: true }} // Makes the field read-only
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Loan No"
-      name="loanNo"
-      fullWidth
-      value={formData.loanNo}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Salary Date 1"
-      name="salaryDate1"
-      type="date"
-      InputLabelProps={{ shrink: true }}
-      fullWidth
-      value={formData.salaryDate1}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Salary Amount 1"
-      name="salaryAmount1"
-      type="number"
-      fullWidth
-      value={formData.salaryAmount1}
-      onChange={handleChange}
-    />
-  </div>
-
-  {/* Second Row (4 items) */}
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Salary Date 2"
-      name="salaryDate2"
-      type="date"
-      InputLabelProps={{ shrink: true }}
-      fullWidth
-      value={formData.salaryDate2}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Salary Amount 2"
-      name="salaryAmount2"
-      type="number"
-      fullWidth
-      value={formData.salaryAmount2}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Salary Date 3"
-      name="salaryDate3"
-      type="date"
-      InputLabelProps={{ shrink: true }}
-      fullWidth
-      value={formData.salaryDate3}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Salary Amount 3"
-      name="salaryAmount3"
-      type="number"
-      fullWidth
-      value={formData.salaryAmount3}
-      onChange={handleChange}
-    />
-  </div>
-
-  {/* Third Row (4 items) */}
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Next Pay Date"
-      name="nextPayDate"
-      type="date"
-      InputLabelProps={{ shrink: true }}
-      fullWidth
-      value={formData.nextPayDate}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Average Salary"
-      name="averageSalary"
-      type="number"
-      fullWidth
-      value={formData.averageSalary}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Actual Net Salary"
-      name="actualNetSalary"
-      type="number"
-      fullWidth
-      value={formData.actualNetSalary}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Credit Bureau Score"
-      name="creditBureauScore"
-      fullWidth
-      InputProps={{ readOnly: true }}
-      value={formData.creditBureauScore}
-      onChange={handleChange}
-    />
-  </div>
-
-  {/* Fourth Row (4 items) */}
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Customer Type"
-      name="customerType"
-      fullWidth
-      value={formData.customerType}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Dedupe Check"
-      name="dedupeCheck"
-      fullWidth
-      value={formData.dedupeCheck}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Customer Category"
-      name="customerCategory"
-      fullWidth
-      value={formData.customerCategory}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Repeat Times"
-      name="repeatTimes"
-      type="number"
-      fullWidth
-      value={formData.repeatTimes}
-      onChange={handleChange}
-    />
-  </div>
-
-  {/* Fifth Row (4 items) */}
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Obligations (Rs)"
-      name="obligations"
-      type="number"
-      fullWidth
-      value={formData.obligations}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Eligible FOIR Percentage"
-      name="eligibleFoirPercentage"
-      fullWidth
-      value={formData.eligibleFoirPercentage}
-      onChange={handleChange}
-      slotProps={{ input: { readOnly: true } }} // Updated from InputProps to slotProps
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Eligible Loan"
-      name="eligibleLoan"
-      type="number"
-      fullWidth
-      value={formData.eligibleLoan}
-      onChange={handleChange}
-      slotProps={{ input: { readOnly: true } }} // Updated from InputProps to slotProps
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Net Disbursal Amount"
-      name="netDisbursalAmount"
-      type="number"
-      fullWidth
-      value={formData.netDisbursalAmount}
-      onChange={handleChange}
-    />
-  </div>
-
-  {/* New Row (Additional Fields) */}
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Eligible ROI"
-      name="eligibleRoi"
-      type="string"
-      fullWidth
-      value={formData.eligibleRoi}
-      onChange={handleChange}
-      slotProps={{ input: { readOnly: true } }} // Updated from InputProps to slotProps
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Eligible Admin Fee"
-      name="eligibleAdminFee"
-      type="string"
-      fullWidth
-      value={formData.eligibleAdminFee}
-      onChange={handleChange}
-      slotProps={{ input: { readOnly: true } }} // Updated from InputProps to slotProps
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Eligible Tenure"
-      name="eligibleTenure"
-      type="number"
-      fullWidth
-      value={formData.eligibleTenure}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Disbursal Date"
-      name="disbursalDate"
-      type="date"
-      InputLabelProps={{ shrink: true }}
-      fullWidth
-      value={formData.disbursalDate}
-      onChange={handleChange}
-    />
-  </div>
-
-  {/* Sixth Row (More Fields) */}
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Final FOIR Percentage"
-      name="finalFoirPercentage"
-      fullWidth
-      value={formData.finalFoirPercentage}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Loan Recommended"
-      name="loanRecommended"
-      type="number"
-      fullWidth
-      value={formData.loanRecommended}
-      onChange={handleChange}
-      // helperText={errorMessage}
-      helperText={errorMessage}
-      error={!!errorMessage} // Mark the field as error if there's an error message
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Admin Fee"
-      name="adminFee"
-      type="number"
-      fullWidth
-      value={formData.adminFee}
-      onChange={handleChange}
-      slotProps={{ input: { readOnly: true } }}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Admin Fee GST"
-      name="adminFeeGst"
-      type="string"
-      fullWidth
-      value={formData.adminFeeGst}
-      onChange={handleChange}
-      slotProps={{ input: { readOnly: true } }} 
-      
-      // Updated from InputProps to slotProps
-    />
-  </div>
-
-  {/* Final Row (More Fields and Buttons) */}
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Admin Fee GST Amount"
-      name="adminFeeGstAmount"
-      type="number"
-      fullWidth
-      value={formData.adminFeeGstAmount}
-      onChange={handleChange}
-      slotProps={{ input: { readOnly: true } }}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Total Admin Fee"
-      name="totalAdminFee"
-      type="number"
-      fullWidth
-      value={formData.totalAdminFeeAmount}
-      onChange={handleChange}
-      slotProps={{ input: { readOnly: true } }} // Updated from InputProps to slotProps
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Repayment Date"
-      name="repaymentDate"
-      type="date"
-      InputLabelProps={{ shrink: true }}
-      fullWidth
-      value={formData.repaymentDate}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 46%' }}>
-    <TextField
-      label="Repayment Amount"
-      name="repaymentAmount"
-      type="number"
-      fullWidth
-      value={formData.repaymentAmount}
-      onChange={handleChange}
-    />
-  </div>
-  <div style={{ flex: '1 1 100%' }}>
-    <TextField
-      label="Remarks"
-      name="remarks"
-      fullWidth
-      value={formData.remarks}
-      onChange={handleChange}
-    />
-  </div>
-
-  {/* Save and Cancel Buttons */}
-  <div style={{ flex: '1 1 100%', marginTop: '20px' }}>
-    <Button variant="contained" color="primary" onClick={handleSave}>
-      Save CAM
-    </Button>
-    <Button
-      variant="outlined"
-      color="error"
-      onClick={handleCancel}
-      style={{ marginLeft: '10px' }}
-      sx={{
-        ':hover': {
-          color: 'white',
-          backgroundColor: 'red',
-        },
-      }}
-    >
-      Cancel
-    </Button>
-  </div>
-</form>
-
-      )}
-    </div>
+    <>
+      {
+        camGetloading ?( <h1> Loading </h1>) : (<div>
+          {!isEditing ? (
+            <div>
+              {/* Display the table with data */}
+              <TableContainer component={Paper}>
+              <Table>
+      <TableBody>
+        <TableRow>
+          <TableCell>Lead Id</TableCell>
+          <TableCell>{formData.leadId}</TableCell>
+          <TableCell>Loan No</TableCell>
+          <TableCell>{formData.loanNo}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Salary Date 1</TableCell>
+          <TableCell>{formData.salaryDate1 || '-'}</TableCell>
+          <TableCell>Salary Amount 1</TableCell>
+          <TableCell>{formData.salaryAmount1}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Salary Date 2</TableCell>
+          <TableCell>{formData.salaryDate2 || '-'}</TableCell>
+          <TableCell>Salary Amount 2</TableCell>
+          <TableCell>{formData.salaryAmount2}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Salary Date 3</TableCell>
+          <TableCell>{formData.salaryDate3 || '-'}</TableCell>
+          <TableCell>Salary Amount 3</TableCell>
+          <TableCell>{formData.salaryAmount3}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Next Salary Date</TableCell>
+          <TableCell>{formData.nextPayDate || '-'}</TableCell>
+          <TableCell>Median Salary Amount</TableCell>
+          <TableCell>{formData.averageSalary}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Actual Net Salary</TableCell>
+          <TableCell>{formData.actualNetSalary}</TableCell>
+          <TableCell>Credit Bureau Score</TableCell>
+          <TableCell>{formData.creditBureauScore}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Customer Type</TableCell>
+          <TableCell>{formData.customerType}</TableCell>
+          <TableCell>Dedupe Check</TableCell>
+          <TableCell>{formData.dedupeCheck}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Obligations (Rs)</TableCell>
+          <TableCell>{formData.obligations}</TableCell>
+          <TableCell>Eligible FOIR</TableCell>
+          <TableCell>{formData.eligibleFoirPercentage}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Eligible Loan Amount</TableCell>
+          <TableCell>{formData.eligibleLoan}</TableCell>
+          <TableCell>Net Disbursal</TableCell>
+          <TableCell>{formData.netDisbursalAmount}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Tenure</TableCell>
+          <TableCell>{formData.eligibleTenure}</TableCell>
+          <TableCell>Disbursal Date</TableCell>
+          <TableCell>{formData.disbursalDate}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Repayment Date</TableCell>
+          <TableCell>{formData.repaymentDate}</TableCell>
+          <TableCell>FOIR</TableCell>
+          <TableCell>{formData.foir}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Loan Amount</TableCell>
+          <TableCell>{formData.loanAmount}</TableCell>
+          <TableCell>ROI</TableCell>
+          <TableCell>{formData.roi}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Admin Fee (%)</TableCell>
+          <TableCell>{formData.adminFeePercentage}</TableCell>
+          <TableCell>Net Admin Fee Amount</TableCell>
+          <TableCell>{formData.netAdminFeeAmount}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>GST (%)</TableCell>
+          <TableCell>{formData.gstPercentage}</TableCell>
+          <TableCell>Total Admin Fee Amount</TableCell>
+          <TableCell>{formData.totalAdminFeeAmount}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Panel ROI</TableCell>
+          <TableCell>{formData.panelRoi}</TableCell>
+          <TableCell>Remarks</TableCell>
+          <TableCell>{formData.remarks}</TableCell>
+        </TableRow>
+    
+        {/* Added Missing Fields */}
+        <TableRow>
+          <TableCell>Eligible ROI</TableCell>
+          <TableCell>{formData.eligibleRoi}</TableCell>
+          <TableCell>Eligible Admin Fee</TableCell>
+          <TableCell>{formData.eligibleAdminFee}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Admin Fee GST</TableCell>
+          <TableCell>{formData.adminFeeGst}</TableCell>
+          <TableCell>Admin Fee GST Amount</TableCell>
+          <TableCell>{formData.adminFeeGstAmount}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Final FOIR Percentage</TableCell>
+          <TableCell>{formData.finalFoirPercentage}</TableCell>
+          <TableCell>Loan Recommended</TableCell>
+          <TableCell>{formData.loanRecommended}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell>Repayment Amount</TableCell>
+          <TableCell>{formData.repaymentAmount}</TableCell>
+        </TableRow>
+    
+        {/* Additional missing fields based on your formData object */}
+        <TableRow>
+          <TableCell>Eligible Tenure</TableCell>
+          <TableCell>{formData.eligibleTenure}</TableCell>
+          <TableCell>Eligible FOIR Percentage</TableCell>
+          <TableCell>{formData.eligibleFoirPercentage}</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+    
+    </TableContainer>
+    
+    
+              {/* Edit CAM Button */}
+              <Button variant="contained" onClick={() => setIsEditing(true)} style={{ marginTop: '20px' }}>
+                Edit CAM
+              </Button>
+            </div>
+          ) : (
+            // <form>
+            <form style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', background: '#808080', padding: '10px' }}>
+      {/* First Row (4 items) */}
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Lead ID"
+          name="leadId"
+          type="string"
+          fullWidth
+          value={formData.leadId}
+          onChange={handleChange}
+          disabled
+           // Makes the field read-only
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Loan No"
+          name="loanNo"
+          fullWidth
+          value={formData.loanNo}
+          onChange={handleChange}
+          disabled
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Salary Date 1"
+          name="salaryDate1"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          value={formData.salaryDate1}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Salary Amount 1"
+          name="salaryAmount1"
+          type="number"
+          fullWidth
+          value={formData.salaryAmount1}
+          onChange={handleChange}
+        />
+      </div>
+    
+      {/* Second Row (4 items) */}
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Salary Date 2"
+          name="salaryDate2"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          value={formData.salaryDate2}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Salary Amount 2"
+          name="salaryAmount2"
+          type="number"
+          fullWidth
+          value={formData.salaryAmount2}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Salary Date 3"
+          name="salaryDate3"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          value={formData.salaryDate3}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Salary Amount 3"
+          name="salaryAmount3"
+          type="number"
+          fullWidth
+          value={formData.salaryAmount3}
+          onChange={handleChange}
+        />
+      </div>
+    
+      {/* Third Row (4 items) */}
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Next Pay Date"
+          name="nextPayDate"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          value={formData.nextPayDate}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Average Salary"
+          name="averageSalary"
+          type="number"
+          fullWidth
+          value={formData.averageSalary}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Actual Net Salary"
+          name="actualNetSalary"
+          type="number"
+          fullWidth
+          value={formData.actualNetSalary}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Credit Bureau Score"
+          name="creditBureauScore"
+          fullWidth
+          // InputProps={{ readOnly: true }}
+          disabled
+          value={formData.creditBureauScore}
+          onChange={handleChange}
+        />
+      </div>
+    
+      {/* Fourth Row (4 items) */}
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Customer Type"
+          name="customerType"
+          fullWidth
+          value={formData.customerType}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Dedupe Check"
+          name="dedupeCheck"
+          fullWidth
+          value={formData.dedupeCheck}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Customer Category"
+          name="customerCategory"
+          fullWidth
+          value={formData.customerCategory}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Repeat Times"
+          name="repeatTimes"
+          type="number"
+          fullWidth
+          value={formData.repeatTimes}
+          onChange={handleChange}
+        />
+      </div>
+    
+      {/* Fifth Row (4 items) */}
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Obligations (Rs)"
+          name="obligations"
+          type="number"
+          fullWidth
+          value={formData.obligations}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Eligible FOIR Percentage"
+          name="eligibleFoirPercentage"
+          fullWidth
+          value={formData.eligibleFoirPercentage}
+          onChange={handleChange}
+         disabled // Updated from InputProps to slotProps
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Eligible Loan"
+          name="eligibleLoan"
+          type="number"
+          fullWidth
+          value={formData.eligibleLoan}
+          onChange={handleChange}
+         disabled // Updated from InputProps to slotProps
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Net Disbursal Amount"
+          name="netDisbursalAmount"
+          type="number"
+          fullWidth
+          value={formData.netDisbursalAmount}
+          onChange={handleChange}
+        />
+      </div>
+    
+      {/* New Row (Additional Fields) */}
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Eligible ROI"
+          name="eligibleRoi"
+          type="string"
+          fullWidth
+          value={formData.eligibleRoi}
+          onChange={handleChange}
+          //disabled // Updated from InputProps to slotProps
+          disabled
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Eligible Admin Fee"
+          name="eligibleAdminFee"
+          type="string"
+          fullWidth
+          value={formData.eligibleAdminFee}
+          onChange={handleChange}
+         disabled // Updated from InputProps to slotProps
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Eligible Tenure"
+          name="eligibleTenure"
+          type="number"
+          fullWidth
+          value={formData.eligibleTenure}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Disbursal Date"
+          name="disbursalDate"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          value={formData.disbursalDate}
+          onChange={handleChange}
+        />
+      </div>
+    
+      {/* Sixth Row (More Fields) */}
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Final FOIR Percentage"
+          name="finalFoirPercentage"
+          fullWidth
+          value={formData.finalFoirPercentage}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Loan Recommended"
+          name="loanRecommended"
+          type="number"
+          fullWidth
+          value={formData.loanRecommended}
+          onChange={handleChange}
+          // helperText={errorMessage}
+          helperText={errorMessage}
+          error={!!errorMessage} // Mark the field as error if there's an error message
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Admin Fee"
+          name="adminFee"
+          type="number"
+          fullWidth
+          value={formData.adminFee}
+          onChange={handleChange}
+         disabled
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Admin Fee GST"
+          name="adminFeeGst"
+          type="string"
+          fullWidth
+          value={formData.adminFeeGst}
+          onChange={handleChange}
+         disabled 
+          
+          // Updated from InputProps to slotProps
+        />
+      </div>
+    
+      {/* Final Row (More Fields and Buttons) */}
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Admin Fee GST Amount"
+          name="adminFeeGstAmount"
+          type="number"
+          fullWidth
+          value={formData.adminFeeGstAmount}
+          onChange={handleChange}
+         disabled
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Total Admin Fee"
+          name="totalAdminFee"
+          type="number"
+          fullWidth
+          value={formData.totalAdminFeeAmount}
+          onChange={handleChange}
+         disabled // Updated from InputProps to slotProps
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Repayment Date"
+          name="repaymentDate"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          fullWidth
+          value={formData.repaymentDate}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 46%' }}>
+        <TextField
+          label="Repayment Amount"
+          name="repaymentAmount"
+          type="number"
+          fullWidth
+          value={formData.repaymentAmount}
+          onChange={handleChange}
+        />
+      </div>
+      <div style={{ flex: '1 1 100%' }}>
+        <TextField
+          label="Remarks"
+          name="remarks"
+          fullWidth
+          value={formData.remarks}
+          onChange={handleChange}
+        />
+      </div>
+    
+      {/* Save and Cancel Buttons */}
+      <div style={{ flex: '1 1 100%', marginTop: '20px' }}>
+        <Button variant="contained" color="primary" onClick={handleSave}>
+          Save CAM
+        </Button>
+        <Button
+          variant="outlined"
+          color="error"
+          onClick={handleCancel}
+          style={{ marginLeft: '10px' }}
+          sx={{
+            ':hover': {
+              color: 'white',
+              backgroundColor: 'red',
+            },
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
+    </form>
+    
+          )}
+        </div>)
+      }
+    </>
   );
 };
 

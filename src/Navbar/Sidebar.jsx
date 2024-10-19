@@ -39,7 +39,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                     <Accordion.Header>  Application</Accordion.Header>
                                     <Accordion.Body>
                                         <ul className='sidebar-text'>
-                                            <li><Link to="/new-application"> New</Link></li>
+                                            <li><Link to="/new-applications"> New</Link></li>
                                             <li><Link to="/application-process">Inprocess</Link></li>
                                             <li><Link to="/application-hold">Hold</Link></li>
                                             <li><Link to="/rejected-applications">Rejected Applications</Link></li>
