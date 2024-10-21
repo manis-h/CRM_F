@@ -28,7 +28,7 @@ const loanRejectReasons = [
     // { label: "Unclear Purpose of Loan", value: "unclear_loan_purpose" }
 ];
 
-const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview }) => {
+const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview,setForceRender }) => {
 
     const navigate = useNavigate()
     const { empInfo } = useAuthStore()
@@ -131,6 +131,7 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview }) => {
 
     const handlePreview = () => {
       sanctionPreview(id)
+      setForceRender(true)
     };
     const handleCancel = () => {
         // Reset all states to go back to initial state
