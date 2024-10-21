@@ -31,9 +31,61 @@ const InternalDedupe = ({id}) => {
 
     const { data, isSuccess, isError,error } = useGetInternalDedupeQuery(id, { skip: id === null });
 
+      
+      const mergeLeadsAndApplications = (leads, applications) => {
+        // Step 1: Create a merged array by checking for matches
+        const mergedLeads = leads.map(lead => {
+          const application = applications.find(app => app.leadDetails._id === lead._id);
+          
+          // If matching application exists, merge data
+          if (application) {
+            return {
+              ...lead,
+              ...application.leadDetails,
+              isApproved: application.isApproved,
+              isRecommended: application.isRecommended,
+              isRejected: application.isRejected,
+              onHold: application.onHold,
+            };
+          }
+      
+          return lead;
+        });
+      
+        // Step 2: Add applications without corresponding leads
+        applications.forEach(application => {
+          if (!leads.some(lead => lead._id === application.leadDetails._id)) {
+            mergedLeads.push({
+              ...application.leadDetails,
+              isApproved: application.isApproved,
+              isRecommended: application.isRecommended,
+              isRejected: application.isRejected,
+              onHold: application.onHold,
+            });
+          }
+        });
+      
+        return mergedLeads;
+      };
+      
+      
+      
+      
+
     useEffect(() => {
-        if (isSuccess) {
-            setLeadHistory(data?.relatedLeads || []);
+        if (isSuccess && data) {
+            const {relatedLeads,relatedApplications} = data
+            let newAppDedupe = []
+            
+            if(relatedApplications && relatedApplications.length > 0){
+                for(let ele of relatedApplications){
+                    newAppDedupe.push(ele.leadDetails)
+                }
+            }
+            let newDedupe = mergeLeadsAndApplications(relatedLeads, relatedApplications);;
+
+
+            setLeadHistory(newDedupe || []);
         }
     }, [isSuccess, data]);
 
