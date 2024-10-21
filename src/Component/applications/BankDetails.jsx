@@ -11,7 +11,11 @@ import {
     TableRow,
     TableContainer,
     Box,
-    Alert
+    Alert,
+    MenuItem,
+    InputLabel,
+    Select,
+    FormControl
 } from '@mui/material';
 import { useAddBankMutation, useGetBankDetailsQuery } from '../../queries/applicationQueries';
 import { useParams } from 'react-router-dom';
@@ -30,10 +34,11 @@ const BankDetails = ({ id }) => {
     const [addBank, addBankRes] = useAddBankMutation();
 
     // React Hook Form setup
-    const { handleSubmit, control, reset } = useForm();
+    const { handleSubmit, control, reset,formState: { errors }  } = useForm();
 
     // Handle form submission
     const onSubmit = (data) => {
+        console.log('data',data)
         addBank({ id, data });
 
     };
@@ -109,6 +114,7 @@ const BankDetails = ({ id }) => {
                                 />
                             </Box>
                             <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={2}>
+                                {/* Beneficiary Name Input */}
                                 <Controller
                                     name="beneficiaryName"
                                     control={control}
@@ -116,14 +122,32 @@ const BankDetails = ({ id }) => {
                                         <TextField label="Beneficiary Name" fullWidth {...field} />
                                     )}
                                 />
+
+                                {/* Account Type Dropdown */}
                                 <Controller
                                     name="accountType"
                                     control={control}
                                     render={({ field }) => (
-                                        <TextField label="Account Type" fullWidth {...field} />
+                                        <FormControl
+                                            fullWidth
+                                            variant="standard"
+                                            // error={!!errors.reference2?.relation}
+                                        >
+                                            <InputLabel>Select Account Type</InputLabel>
+                                            <Select
+                                                {...field}
+                                                label="Account Type"
+                                            >
+                                                {/* <MenuItem value="">Select Account Type</MenuItem> */}
+                                                <MenuItem value="savings">Savings</MenuItem>
+                                                <MenuItem value="current">Current</MenuItem>
+                                            </Select>
+                                            {/* <FormHelperText>{errors.reference2?.relation?.message}</FormHelperText> */}
+                                        </FormControl>
                                     )}
                                 />
                             </Box>
+
                         </Box>
 
                         <Box display="flex" justifyContent="flex-end" marginTop="20px">

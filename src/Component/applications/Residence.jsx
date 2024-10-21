@@ -35,7 +35,7 @@ const buttonStyles = {
 
 const Residence = ({ residence }) => {
   const { applicationProfile } = useStore()
-  const {empInfo} = useAuthStore()
+  const { empInfo } = useAuthStore()
   const id = applicationProfile._id
   const [columns, setColumns] = useState(null)
   const [isEditingResidence, setIsEditingResidence] = useState(false);
@@ -50,15 +50,12 @@ const Residence = ({ residence }) => {
       city: residence?.city || '',
       pincode: residence?.pincode || '',
       residingSince: residence?.residingSince || '',
-      unit: 'years',
     }
   });
 
   const onSubmit = (data) => {
-    const newData = { residence: { ...data, residingSince: `${data.residingSince} ${data.unit}` } }
-    delete newData.residence.unit
-
-    updatePersonalDetails({ id, updates: newData })
+    console.log('data',data)
+    updatePersonalDetails({ id, updates: {residence:data} })
     // Call API or mutation function here
   };
 
@@ -71,7 +68,6 @@ const Residence = ({ residence }) => {
         city: residence?.city || '',
         pincode: residence?.pincode || '',
         residingSince: residence?.residingSince.split(" ")[0] || '',
-        unit: residence?.residingSince.split(" ")[1] || '',
       })
     } else {
 
@@ -86,13 +82,13 @@ const Residence = ({ residence }) => {
     }
   }, [isSuccess, data])
 
-  
+
   useEffect(() => {
     if (residence && Object.keys(residence).length > 0) {
       setColumns([
         { label: 'Address', value: `${residence?.address || ''} `, label2: 'State', value2: residence?.state || '' },
         { label: 'City', value: residence?.city || '', label2: 'Pin Code', value2: residence?.pincode || '' },
-        { label: 'ResidingSince', value: residence.residingSince || '', },
+        { label: 'Residing Since', value: residence.residingSince || '', },
       ]);
     }
   }, [residence])
@@ -171,40 +167,36 @@ const Residence = ({ residence }) => {
                   </Box>
 
                   <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={2}>
+
                     <Controller
                       name="residingSince"
                       control={control}
-                      render={({ field }) => (
-                        <TextField
-                          label="Residence Since"
-                          fullWidth
-                          error={!!errors.residingSince}
-                          helperText={errors.residingSince?.message}
-                          {...field}
-                        />
-                      )}
+                      render={({ field }) => {
+                        const currentYear = new Date().getFullYear();
+                        const pastYears = Array.from(new Array(100), (val, index) => currentYear - index); // Generate last 100 years
+
+                        return (
+                          <FormControl fullWidth error={!!errors.residingSince} sx={{ width: '150px' }}>
+                            <InputLabel id="residingSince">Residing Since</InputLabel>
+                            <Select
+                              labelId="residingSince"
+                              label="Residing Since"
+                              {...field}
+                            >
+                              {pastYears.map((year) => (
+                                <MenuItem key={year} value={year}>
+                                  {year}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                            {!!errors.residingSince && (
+                              <FormHelperText>{errors.residingSince?.message}</FormHelperText>
+                            )}
+                          </FormControl>
+                        );
+                      }}
                     />
-                    <Controller
-                      name="unit"
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.unit}>
-                          <InputLabel id="unit-label">Unit</InputLabel>
-                          <Select
-                            labelId="unit-label"
-                            label="Unit"
-                            {...field}
-                          >
-                            <MenuItem value="days">Days</MenuItem>
-                            <MenuItem value="months">Months</MenuItem>
-                            <MenuItem value="years">Years</MenuItem>
-                          </Select>
-                          {!!errors.unit && (
-                            <FormHelperText>{errors.unit?.message}</FormHelperText>
-                          )}
-                        </FormControl>
-                      )}
-                    />
+
 
                     {isError &&
                       <Alert severity="error" sx={{ borderRadius: '8px', mt: 2 }}>
@@ -242,8 +234,8 @@ const Residence = ({ residence }) => {
                   </Table>
                 </TableContainer>
                 <Divider sx={{ my: 2 }} />
- 
-                {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "sanctionHead" ) && <Box display="flex" justifyContent="flex-end">
+
+                {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "sanctionHead") && <Box display="flex" justifyContent="flex-end">
                   <Button
                     variant="contained"
                     style={buttonStyles}

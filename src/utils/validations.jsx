@@ -8,7 +8,6 @@ export const residenceSchema = Yup.object().shape({
     city: Yup.string().required('City is required'),
     pincode: Yup.string().matches(/^[0-9]{6}$/, 'Invalid pincode (must be 6 digits)').required('Pincode is required'),
     residingSince: Yup.string().required('Residence Since is required'),
-    unit: Yup.string().required('Unit is required'),
   });
  
   export const employmentSchema = Yup.object().shape({
@@ -51,27 +50,35 @@ export const residenceSchema = Yup.object().shape({
 
 
 
-export const referenceSchema = Yup.object().shape({
-  reference1: Yup.object().shape({
-    name: Yup.string()
-      .required('Reference 1 Name is required')
-      .min(2, 'Name must be at least 2 characters long'),
-    mobile: Yup.string()
-      .required('Reference 1 Mobile is required')
-      .matches(/^[0-9]{10}$/, 'Mobile must be a valid 10-digit number'),
-    relation: Yup.string()
-      .required('Reference 1 Relation is required'),
-  }),
-  reference2: Yup.object().shape({
-    name: Yup.string()
-      .required('Reference 2 Name is required')
-      .min(2, 'Name must be at least 2 characters long'),
-    mobile: Yup.string()
-      .required('Reference 2 Mobile is required')
-      .matches(/^[0-9]{10}$/, 'Mobile must be a valid 10-digit number'),
-    relation: Yup.string()
-      .required('Reference 2 Relation is required'),
-  }),
-});
+  export const referenceSchema = Yup.object().shape({
+    reference1: Yup.object().shape({
+      name: Yup.string()
+        .required('Reference 1 Name is required')
+        .min(2, 'Name must be at least 2 characters long'),
+      mobile: Yup.string()
+        .required('Reference 1 Mobile is required')
+        .matches(/^[0-9]{10}$/, 'Mobile must be a valid 10-digit number'),
+      relation: Yup.string()
+        .required('Reference 1 Relation is required'),
+    }),
+    reference2: Yup.object().shape({
+      name: Yup.string()
+        .required('Reference 2 Name is required')
+        .min(2, 'Name must be at least 2 characters long'),
+      mobile: Yup.string()
+        .required('Reference 2 Mobile is required')
+        .matches(/^[0-9]{10}$/, 'Mobile must be a valid 10-digit number')
+        .test('mobile-not-same', 'Reference 2 Mobile must be different from Reference 1 Mobile', 
+          function(value) {
+            const { reference1 } = this.from[1].value;
+            console.log('mobile value',value,reference1,this)
+            return reference1?.mobile !== value; // Compare mobile numbers
+          }
+        ),
+      relation: Yup.string()
+        .required('Reference 2 Relation is required'),
+    }),
+  });
+  
 
   
