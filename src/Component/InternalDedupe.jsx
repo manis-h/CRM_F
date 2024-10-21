@@ -40,7 +40,6 @@ const InternalDedupe = ({id}) => {
           // If matching application exists, merge data
           if (application) {
             return {
-              ...lead,
               ...application.leadDetails,
               isApproved: application.isApproved,
               isRecommended: application.isRecommended,
@@ -51,6 +50,8 @@ const InternalDedupe = ({id}) => {
       
           return lead;
         });
+
+        console.log('merge leads',mergedLeads)
       
         // Step 2: Add applications without corresponding leads
         applications.forEach(application => {

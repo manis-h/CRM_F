@@ -131,6 +131,7 @@ const AadhaarOtpVerification = () => {
                     textAlign: 'center',
                     fontSize: '20px',
                     padding: '10px',
+                    color:'#525150',
                   },
                 }}
                 value={digit}
