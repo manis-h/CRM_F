@@ -84,7 +84,7 @@ function App() {
                   <Route path='/lead-process/:id' element={<LeadDetails />} />
                   <Route path="/lead-hold" element={<HoldLead />} />
                   <Route path="/rejected-leads" element={<RejectedLeads />} />
-                  <Route path="/new-application" element={<NewApplications />} />
+                  <Route path="/new-applications" element={<NewApplications />} />
                   <Route path="/application-profile/:id" element={<ApplicationProfile />} />
                   <Route path="/aadhaar-verification/:id" element={<AadhaarOtpVerification />} />
                   <Route path="/compare" element={<CompareUserDetails />} />

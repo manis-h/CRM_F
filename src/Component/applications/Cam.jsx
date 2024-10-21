@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, TextField,  Table, TableBody, TableCell, TableRow, TableContainer, Paper, Grid2 } from '@mui/material';
 import { useGetCamDetailsQuery , useUpdateCamDetailsMutation } from '../../queries/applicationQueries';
 import { useParams } from 'react-router-dom';
+import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 
 
 const EditableForm = () => {
@@ -227,42 +228,85 @@ const EditableForm = () => {
   };
   
 
-  const handleSave = async(e) => {
-    console.log("the form data is ",formData)
-    // Add save logic here
+  const handleSave = async (e) => {
     e.preventDefault();
-    // try {
-    //   // Call the mutation function with necessary data
-    //   await updateCamDetails({
-    //     id: id, // ID of the CAM (assuming this is passed as a prop)
-    //     updates: formData  // The updated data from the form
-    //   }).unwrap();
+    console.log("The form data is", formData);
 
-    //   // Handle success or do further actions, like showing a notification
-    //   console.log('Update successful');
-    // } catch (error) {
-    //   // Handle error, maybe show an error message
-    //   console.error('Error updating CAM details:', error);
-    // }
-
-    try {
-      const response = await await updateCamDetails({
-        id: id, // ID of the CAM (assuming this is passed as a prop)
-        updates: formData  // The updated data from the form
-      }).unwrap();
-
-      if (response?.data?.success) {
-        setIsEditing(false); // Stop editing after successful update
-        setErrorMessage(""); // Clear any error message
-      } else {
-        setErrorMessage("Failed to update the data. Please try again.");
-      }
-    } catch (error) {
-      setErrorMessage("An error occurred while updating the data.");
-    }
-    console.log('Form data saved:', formData);
-    // setIsEditing(false);
+     // Utility function to validate if the input is a valid date
+  const isValidDate = (date) => {
+    return !isNaN(Date.parse(date)); // Returns true if valid, false if invalid
   };
+  
+    // Validation checks
+    if (formData.actualNetSalary > 0 &&  isValidDate(formData.disbursalDate) && isValidDate(formData.repaymentDate)) {
+      try {
+        console.log("wating here to check")
+        const response = await updateCamDetails({
+          id: id, // ID of the CAM (assuming this is passed as a prop)
+          updates: formData // The updated data from the form
+        }).unwrap();
+
+        console.log("the response is ",response)
+  
+        if (response?.success) {
+          setIsEditing(false); // Stop editing after successful update
+          setErrorMessage(""); // Clear any error message
+        } else {
+          setErrorMessage("Failed to update the data. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error updating CAM details:", error);
+        setErrorMessage("An error occurred while updating the data.");
+      }
+  
+      console.log('Form data saved:', formData);
+    } else {
+      setErrorMessage("Please fill out all the required fields.");
+      console.warn("Validation failed. Required fields missing.");
+    }
+  };
+  
+
+  // const handleSave = async(e) => {
+  //   e.preventDefault();
+  //   console.log("the form data is ",formData)
+  //   if( formData.actualNetSalary!== 0 && formData.disbursalDate && formData.repaymentDate ){
+  //     try {
+  //       const response = await await updateCamDetails({
+  //         id: id, // ID of the CAM (assuming this is passed as a prop)
+  //         updates: formData  // The updated data from the form
+  //       }).unwrap();
+  
+  //       if (response?.data?.success) {
+  //         setIsEditing(false); // Stop editing after successful update
+  //         setErrorMessage(""); // Clear any error message
+  //       } else {
+  //         setErrorMessage("Failed to update the data. Please try again.");
+  //       }
+  //     } catch (error) {
+  //       setErrorMessage("An error occurred while updating the data.");
+  //     }
+  //     console.log('Form data saved:', formData);
+  //   }
+  //   // Add save logic here
+    
+  //   // try {
+  //   //   // Call the mutation function with necessary data
+  //   //   await updateCamDetails({
+  //   //     id: id, // ID of the CAM (assuming this is passed as a prop)
+  //   //     updates: formData  // The updated data from the form
+  //   //   }).unwrap();
+
+  //   //   // Handle success or do further actions, like showing a notification
+  //   //   console.log('Update successful');
+  //   // } catch (error) {
+  //   //   // Handle error, maybe show an error message
+  //   //   console.error('Error updating CAM details:', error);
+  //   // }
+
+   
+  //   // setIsEditing(false);
+  // };
 
   const handleCancel = () => {
     setIsEditing(false);
@@ -299,12 +343,48 @@ const EditableForm = () => {
   useEffect(() => {
     const foirPercentage = calculateFoir(formData.actualNetSalary);
     const eligibleLoan = calculateEligibleLoan(formData.actualNetSalary, foirPercentage);
+    if( formData.actualNetSalary > 25000){
+      setFormData((prevData) => ({
+        ...prevData,
+        customerCategory : 'CAT - B'
+      }));
+    }else{
+      setFormData((prevData) => ({
+        ...prevData,
+        customerCategory : ''
+      }));
+    }
     setFormData((prevData) => ({
       ...prevData,
       eligibleFoirPercentage: foirPercentage,
       eligibleLoan: eligibleLoan,
     }));
   }, [formData.actualNetSalary]);
+
+
+  const meanSalary = (sal1, sal2, sal3) => {
+    return (sal1 + sal2 + sal3) / 3;
+  };
+  
+
+  useEffect(() => {
+    const avgSal = meanSalary(
+      Number(formData.salaryAmount1), 
+      Number(formData.salaryAmount2), 
+      Number(formData.salaryAmount3)
+    ).toFixed(2);
+  
+    setFormData((prevData) => ({
+      ...prevData,
+      averageSalary: avgSal || 0,  // Ensure default value is set if avgSal is NaN
+    }));
+  }, [formData.salaryAmount1, formData.salaryAmount2, formData.salaryAmount3]);
+  
+  
+  
+  
+
+
   
 
   return (
@@ -452,7 +532,7 @@ const EditableForm = () => {
             </div>
           ) : (
             // <form>
-            <form style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', background: '#808080', padding: '10px' }}>
+            <form onSubmit={handleSave} style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', background: '#808080', padding: '10px' }}>
       {/* First Row (4 items) */}
       <div style={{ flex: '1 1 46%' }}>
         <TextField
@@ -572,6 +652,7 @@ const EditableForm = () => {
           fullWidth
           value={formData.actualNetSalary}
           onChange={handleChange}
+          required
         />
       </div>
       <div style={{ flex: '1 1 46%' }}>
@@ -597,13 +678,32 @@ const EditableForm = () => {
         />
       </div>
       <div style={{ flex: '1 1 46%' }}>
-        <TextField
+        {/* <TextField
           label="Dedupe Check"
           name="dedupeCheck"
           fullWidth
           value={formData.dedupeCheck}
           onChange={handleChange}
-        />
+        /> */}
+        <FormControl fullWidth>
+        <InputLabel id="dedupe-check-label">Dedupe Check</InputLabel>
+  <Select
+    labelId="dedupe-check-label"
+    label="Dedupe Check"
+    name="dedupeCheck"
+    value={formData.dedupeCheck}
+    onChange={handleChange}
+  >
+    {/* Placeholder option */}
+    <MenuItem value="">
+      <em>Select Dedupe Check</em>
+    </MenuItem>
+    {/* Option for Yes */}
+    <MenuItem value="Yes">Yes</MenuItem>
+    {/* Option for No */}
+    <MenuItem value="No">No</MenuItem>
+  </Select>
+  </FormControl>
       </div>
       <div style={{ flex: '1 1 46%' }}>
         <TextField
@@ -612,6 +712,7 @@ const EditableForm = () => {
           fullWidth
           value={formData.customerCategory}
           onChange={handleChange}
+          disabled
         />
       </div>
       <div style={{ flex: '1 1 46%' }}>
@@ -665,6 +766,7 @@ const EditableForm = () => {
           fullWidth
           value={formData.netDisbursalAmount}
           onChange={handleChange}
+          disabled
         />
       </div>
     
@@ -700,6 +802,7 @@ const EditableForm = () => {
           fullWidth
           value={formData.eligibleTenure}
           onChange={handleChange}
+          disabled
         />
       </div>
       <div style={{ flex: '1 1 46%' }}>
@@ -722,6 +825,7 @@ const EditableForm = () => {
           fullWidth
           value={formData.finalFoirPercentage}
           onChange={handleChange}
+          disabled
         />
       </div>
       <div style={{ flex: '1 1 46%' }}>
@@ -733,8 +837,8 @@ const EditableForm = () => {
           value={formData.loanRecommended}
           onChange={handleChange}
           // helperText={errorMessage}
-          helperText={errorMessage}
-          error={!!errorMessage} // Mark the field as error if there's an error message
+          // helperText={errorMessage}
+          // error={!!errorMessage} // Mark the field as error if there's an error message
         />
       </div>
       <div style={{ flex: '1 1 46%' }}>
@@ -794,6 +898,8 @@ const EditableForm = () => {
           fullWidth
           value={formData.repaymentDate}
           onChange={handleChange}
+          required
+          // disabled
         />
       </div>
       <div style={{ flex: '1 1 46%' }}>
@@ -804,6 +910,7 @@ const EditableForm = () => {
           fullWidth
           value={formData.repaymentAmount}
           onChange={handleChange}
+          disabled
         />
       </div>
       <div style={{ flex: '1 1 100%' }}>
@@ -818,7 +925,13 @@ const EditableForm = () => {
     
       {/* Save and Cancel Buttons */}
       <div style={{ flex: '1 1 100%', marginTop: '20px' }}>
-        <Button variant="contained" color="primary" onClick={handleSave}>
+        <Button 
+
+        type="submit"  // Use 'type="submit"' to handle form submit
+        variant="contained" 
+        color="primary"
+        //  onClick={handleSave}
+         >
           Save CAM
         </Button>
         <Button
