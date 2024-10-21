@@ -31,7 +31,7 @@ const CibilScore = ({id}) => {
   const paperStyles = {
     padding: '20px',
     borderRadius: '15px',
-    backgroundColor: '#fafafa',
+    backgroundColor: '#adaaaa',
     boxShadow: '5px 5px 15px rgba(0, 0, 0, 0.1)',
   };
 
@@ -41,9 +41,9 @@ const CibilScore = ({id}) => {
         <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#007bb2' }} />}>
           <Typography variant="h6" style={{ fontWeight: '600', color: "#ffffff" }}>Fetch CIBIL Score</Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails >
           <Paper elevation={3} style={paperStyles}>
-            <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Box display="flex" justifyContent="space-between" alignItems="center" >
               <Button
                 variant="contained"
                 onClick={submitCibil}
@@ -61,7 +61,7 @@ const CibilScore = ({id}) => {
                 {cibilRes?.isLoading ? 'Fetching...' : 'Fetch CIBIL Score'}
               </Button>
 
-              <Box textAlign="right">
+              <Box textAlign="right"  >
                 {cibilRes?.isError && (
                   <Typography color="error" variant="body1" mt={1}>
                     {cibilRes?.error?.data?.message}
@@ -69,7 +69,7 @@ const CibilScore = ({id}) => {
                 )}
                 {cibilRes?.data?.value && (
                   <Typography variant="h5" mt={1}>
-                    Your CIBIL Score: {cibilRes?.data?.value}
+                    CIBIL Score: {cibilRes?.data?.value}
                   </Typography>
                 )}
               </Box>

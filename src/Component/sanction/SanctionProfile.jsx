@@ -58,7 +58,6 @@ const SanctionProfile = () => {
     }
 
   }, [previewSuccess,previewData]);
-  console.log('preview',previewSanction,previewSuccess,previewData)
 
   return (
     <div className="crm-container" style={{ padding: '10px' }}>
