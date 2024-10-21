@@ -28,7 +28,7 @@ const loanRejectReasons = [
     // { label: "Unclear Purpose of Loan", value: "unclear_loan_purpose" }
 ];
 
-const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview }) => {
+const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview,setForceRender }) => {
 
     const navigate = useNavigate()
     const { empInfo } = useAuthStore()
@@ -131,6 +131,7 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview }) => {
 
     const handlePreview = () => {
       sanctionPreview(id)
+      setForceRender(true)
     };
     const handleCancel = () => {
         // Reset all states to go back to initial state
@@ -234,12 +235,12 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview }) => {
             <Box sx={{ padding: 2 }}>
                 {(isRecommendLeadError || isHoldError || isRejectError || isUnHoldError || isSendBackError) &&
                     <Alert severity="error" style={{ marginTop: "10px" }}>
-                        {recommendLeadError?.data?.message} || {leadHoldError?.data?.message} || {rejectLeadError?.data?.message} || {unHoldleadError?.data?.message} || {sendBackError?.data?.message}
+                        {recommendLeadError?.data?.message} {leadHoldError?.data?.message} {rejectLeadError?.data?.message} {unHoldleadError?.data?.message}  {sendBackError?.data?.message}
                     </Alert>
                 }
                 {(isApplicationRecommendError || isApplicationHoldError || isApplicationRejectError || isApplicationUnHoldError) &&
                     <Alert severity="error" style={{ marginTop: "10px" }}>
-                        {recommendApplicationError?.data?.message} || {applicationHoldError?.data?.message} || {rejectApplicationError?.data?.message} || {unHoldApplicationError?.data?.message}
+                        {recommendApplicationError?.data?.message} {applicationHoldError?.data?.message} {rejectApplicationError?.data?.message} {unHoldApplicationError?.data?.message}
                     </Alert>
                 }
                 {(isSanctionSendBackError) &&
@@ -355,7 +356,7 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview }) => {
                                     sx={{
                                         marginBottom: 3,
                                         color: '#000',                // Ensure text is black or dark
-                                        backgroundColor: '#f0f0f0',   // Light background for text area
+                                        backgroundColor: '#aeb0af',   // Light background for text area
                                         borderRadius: 1,
                                         '& .MuiOutlinedInput-root': {
                                             '& fieldset': {
@@ -380,7 +381,7 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview }) => {
                                                 label="Send Back to"
                                                 sx={{
                                                     color: '#000',               // Ensure text is black or dark
-                                                    backgroundColor: '#f0f0f0',  // Light background for the dropdown
+                                                    backgroundColor: '#aeb0af',  // Light background for the dropdown
                                                     borderRadius: 1,
                                                     '& .MuiOutlinedInput-notchedOutline': { borderColor: '#c4c4c4' },
                                                     '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#1976d2' },

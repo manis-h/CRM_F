@@ -22,6 +22,7 @@ const SanctionProfile = () => {
   const { empInfo } = useAuthStore()
   const { setApplicationProfile } = useStore();
   const [previewSanction, setPreviewSanction] = useState(false)
+  const [forceRender,setForceRender] = useState(false)
   const navigate = useNavigate();
   const [uploadedDocs, setUploadedDocs] = useState([]);
   const [currentPage, setCurrentPage] = useState("application");
@@ -53,17 +54,22 @@ const SanctionProfile = () => {
   }, [isSuccess, data]);
 
   useEffect(() => {
-    if (previewSuccess && previewData ) {
+    if (previewSuccess && previewData && forceRender  ) {
       setPreviewSanction(true);
+      setForceRender(false)
     }
 
-  }, [previewSuccess,previewData]);
+  }, [previewSuccess,previewData,forceRender]);
 
   return (
-    <div className="crm-container" style={{ padding: '10px' }}>
-
+    <div className="crm-container" style={{ padding: '10px' }} key={forceRender}>
       {previewSanction ? previewLoading ? <h1> .....Loading data</h1>:
-        <LoanSanctionPreview id={id} preview={previewSanction} setPreview={setPreviewSanction} previewData={previewData} />
+        <LoanSanctionPreview 
+        id={id} 
+        preview={previewSanction} 
+        setPreview={setPreviewSanction} 
+        previewData={previewData} 
+        />
         :
         <>
 
@@ -105,6 +111,7 @@ const SanctionProfile = () => {
                         isHold={data.onHold}
                         setPreviewSanction={setPreviewSanction}
                         sanctionPreview={sanctionPreview}
+                        setForceRender={setForceRender}
                         
                       />
 

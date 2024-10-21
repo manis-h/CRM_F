@@ -21,7 +21,8 @@ const LoanSanctionPreview = ({
   id,
   preview,
   setPreview,
-  previewData
+  previewData,
+  setForceRender
   // reset
 }) => {
 
@@ -40,6 +41,7 @@ const LoanSanctionPreview = ({
   const handleApprove = () => {
     // Handle the approval logic here
     console.log('Loan Approved');
+    setForceRender(pre => pre+1)
     approveApplication(id)
     handleClose();
   };

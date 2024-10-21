@@ -134,6 +134,7 @@ const EmailVerification = ({ open, setOpen }) => {
                     textAlign: 'center',
                     fontSize: '24px',
                     padding: '10px',
+                    color:'#525150',
                   },
                 }}
                 value={digit}
