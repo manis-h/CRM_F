@@ -24,21 +24,25 @@ const paperStyles = {
 
 const Reference = ({ reference }) => {
   const { applicationProfile } = useStore();
-  const {empInfo} = useAuthStore()
+  const { empInfo } = useAuthStore()
+  const [openEdit, setOpenEdit] = useState(false)
   const id = applicationProfile._id;
-  const [referenceDetails,setReferenceDetails] = useState()
+  const [referenceDetails, setReferenceDetails] = useState()
 
   const [updatePersonalDetails, { data, isSuccess, isError, error }] = useUpdatePersonalDetailsMutation();
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
-    resolver:yupResolver(referenceSchema)
+    resolver: yupResolver(referenceSchema)
   });
 
   const onSubmit = (data) => {
-    const newData = { reference: [ {...data.reference1},{...data.reference2} ] };
+    const newData = { reference: [{ ...data.reference1 }, { ...data.reference2 }] };
+
 
     // Call API or mutation here
-    updatePersonalDetails({id,updates:newData})
+    // updatePersonalDetails({ id, updates: newData })
+    setOpenEdit(false)
+    console.log('new data',newData)
   };
 
   useEffect(() => {
@@ -47,12 +51,12 @@ const Reference = ({ reference }) => {
     }
   }, [isSuccess, data]);
 
-  useEffect(()=> {
-    if(reference.length > 0){
-        setReferenceDetails(reference)
+  useEffect(() => {
+    if (reference.length > 0) {
+      setReferenceDetails(reference)
     }
 
-  },[reference])
+  }, [reference])
 
   return (
     <>
@@ -66,7 +70,7 @@ const Reference = ({ reference }) => {
         </AccordionSummary>
         <AccordionDetails>
           <Paper elevation={3} style={paperStyles}>
-            {Object.keys(reference).length === 0 ? (
+            {(Object.keys(reference).length === 0 || openEdit) ? (
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Box display="flex" flexDirection="column" gap={4}>
                   {/* Reference 1 */}
@@ -80,7 +84,7 @@ const Reference = ({ reference }) => {
                           <TextField
                             label="Name"
                             fullWidth
-                            variant="standard" 
+                            variant="standard"
                             error={!!errors.reference1?.name}
                             helperText={errors.reference1?.name?.message}
                             {...field}
@@ -94,7 +98,7 @@ const Reference = ({ reference }) => {
                           <TextField
                             label="Mobile"
                             fullWidth
-                            variant="standard" 
+                            variant="standard"
                             error={!!errors.reference1?.mobile}
                             helperText={errors.reference1?.mobile?.message}
                             {...field}
@@ -105,10 +109,10 @@ const Reference = ({ reference }) => {
                         name="reference1.relation"
                         control={control}
                         render={({ field }) => (
-                          <FormControl 
-                          fullWidth
-                          variant="standard"  
-                          error={!!errors.reference1?.relation}
+                          <FormControl
+                            fullWidth
+                            variant="standard"
+                            error={!!errors.reference1?.relation}
                           >
                             <InputLabel>Relation</InputLabel>
                             <Select
@@ -138,7 +142,7 @@ const Reference = ({ reference }) => {
                           <TextField
                             label="Name"
                             fullWidth
-                            variant="standard" 
+                            variant="standard"
                             error={!!errors.reference2?.name}
                             helperText={errors.reference2?.name?.message}
                             {...field}
@@ -152,7 +156,7 @@ const Reference = ({ reference }) => {
                           <TextField
                             label="Mobile"
                             fullWidth
-                            variant="standard" 
+                            variant="standard"
                             error={!!errors.reference2?.mobile}
                             helperText={errors.reference2?.mobile?.message}
                             {...field}
@@ -163,10 +167,10 @@ const Reference = ({ reference }) => {
                         name="reference2.relation"
                         control={control}
                         render={({ field }) => (
-                          <FormControl 
-                          fullWidth 
-                          variant="standard" 
-                          error={!!errors.reference2?.relation}
+                          <FormControl
+                            fullWidth
+                            variant="standard"
+                            error={!!errors.reference2?.relation}
                           >
                             <InputLabel>Relation</InputLabel>
                             <Select
@@ -206,17 +210,33 @@ const Reference = ({ reference }) => {
                 <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
                   <Table aria-label="personal details table">
                     <TableBody>
-                    {referenceDetails?.map((references, index) => (
-                      <TableRow key={index}>
-                        <TableCell><strong>Name:</strong> {references.name}</TableCell>
-                        <TableCell><strong>Mobile:</strong> {references.mobile}</TableCell>
-                        <TableCell><strong>Relation:</strong> {references.relation}</TableCell>
-                      </TableRow>
-                    ))}
+                      {referenceDetails?.map((references, index) => (
+                        <TableRow key={index}>
+                          <TableCell><strong>Name:</strong> {references.name}</TableCell>
+                          <TableCell><strong>Mobile:</strong> {references.mobile}</TableCell>
+                          <TableCell><strong>Relation:</strong> {references.relation}</TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
                 <Divider sx={{ my: 2 }} />
+                {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => setOpenEdit(true)}
+                    sx={{
+                      backgroundColor: 'primary.main',
+                      color: 'white',
+                      padding: '10px 20px',
+                      '&:hover': {
+                        backgroundColor: 'darkPrimary',
+                      },
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </Box>}
               </>
             )}
           </Paper>

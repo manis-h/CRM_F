@@ -231,6 +231,7 @@ const Employment = ({ employmentData }) => {
                       render={({ field }) => (
                         <DatePicker
                           label="Employed Since"
+                          sx={{ width: "100%" }}
                           value={field.value}
                           onChange={(newValue) => field.onChange(newValue)} // Connect the DatePicker with react-hook-form
                           renderInput={(params) => (

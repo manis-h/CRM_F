@@ -79,6 +79,36 @@ export const residenceSchema = Yup.object().shape({
         .required('Reference 2 Relation is required'),
     }),
   });
+
+
+
+
+export const leadUpdateSchema = Yup.object().shape({
+  fName: Yup.string().required('First Name is required').min(2, 'First Name must be at least 2 characters'),
+  mName: Yup.string(),
+  lName: Yup.string(),
+  gender: Yup.string().required('Gender is required'),
+  dob: Yup.date().required('Date of Birth is required'),
+  aadhaar: Yup.string().required('Aadhaar is required').matches(/^\d{12}$/, 'Aadhaar must be 12 digits'),
+  pan: Yup.string().required('PAN is required').matches(/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, 'Invalid PAN format'),
+  mobile: Yup.string()
+    .required('Mobile is required')
+    .matches(/^\d{10}$/, 'Mobile must be exactly 10 digits') // Exact 10 digits validation
+    .test(
+      'len',
+      'Mobile must be exactly 10 digits', 
+      (val) => val && val.length <= 10 // Custom test to ensure it's exactly 10 digits
+    ),
+  alternateMobile: Yup.string().matches(/^\d{10}$/, 'Alternate Mobile must be 10 digits').nullable(),
+  personalEmail: Yup.string().required('Personal Email is required').email('Invalid email format'),
+  officeEmail: Yup.string().email('Invalid email format'),
+  loanAmount: Yup.number().required('Loan Amount is required').positive('Loan Amount must be positive').integer(),
+  salary: Yup.number().required('Salary is required').positive('Salary must be positive').integer(),
+  pinCode: Yup.string().required('Pin Code is required').matches(/^\d{6}$/, 'Pin Code must be 6 digits'),
+  state: Yup.string().required('State is required'),
+  city: Yup.string().required('City is required'),
+});
+
   
 
   
