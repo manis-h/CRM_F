@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Button, Paper, Table, TableBody, TableCell, TableContainer, TableRow, Box } from '@mui/material';
+import { Paper, Box } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import UploadDocuments from '../UploadDocuments';
 import LeadDetails from '../LeadDetails';
@@ -13,12 +13,14 @@ import ActionButton from '../actionButton';
 import InternalDedupe from '../InternalDedupe';
 import ApplicationLogHistory from '../ApplicationLogHistory';
 import useAuthStore from '../store/authStore';
+import VerifyContactDetails from '../leads/DetailsVerification';
+import ApplicantProfileData from '../applicantProfileData';
 
 const barButtonOptions = ['Application', 'Documents', 'Personal', 'Banking', 'Verification', 'Cam']
 
 const ApplicationProfile = () => {
   const { id } = useParams();
-  const {empInfo} = useAuthStore()
+  const { empInfo } = useAuthStore()
   const { setApplicationProfile } = useStore();
   const navigate = useNavigate();
   const [uploadedDocs, setUploadedDocs] = useState([]);
@@ -27,17 +29,6 @@ const ApplicationProfile = () => {
 
   const { data: applicationData, isSuccess: applicationSuccess } = useFetchSingleApplicationQuery(id, { skip: id === null });
 
-
-  const columns = [
-    { label: "First Name", value: applicationData?.lead?.fName, label2: "Middle Name", value2: applicationData?.lead?.mName },
-    { label: "Last Name", value: applicationData?.lead?.lName, label2: "Gender", value2: applicationData?.lead?.gender },
-    { label: "Date of Birth", value: applicationData?.lead?.dob, label2: "Aadhaar Number", value2: applicationData?.lead?.aadhaar },
-    { label: "PAN Number", value: applicationData?.lead?.pan, label2: "Mobile Number", value2: applicationData?.lead?.mobile },
-    { label: "Alternate Mobile", value: applicationData?.lead?.alternateMobile, label2: "Personal Email", value2: applicationData?.lead?.personalEmail },
-    { label: "Office Email", value: applicationData?.lead?.officeEmail, label2: "Loan Amount", value2: applicationData?.lead?.loanAmount },
-    { label: "Salary", value: applicationData?.lead?.salary, label2: "State", value2: applicationData?.lead?.state },
-    { label: "City", value: applicationData?.lead?.city, label2: "Pin Code", value2: applicationData?.lead?.pinCode },
-  ];
 
   useEffect(() => {
     if (applicationSuccess) {
@@ -64,20 +55,7 @@ const ApplicationProfile = () => {
             {currentPage === "application" &&
               <>
                 <Paper elevation={3} sx={{ padding: '20px', marginTop: '20px', borderRadius: '10px' }}>
-                  <TableContainer component={Paper} sx={{ borderRadius: '8px' }}>
-                    <Table aria-label="application details table">
-                      <TableBody>
-                        {columns.map((row, index) => (
-                          <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#141b2d' } }}>
-                            <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label}</TableCell>
-                            <TableCell align="left">{row.value || ''}</TableCell>
-                            <TableCell align="left" sx={{ fontWeight: 500 }}>{row.label2}</TableCell>
-                            <TableCell align="left">{row.value2 || ''}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
+                  <ApplicantProfileData leadData={applicationData?.lead} />
                 </Paper>
                 {applicationData?.lead?._id &&
                   <>
@@ -87,9 +65,9 @@ const ApplicationProfile = () => {
                     {/* Action Buttons */}
 
                     {(!applicationData.isRejected && empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
-                      <ActionButton 
-                      id={applicationData._id} 
-                      isHold={applicationData.onHold}  
+                      <ActionButton
+                        id={applicationData._id}
+                        isHold={applicationData.onHold}
                       />
 
                     </Box>}
@@ -107,7 +85,21 @@ const ApplicationProfile = () => {
                 {currentPage === "banking" &&
                   <BankDetails id={applicationData?.applicant} />}
 
-                {currentPage === "documents" && <UploadDocuments leadData={applicationData?.lead} setUploadedDocs={setUploadedDocs} uploadedDocs={uploadedDocs} />}
+                {currentPage === "verification" &&
+                  <VerifyContactDetails
+                    isMobileVerified={applicationData?.lead?.isMobileVerified}
+                    isEmailVerified={applicationData?.lead?.isEmailVerified}
+                    isAadhaarVerified={applicationData?.lead?.isAadhaarVerified}
+                    isPanVerified={applicationData?.lead?.isPanVerified}
+                  />
+                }
+                {currentPage === "documents" &&
+                  <UploadDocuments
+                    leadData={applicationData?.lead}
+                    setUploadedDocs={setUploadedDocs}
+                    uploadedDocs={uploadedDocs}
+                  />
+                }
 
                 {currentPage === "cam" && <Cam />}
               </>

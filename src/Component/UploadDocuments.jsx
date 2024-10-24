@@ -83,6 +83,7 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
     }, [docSuccess]);
 
     useEffect(() => {
+        console.log('use fect')
         if (docsSuccess) {
             const fileUrl = docsData?.url;
             const mimeType = docsData?.mimeType?.split('/').pop().toLowerCase();
@@ -132,6 +133,8 @@ const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
             background: 'linear-gradient(45deg, #007bb2, #42a5f5)',
         },
     };
+
+    console.log('docs data',docsData)
 
     return (
         <Box sx={{ maxWidth: '700px', margin: '0 auto', mt: 3 }}>
