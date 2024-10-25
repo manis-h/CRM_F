@@ -85,7 +85,7 @@ const VerifyContactDetails = ({ isMobileVerified, isEmailVerified, isAadhaarVeri
               '&:hover': { backgroundColor: '#0056b3' }
             }}
           >
-            <Typography variant="h6">Verification Options</Typography>
+            <Typography variant="h6">Documents Verification</Typography>
           </AccordionSummary>
           <AccordionDetails sx={{ backgroundColor: '#f5f5f5', borderRadius: '15px' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -189,7 +189,7 @@ const VerifyContactDetails = ({ isMobileVerified, isEmailVerified, isAadhaarVeri
         </Accordion>
       </Box>
     </>
-  );
+   );
 };
 
 export default VerifyContactDetails;

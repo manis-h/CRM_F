@@ -1,28 +1,52 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, FormControl, InputLabel, Select, MenuItem, Button, Typography, OutlinedInput, Box } from '@mui/material';
+import React, { useEffect } from 'react';
+import {
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Button,
+  Typography,
+  OutlinedInput,
+  Box,
+} from '@mui/material';
 import { useParams } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
 import { useUpdateLeadMutation } from '../Service/Query';
 import { formatDate } from '../utils/helper';
 import useAuthStore from './store/authStore';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { leadUpdateSchema } from '../utils/validations';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+
 
 const LeadDetails = ({ leadData, setLeadEdit }) => {
+  console.log('lead data', leadData)
   const { id } = useParams();
   const [updateLead, { data, isSuccess, isError, error }] = useUpdateLeadMutation();
-  const [formData, setFormData] = useState(leadData);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const { handleSubmit, control, setValue } = useForm({
+    resolver: yupResolver(leadUpdateSchema),
+    defaultValues: leadData,
+    mode: 'onBlur', // Validate on change (real-time validation)
+    reValidateMode: 'onChange',
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (leadData && Object.keys(leadData).length > 0) {
+      Object.keys(leadData).forEach((key) => {
+        setValue(key, leadData[key]);
+      });
+    }
+  }, [leadData, setValue]);
+
+  const onSubmit = (formData) => {
+    console.log('form Data',typeof formData.dob)
     setLeadEdit(false);
     updateLead({ id, formData });
-  };
-  const convertToISODate = (dob) => {
-    if (!dob) return '';
-    const [day, month, year] = dob.split('-');
-    return `${day}-${month}-${year}`;
   };
 
   return (
@@ -30,218 +54,346 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
       <Typography variant="h4" align="center" gutterBottom sx={{ fontWeight: 'bold', color: '#3f51b5' }}>
         Lead Details
       </Typography>
-      <Box 
-        component="form" 
-        onSubmit={handleSubmit} 
-        sx={{ 
-          backgroundColor: '#9c9b98', 
-          padding: '30px', 
-          borderRadius: '10px', 
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)', 
-          display: 'flex', 
-          flexWrap: 'wrap', 
-          gap: '20px' 
+
+      <Box
+        component="form"
+        noValidate
+        onSubmit={handleSubmit(onSubmit)}
+        sx={{
+          backgroundColor: '#9c9b98',
+          padding: '30px',
+          borderRadius: '10px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '20px',
         }}
       >
-        {/* Using Box for a two-column layout */}
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="First Name"
+          <Controller
             name="fName"
-            value={formData.fName}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="First Name"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            fullWidth
-            label="Middle Name"
+          <Controller
             name="mName"
-            value={formData.mName}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Middle Name"
+                variant="outlined"
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            fullWidth
-            label="Last Name"
+          <Controller
             name="lName"
-            value={formData.lName}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Last Name"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <FormControl variant="outlined" fullWidth required>
-            <InputLabel htmlFor="gender-select">Gender</InputLabel>
-            <Select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              input={<OutlinedInput label="Gender" id="gender-select" />}
-            >
-              <MenuItem value="M">Male</MenuItem>
-              <MenuItem value="F">Female</MenuItem>
-            </Select>
-          </FormControl>
-        </Box>
-
-        <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="Date of Birth"
-            name="dob"
-            type="date"
-            InputLabelProps={{ shrink: true }}
-            value={formData?.dob && new Date(formData?.dob).toISOString().split('T')[0]}
-            onChange={handleChange}
-            variant="outlined"
+          <Controller
+            name="gender"
+            control={control}
+            render={({ field, fieldState }) => (
+              <FormControl variant="outlined" fullWidth required error={!!fieldState.error}>
+                <InputLabel htmlFor="gender-select">Gender</InputLabel>
+                <Select
+                  {...field}
+                  input={<OutlinedInput label="Gender" id="gender-select" />}
+                >
+                  <MenuItem value="M">Male</MenuItem>
+                  <MenuItem value="F">Female</MenuItem>
+                </Select>
+                {fieldState.error && <Typography color="error">{fieldState.error.message}</Typography>}
+              </FormControl>
+            )}
           />
         </Box>
 
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <Box sx={{ flex: '1 1 45%', width: '100%' }} fullWidth> {/* Ensure the box takes full width */}
+            <Controller
+              name="dob"
+              control={control}
+              render={({ field, fieldState }) => (
+                <DatePicker
+                  {...field}
+                  label="Date of Birth"
+                  sx={{ width: "100%" }}
+                  format="DD/MM/YYYY"
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      required
+                      variant="outlined"
+                      error={!!fieldState.error}
+                      helperText={fieldState.error ? fieldState.error.message : ''}
+                    />
+                  )}
+                  value={field.value ? dayjs(field.value, 'YYYY-MM-DD') : null}
+                  onChange={(newValue) => {
+                    field.onChange(newValue);
+                  }}
+                />
+              )}
+            />
+          </Box>
+        </LocalizationProvider>
+
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="Aadhaar"
+          <Controller
             name="aadhaar"
-            value={formData.aadhaar}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Aadhaar"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="PAN"
+          <Controller
             name="pan"
-            value={formData.pan}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="PAN"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="Mobile"
+          <Controller
             name="mobile"
-            value={formData.mobile}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Mobile"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            fullWidth
-            label="Alternate Mobile"
+          <Controller
             name="alternateMobile"
-            value={formData.alternateMobile}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                fullWidth
+                label="Alternate Mobile"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="Personal Email"
+          <Controller
             name="personalEmail"
-            value={formData.personalEmail}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Personal Email"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="Office Email"
+          <Controller
             name="officeEmail"
-            value={formData.officeEmail}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Office Email"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="Loan Amount"
+          <Controller
             name="loanAmount"
-            type="number"
-            value={formData.loanAmount}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Loan Amount"
+                type="number"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+                InputProps={{
+                  min: 0, // Set the minimum value
+                  sx: {
+                    '& input[type=number]': {
+                      '-moz-appearance': 'textfield', // For Firefox
+                    },
+                    '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
+                      '-webkit-appearance': 'none', // For Chrome, Safari, Edge, and Opera
+                      margin: 0,
+                    },
+                  },
+                }}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="Salary"
+          <Controller
             name="salary"
-            type="number"
-            value={formData.salary}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="Salary"
+                type="number"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+                InputProps={{
+                  min: 0, // Set the minimum value
+                  sx: {
+                    '& input[type=number]': {
+                      '-moz-appearance': 'textfield', // For Firefox
+                    },
+                    '& input[type=number]::-webkit-outer-spin-button, & input[type=number]::-webkit-inner-spin-button': {
+                      '-webkit-appearance': 'none', // For Chrome, Safari, Edge, and Opera
+                      margin: 0,
+                    },
+                  },
+                }}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="Pin Code"
+          <Controller
             name="pinCode"
-            type="number"
-            value={formData.pinCode}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                type='string'
+                label="Pin Code"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="State"
+          <Controller
             name="state"
-            value={formData.state}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="State"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
         <Box sx={{ flex: '1 1 45%' }}>
-          <TextField
-            required
-            fullWidth
-            label="City"
+          <Controller
             name="city"
-            value={formData.city}
-            onChange={handleChange}
-            variant="outlined"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                required
+                fullWidth
+                label="City"
+                variant="outlined"
+                error={!!fieldState.error}
+                helperText={fieldState.error ? fieldState.error.message : ''}
+              />
+            )}
           />
         </Box>
 
-        {/* Buttons at the bottom */}
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', width: '100%' }}>
           <Button
             variant="outlined"
@@ -263,11 +415,11 @@ const LeadDetails = ({ leadData, setLeadEdit }) => {
             type="submit"
             variant="contained"
             sx={{
-              backgroundColor: '#3f51b5', // Primary color
+              backgroundColor: '#3f51b5',
               color: 'white',
               padding: '10px 20px',
               '&:hover': {
-                backgroundColor: '#303f9f', // Darker shade for hover
+                backgroundColor: '#303f9f',
               },
             }}
           >

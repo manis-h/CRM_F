@@ -100,7 +100,7 @@ export const applicationApi = createApi({
     addBank: builder.mutation({
       query: ({id,data}) => ({
 
-        url: `/applicant/bankDetails/${id}`,
+        url: `/verify/bank/${id}`,
         method: 'PATCH',
         body:data
       }),
