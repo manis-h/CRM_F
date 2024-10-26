@@ -1,8 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Typography, Button, Paper, Box, TextField, Alert } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import React, { useState } from 'react';
+import {
+    Typography,
+    Button,
+    Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    IconButton,
+    Checkbox,
+} from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import DownloadIcon from '@mui/icons-material/Download';
+import AddIcon from '@mui/icons-material/Add';
 import { useLazyGetLeadDocsQuery, useUploadDocumentsMutation } from '../Service/Query';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -10,243 +22,186 @@ import useAuthStore from './store/authStore';
 
 const UploadDocuments = ({ leadData, uploadedDocs, setUploadedDocs }) => {
     const { id } = useParams();
-    const {empInfo} = useAuthStore()
-    const [selectedFileType, setSelectedFileType] = useState(null);
-
-    const [uploadDocuments, { isSuccess: docSuccess, isError: isDocError, error: docError }] = useUploadDocumentsMutation();
-    const [getLeadDocs, { data: docsData, isSuccess: docsSuccess, isError: isDocsError, error: docsError }] = useLazyGetLeadDocsQuery();
-    const [accordianOpen, setAccordinaOpen] = useState(true);
-
+    const { empInfo } = useAuthStore();
+    const [selectedDocument, setSelectedDocument] = useState(null);
     const [documents, setDocuments] = useState({
-        aadhaarFront: null,
-        aadhaarBack: null,
-        panCard: null,
-        salarySlip: null,
-        bankStatement: null,
+        aadhaarFront: [],
+        aadhaarBack: [],
+        panCard: [],
+        salarySlip: [],
+        bankStatement: [],
     });
+    const [uploadedDocumentDetails, setUploadedDocumentDetails] = useState([]);
+    const [uploadDocumentType, setUploadDocumentType] = useState('');
 
-    const fileInputRefs = {
-        aadhaarFront: useRef(null),
-        aadhaarBack: useRef(null),
-        panCard: useRef(null),
-        salarySlip: useRef(null),
-        bankStatement: useRef(null),
+    const [uploadDocuments] = useUploadDocumentsMutation();
+    const [getLeadDocs] = useLazyGetLeadDocsQuery();
+
+    const handleFileChange = (e, type) => {
+        const files = Array.from(e.target.files);
+        setDocuments((prevDocs) => ({
+            ...prevDocs,
+            [type]: [...prevDocs[type], ...files],
+        }));
     };
 
-    const handleChange = (e) => {
-        if (e.target.type === 'file') {
-            const file = e.target.files[0];
-            const name = e.target.name;
-
-            // Validate file type
-            if (name === 'salarySlip' || name === 'bankStatement') {
-                if (file.type !== 'application/pdf') {
-                    alert('Please upload a PDF file for salary slip or bank statement.');
-                    return;
-                }
-            } 
-            setDocuments({ ...documents, [name]: file });
-        }
+    const handleAddUploadField = (type) => {
+        setDocuments((prevDocs) => ({
+            ...prevDocs,
+            [type]: [...prevDocs[type], null], // Adding a placeholder for a new file input
+        }));
     };
 
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        Object.keys(documents).forEach((key) => {
-            if (documents[key]) {
-                formData.append(key, documents[key]);
-            }
-        });
-        uploadDocuments({ id: leadData._id, docsData: formData });
-        setDocuments({
-            aadhaarFront: null,
-            aadhaarBack: null,
-            panCard: null,
-            salarySlip: null,
-            bankStatement: null,
-        });
-    };
-
-    const viewFile = (docType) => {
-        setSelectedFileType(docType);
-        getLeadDocs({ id: leadData._id, docType });
-    };
-
-    useEffect(() => {
-        if (docSuccess) {
+    const handleOpenUploadModal = (type) => {
+        if (type) {
+            setUploadDocumentType(type); // Set document type for upload
+            showUploadDialog(type);
+        } else {
             Swal.fire({
-                title: 'Documents uploaded successfully!',
-                icon: 'success',
+                title: 'Please select a document type first',
+                icon: 'warning',
             });
         }
-    }, [docSuccess]);
+    };
 
-    useEffect(() => {
-        if (docsSuccess) {
-            const fileUrl = docsData?.url;
-            const mimeType = docsData?.mimeType?.split('/').pop().toLowerCase();
+    const showUploadDialog = (type) => {
+        const isMultiple = type === 'salarySlip' || type === 'bankStatement'; // Check if the document type allows multiple uploads
+        Swal.fire({
+            title: 'Upload File',
+            html: `
+                <input type="file" id="fileInput" multiple="${isMultiple}" style="display: block; margin-bottom: 10px;" />
+                <input type="password" id="passwordInput" placeholder="Password" style="display: block; width: 100%; margin-bottom: 10px;" />
+            `,
+            focusConfirm: false,
+            preConfirm: () => {
+                const fileInput = document.getElementById('fileInput').files;
+                const passwordInput = document.getElementById('passwordInput').value;
 
-            if (['jpg', 'jpeg', 'png'].includes(mimeType)) {
-                Swal.fire({
-                    title: 'Document retrieved successfully!',
-                    html: `<img src="${fileUrl}" alt="${selectedFileType}" width="400" />`,
-                    showCloseButton: true,
-                });
-            } else if (['pdf'].includes(mimeType)) {
-                Swal.fire({
-                    title: 'Document retrieved successfully!',
-                    html: `<iframe src="${fileUrl}" width="400" height="500"></iframe>`,
-                    showCloseButton: true,
-                });
-            } else if (['mp4', 'avi', 'mov'].includes(mimeType)) {
-                Swal.fire({
-                    title: 'Document retrieved successfully!',
-                    html: `<video width="400" controls><source src="${fileUrl}" type="video/${mimeType}">Your browser does not support the video tag.</video>`,
-                    showCloseButton: true,
-                });
+                if (fileInput.length === 0) {
+                    Swal.showValidationMessage('Please select at least one file to upload');
+                    return false;
+                }
+                
+                return { files: fileInput, password: passwordInput };
+            },
+            confirmButtonText: 'Upload',
+            cancelButtonText: 'Cancel',
+            showCancelButton: true,
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const { files, password } = result.value;
+
+                try {
+                    const formData = new FormData();
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append(uploadDocumentType, files[i]);
+                    }
+                    await uploadDocuments({ id: leadData._id, docsData: formData }).unwrap();
+
+                    Swal.fire('Success!', 'Documents uploaded successfully!', 'success');
+                    setUploadedDocumentDetails((prev) => [
+                        ...prev,
+                        { type: uploadDocumentType, uploadedBy: empInfo.name, password },
+                    ]);
+                    setDocuments((prevDocs) => ({
+                        ...prevDocs,
+                        [uploadDocumentType]: [], // Clear the documents after upload
+                    }));
+                } catch (error) {
+                    Swal.fire('Error!', error.message || 'An error occurred while uploading the documents.', 'error');
+                }
             }
-        }
-    }, [docsData]);
-
-    const accordionStyles = {
-        borderRadius: '12px',
-        background: 'linear-gradient(145deg, #0366fc, #ffffff)',
-        boxShadow: '5px 5px 10px #d1d5db, -5px -5px 10px #ffffff',
-        marginBottom: '20px',
+        });
     };
 
-    const paperStyles = {
-        padding: '30px',
-        borderRadius: '15px',
-        backgroundColor: '#fafafa',
-        boxShadow: '5px 5px 15px rgba(0, 0, 0, 0.1)',
-    };
-
-    const buttonStyles = {
-        borderRadius: '8px',
-        padding: '10px 20px',
-        background: 'linear-gradient(45deg, #42a5f5, #007bb2)',
-        color: '#fff',
-        '&:hover': {
-            background: 'linear-gradient(45deg, #007bb2, #42a5f5)',
-        },
+    const handleDownload = (doc) => {
+        const blob = new Blob([JSON.stringify(doc)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${doc.type}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     };
 
     return (
-        <Box sx={{ maxWidth: '700px', margin: '0 auto', mt: 3 }}>
-            <Accordion defaultExpanded style={accordionStyles}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: '#007bb2' }} />}>
-                    <Typography variant="h6" style={{ fontWeight: '600', color: "#ffffff" }}>Upload Documents</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Paper elevation={3} style={paperStyles}>
-                        <Box display="flex" flexDirection="column" gap={2}>
-                            {Object.keys(documents).map((key) => {
-                                let acceptType = '';
+        <Box sx={{ maxWidth: '700px', margin: '0 auto', mt: 3, p: 3, backgroundColor: '#ffffff', borderRadius: 2 }}>
+            <Typography variant="h6" style={{ fontWeight: '600', color: "#000000", mb: 2 }}>
+                Upload Documents
+            </Typography>
 
-                                if (key === 'salarySlip' || key === 'bankStatement') {
-                                    acceptType = 'application/pdf';  // Only PDF files
-                                } else {
-                                    acceptType = 'image/jpg, image/png, image/jpeg';  // General file types for other fields
-                                }
-                                return (
-                                    <Box key={key} display="flex" flexDirection="column" gap={1} mb={3}>
-                                        <Typography variant="subtitle1" style={{ fontWeight: '600' , color:'#898b8c' }}>
-                                            {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}:
-                                        </Typography>
-                                        <Box
-                                            display="flex"
-                                            flexDirection="row"
-                                            alignItems="center"
-                                            justifyContent="space-between"
-                                            sx={{
-                                                
-                                                padding: '12px',
-                                                border: '2px solid #dfe3e8',
-                                                borderRadius: '12px',
-                                                boxShadow: '0 6px 12px rgba(0, 0, 0, 0.08)',
-                                                backgroundColor: '#ffffff',
-                                                marginBottom: '20px',
-                                            }}
-                                        >
-                                            {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin" ) && <TextField
-                                                type="file"
-                                                name={key}
-                                                accept={acceptType}
-                                                onChange={handleChange}
-                                                // inputRef={fileInputRefs}
-                                                fullWidth
-                                                InputProps={{
-                                                    sx: {
-                                                        cursor:"pointer",
-                                                        borderRadius: '6px',
-                                                        padding: '8px',
-                                                        color:"#898b8c",
-                                                        backgroundColor: '#e0e3e7',
-                                                        '&:hover': {
-                                                            backgroundColor: '#e0e3e7',
-                                                        },
-                                                        '& input': {
-                                                            padding: '8px',
-                                                        },
-                                                    },
-                                                }}
-                                            />}
+            <Box display="flex" flexDirection="column" gap={2}>
+                <Box display="flex" alignItems="center" gap={2}>
+                    {['aadhaarFront', 'panCard', 'salarySlip', 'bankStatement'].map((key) => (
+                        <Box key={key} display="flex" alignItems="center" gap={1}>
+                            <Checkbox
+                                checked={selectedDocument === key}
+                                onChange={(e) => {
+                                    if (e.target.checked) {
+                                        setSelectedDocument(key);
+                                    } else {
+                                        setSelectedDocument(null);
+                                    }
+                                }}
+                                sx={{ color: 'black' }}
+                            />
+                            <Typography variant="subtitle2" style={{ fontWeight: '600', color: '#000000', fontSize: '14px' }}>
+                                {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                            </Typography>
+                            {/* Add "+" sign/button only for Salary Slip and Bank Statement */}
+                            {(key === 'salarySlip' || key === 'bankStatement') && (
+                                <IconButton onClick={() => handleAddUploadField(key)} size="small">
+                                    <AddIcon sx={{ color: 'black' }} /> {/* Change color to black */}
+                                </IconButton>
+                            )}
+                        </Box>
+                    ))}
+                </Box>
 
-                                            {uploadedDocs.includes(key) && (
-                                                <Button
-                                                    variant="outlined"
-                                                    color="secondary"
-                                                    onClick={() => viewFile(key)}
-                                                    startIcon={<VisibilityIcon />}
-                                                    sx={{
-                                                        marginLeft: '16px',
-                                                        padding: '8px 18px',
-                                                        borderRadius: '12px',
-                                                        borderColor: '#3f51b5',
-                                                        color: '#3f51b5',
-                                                        transition: 'border-color 0.3s, background-color 0.3s',
-                                                        '&:hover': {
-                                                            borderColor: '#303f9f',
-                                                            backgroundColor: '#e8eaf6',
-                                                        },
-                                                    }}
-                                                >
-                                                    View
-                                                </Button>
-                                            )}
-                                        </Box>
-                                    </Box>
-                                )
-                            })}
-                            <Box sx={{ marginTop: 2 }}>
-                                {isDocError && (
-                                    <Alert severity="error" sx={{ borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-                                        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                                            Error:
-                                        </Typography>
-                                        <Typography variant="body2" sx={{ marginTop: 1 }}>
-                                            {docError?.data?.message}
-                                        </Typography>
-                                    </Alert>
-                                )}
-                            </Box>
-                        </Box>
-                        <Box display="flex" justifyContent="space-between" mt={2}>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                sx={buttonStyles}
-                                startIcon={<UploadFileIcon />}
-                                onClick={handleSubmit}
-                            >
-                                Upload
-                            </Button>
-                        </Box>
-                    </Paper>
-                </AccordionDetails>
-            </Accordion>
+                <Box>
+                    <Button
+                        variant="outlined"
+                        onClick={() => handleOpenUploadModal(selectedDocument)}
+                        disabled={!selectedDocument}
+                    >
+                        Upload
+                    </Button>
+                </Box>
+            </Box>
+
+            <TableContainer component={Box} sx={{ marginTop: 2, borderRadius: '8px', border: '1px solid #007bb2', overflow: 'hidden' }}>
+                <Table>
+                    <TableHead>
+                        <TableRow sx={{ backgroundColor: '#007bb2', color: '#ffffff' }}>
+                            <TableCell sx={{ color: '#ffffff', fontWeight: 'bold' }}>Doc ID</TableCell>
+                            <TableCell sx={{ color: '#ffffff', fontWeight: 'bold' }}>Lead ID</TableCell>
+                            <TableCell sx={{ color: '#ffffff', fontWeight: 'bold' }}>Document Type</TableCell>
+                            <TableCell sx={{ color: '#ffffff', fontWeight: 'bold' }}>Uploaded By</TableCell>
+                            <TableCell sx={{ color: '#ffffff', fontWeight: 'bold' }}>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {uploadedDocumentDetails.map((doc, index) => (
+                            <TableRow key={index} sx={{ '&:nth-of-type(odd)': { backgroundColor: '#f9f9f9' } }}>
+                                <TableCell sx={{ color: 'black' }}>{index + 1}</TableCell>
+                                <TableCell sx={{ color: 'black' }}>{id}</TableCell>
+                                <TableCell sx={{ color: 'black' }}>{doc.type}</TableCell>
+                                <TableCell sx={{ color: 'black' }}>{doc.uploadedBy}</TableCell>
+                                <TableCell>
+                                    <IconButton>
+                                        <VisibilityIcon sx={{ color: 'black' }} /> {/* Change color to black */}
+                                    </IconButton>
+                                    <IconButton onClick={() => handleDownload(doc)}>
+                                        <DownloadIcon sx={{ color: 'black' }} /> {/* Change color to black */}
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
         </Box>
     );
 };
