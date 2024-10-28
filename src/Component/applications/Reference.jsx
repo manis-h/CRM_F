@@ -24,7 +24,7 @@ const paperStyles = {
 
 const Reference = ({ reference }) => {
   const { applicationProfile } = useStore();
-  const { empInfo } = useAuthStore()
+  const { empInfo,activeRole } = useAuthStore()
   const [openEdit, setOpenEdit] = useState(false)
   const id = applicationProfile._id;
   const [referenceDetails, setReferenceDetails] = useState()
@@ -221,7 +221,7 @@ const Reference = ({ reference }) => {
                   </Table>
                 </TableContainer>
                 <Divider sx={{ my: 2 }} />
-                {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
+                {(activeRole !== "sanctionHead" && activeRole !== "admin") && <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
                   <Button
                     variant="outlined"
                     onClick={() => setOpenEdit(true)}

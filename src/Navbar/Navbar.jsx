@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import {
@@ -9,42 +9,69 @@ import {
   Menu,
   MenuItem,
   Avatar,
+  FormControl,
+  InputLabel,
+  Select,
+  Box,
 } from '@mui/material';
 import { Logout, Person } from '@mui/icons-material';
 import useStore from '../Store';
 import { useLogoutMutation } from '../Service/Query';
 import useAuthStore from '../Component/store/authStore';
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
-  const cookies = new Cookies();
   const navigate = useNavigate();
   const { setEmployeeDetails } = useStore();
-  const { setLogin, setEmpInfo, empInfo } = useAuthStore();
-  
-  // Add error and success flags for logout mutation
+  const { setLogin, setEmpInfo, empInfo, activeRole,setActiveRole } = useAuthStore();
+  // const [currentActiveRole, setCurrentActiveRole] = useState(activeRole)
+
   const [logout, { isSuccess, isError, error }] = useLogoutMutation();
-  
   const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
   const handleLogout = async () => {
-    console.log("Logout button clicked");
     try {
-      await logout(); // Ensure logout is awaited
-      console.log("Logout successful");
+      await logout();
     } catch (err) {
       console.error("Logout failed: ", err);
     }
   };
 
+
+const handleRoleChange = (e) => {
+  const selectedRole = e.target.value;
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: `Do you want to switch to the ${selectedRole} role?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, switch role',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      setActiveRole(selectedRole); // Set the new active role
+      navigate('/'); // Navigate to the desired page
+    }
+  });
+};
+
+
   const handleMenuClick = (event) => {
     setMenuAnchorEl(event.currentTarget);
   };
+
+  function splitCamelCase(str) {
+    return str
+      .replace(/([a-z])([A-Z])/g, '$1 $2') // Insert a space before each uppercase letter
+      .replace(/(^\w|\s\w)/g, match => match.toUpperCase()); // Capitalize the first letter of each word
+  }
 
   const handleMenuClose = () => {
     setMenuAnchorEl(null);
   };
 
-  // Trigger navigation on successful logout
   useEffect(() => {
     if (isSuccess) {
       setLogin(false);
@@ -58,7 +85,6 @@ const Navbar = () => {
     }
   }, [isSuccess, isError, error, setLogin, setEmpInfo, setEmployeeDetails, navigate]);
 
-  // Sidebar links
   const sidebarLinks = [
     { text: 'User Profile', path: '/user-profile' },
     { text: 'Add Employee', path: '/add-users' },
@@ -69,37 +95,57 @@ const Navbar = () => {
   ];
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: '#001f3f' }}> {/* Change color here */}
-      <Toolbar>
+    <AppBar position="static" sx={{ backgroundColor: '#001f3f', color: '#fff', boxShadow: 'none' }}>
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography
           variant="h6"
           component={Link}
           to="/"
-          style={{ textDecoration: 'none', color: 'inherit', marginLeft: 46 }}
+          sx={{
+            textDecoration: 'none',
+            color: 'inherit',
+            ml: 5,
+            fontWeight: 'bold',
+            '&:hover': { color: '#f0f0f0' },
+          }}
         >
           QuickMoney4U
         </Typography>
-        <div style={{ flexGrow: 1 }} />
 
-        {empInfo?.empRole === "sanctionHead" ? (
-          <>
-            {/* User Profile Link */}
+        {activeRole === "sanctionHead" ? (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <IconButton component={Link} to="/user-profile" color="inherit">
               <Person />
-              User Profile
+              <Typography sx={{ ml: 1 }}>User Profile</Typography>
             </IconButton>
-
-            {/* Logout Button */}
             <IconButton color="inherit" onClick={handleLogout}>
               <Logout />
-              Logout
+              <Typography sx={{ ml: 1 }}>Logout</Typography>
             </IconButton>
-          </>
+          </Box>
         ) : (
-          <>
-            {/* Replacing Settings Icon with Circle Avatar containing initials */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              {/* <InputLabel id="demo-simple-select-standard-label">Age</InputLabel> */}
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={activeRole}
+                onChange={(e) => handleRoleChange(e)}
+              // label="Age"
+              >
+                {
+                  empInfo.empRole && empInfo.empRole.map((role, i) =>
+
+                    <MenuItem key={i} value={role}>{splitCamelCase(role)}</MenuItem>
+                  )
+                }
+
+              </Select>
+            </FormControl>
+
             <IconButton color="inherit" onClick={handleMenuClick}>
-              <Avatar style={{ backgroundColor: '#fff', color: '#001f3f' }}>
+              <Avatar sx={{ backgroundColor: '#fff', color: '#001f3f' }}>
                 AB {/* Replace with dynamic initials */}
               </Avatar>
             </IconButton>
@@ -107,15 +153,31 @@ const Navbar = () => {
               anchorEl={menuAnchorEl}
               open={Boolean(menuAnchorEl)}
               onClose={handleMenuClose}
+              sx={{
+                '.MuiPaper-root': {
+                  backgroundColor: '#001f3f',
+                  color: '#fff',
+                },
+              }}
             >
               {sidebarLinks.map((link) => (
-                <MenuItem component={Link} to={link.path} key={link.text}>
+                <MenuItem
+                  component={Link}
+                  to={link.path}
+                  key={link.text}
+                  sx={{
+                    color: '#fff',
+                    '&:hover': { backgroundColor: '#002f6c' },
+                  }}
+                >
                   {link.text}
                 </MenuItem>
               ))}
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              <MenuItem onClick={handleLogout} sx={{ color: '#ff4d4d', fontWeight: 'bold' }}>
+                Logout
+              </MenuItem>
             </Menu>
-          </>
+          </Box>
         )}
       </Toolbar>
     </AppBar>

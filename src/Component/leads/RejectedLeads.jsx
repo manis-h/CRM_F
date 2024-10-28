@@ -9,7 +9,7 @@ import useAuthStore from '../store/authStore';
 const RejectedLeads = () => {
     const [rejectedLeads, setRejectedLeads] = useState()
     const [totalRejectedLeads, setTotalRejectedLeads] = useState()
-    const { empInfo } = useAuthStore()
+    const { empInfo,activeRole } = useAuthStore()
     const [id, setId] = useState(null)
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
@@ -45,7 +45,7 @@ const RejectedLeads = () => {
         { field: 'state', headerName: 'State', width: 150 },
         { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
         { field: 'salary', headerName: 'Salary', width: 150 },
-        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin"
+        ...(activeRole === "sanctionHead" || activeRole === "admin"
             ? [{ field: 'rejectedBy', headerName: 'Rejected By', width: 150 }]
             : [])
     ];
@@ -61,7 +61,7 @@ const RejectedLeads = () => {
         loanAmount: lead?.loanAmount,
         salary: lead?.salary,
         source: lead?.source,
-        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        ...((activeRole === "sanctionHead" || activeRole === "admin") &&
             { rejectedBy: `${lead?.rejectedBy?.fName}${lead?.rejectedBy?.mName ? ` ${lead?.rejectedBy?.mName}` : ``} ${lead?.rejectedBy?.lName}`, })
     }));
 

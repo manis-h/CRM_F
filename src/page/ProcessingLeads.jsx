@@ -11,7 +11,7 @@ const ProcessingLeads = () => {
     const [processingLeads, setProcessingLeads] = useState()
     const [totalLeads, setTotalLeads] = useState()
     const [id, setId] = useState(null)
-    const {empInfo} = useAuthStore()
+    const {empInfo,activeRole} = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -42,7 +42,7 @@ const ProcessingLeads = () => {
         { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
         { field: 'salary', headerName: 'Salary', width: 150 },
         { field: 'source', headerName: 'Source', width: 150 },
-        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin" 
+        ...(activeRole === "sanctionHead" || activeRole === "admin" 
             ? [{ field: 'screener', headerName: 'Screener', width: 150 }] 
             : [])
 
@@ -59,7 +59,7 @@ const ProcessingLeads = () => {
         loanAmount: lead?.loanAmount,
         salary: lead?.salary,
         source: lead?.source,
-        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        ...((activeRole === "sanctionHead" || activeRole === "admin") &&
         { screener: `${lead?.screenerId?.fName}${lead?.screenerId?.mName ? ` ${lead?.screenerId?.mName}` :``} ${lead?.screenerId?.lName}`,})
     }));
 

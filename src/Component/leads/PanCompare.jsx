@@ -19,7 +19,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import useStore from "../../Store";
 import { useVerifyPanMutation } from "../../Service/Query";
-import { compareDates } from "../../utils/helper";
+import { compareDates, formatDate } from "../../utils/helper";
 
 const PanCompare = ({ open, setOpen, panDetails }) => {
 
@@ -60,7 +60,7 @@ const PanCompare = ({ open, setOpen, panDetails }) => {
   // Fields to be compared
   const comparisonFields = [
     { label: "Name", leadValue: `${lead?.fName} ${lead?.mName} ${lead?.lName}`, panValue: panDetails?.FULLNAME },
-    { label: "DOB", leadValue: lead?.dob, panValue: panDetails?.DOB },
+    { label: "DOB", leadValue:lead?.dob && formatDate(lead?.dob), panValue: panDetails?.DOB && formatDate(panDetails?.DOB) },
   ];
   const handleClose = () => {
     setOpen(false);

@@ -10,7 +10,7 @@ const ProcessingApplication = () => {
     const [processingApplication, setProcessingApplication] = useState()
     const [totalApplications, setTotalApplications] = useState()
     const [id, setId] = useState(null)
-    const { empInfo } = useAuthStore()
+    const { empInfo,activeRole } = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -50,7 +50,7 @@ const ProcessingApplication = () => {
         { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
         { field: 'salary', headerName: 'Salary', width: 150 },
         { field: 'source', headerName: 'Source', width: 150 },
-        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin"
+        ...(activeRole === "sanctionHead" || activeRole === "admin"
             ? [{ field: 'creditManagerId', headerName: 'Credit Manager', width: 150 }]
             : [])
     ];
@@ -66,7 +66,7 @@ const ProcessingApplication = () => {
         loanAmount: application?.lead?.loanAmount,
         salary: application?.lead?.salary,
         source: application?.lead?.source,
-        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        ...((activeRole === "sanctionHead" || activeRole === "admin") &&
             { creditManagerId: `${application?.creditManagerId?.fName}${application?.creditManagerId?.mName ? ` ${application?.creditManagerId?.mName}` : ``} ${application?.creditManagerId?.lName}`, })
 
     }));

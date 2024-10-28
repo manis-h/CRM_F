@@ -145,9 +145,9 @@ const UploadDocuments = ({ leadData }) => {
     useEffect(() => {
         if (leadData.document && Object.keys(leadData.document)) {
             const merged = [
-                ...leadData?.document?.multipleDocuments.salarySlip,
-                ...leadData?.document?.multipleDocuments.bankStatement,
-                ...leadData?.document?.multipleDocuments.others,
+                ...leadData?.document?.multipleDocuments?.salarySlip,
+                ...leadData?.document?.multipleDocuments?.bankStatement,
+                ...leadData?.document?.multipleDocuments?.others,
                 ...leadData?.document?.singleDocuments
             ];
             setUploadedDocs(merged)
@@ -170,10 +170,9 @@ const UploadDocuments = ({ leadData }) => {
                             <Checkbox
                                 checked={selectedDocType === key}
                                 onChange={(e) => {
-                                    setSelectedDocType(null); // Clear the current selection
-                                    setFileInputs([{ file: null, remarks: '' }]); // Reset file inputs
+                                    setSelectedDocType(null); 
+                                    setFileInputs([{ file: null, remarks: '' }]); 
                                 
-                                    // Set new document type if the checkbox is checked
                                     if (e.target.checked) {
                                         setSelectedDocType(key);
                                     }

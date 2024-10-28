@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import Cookies from 'universal-cookie';
 const cookies = new Cookies()
-
+const role = () => JSON.parse(localStorage.getItem("auth-storage")).state.activeRole
 // Define a service using a base URL and expected endpoints
 export const applicationApi = createApi({
   reducerPath: 'applicationApi',
@@ -22,7 +22,7 @@ export const applicationApi = createApi({
     holdApplication: builder.mutation({
       query: ({id,reason}) => ({
 
-        url: `applications/hold/${id}`,
+        url: `applications/hold/${id}/?role=${role()}`,
         method: 'PATCH',
         body:{reason}
       }),
@@ -31,7 +31,7 @@ export const applicationApi = createApi({
     rejectApplication: builder.mutation({
       query: ({id,reason}) => ({
 
-        url: `applications/reject/${id}`,
+        url: `applications/reject/${id}/?role=${role()}`,
         method: 'PATCH',
         body:{reason}
       }),
@@ -40,7 +40,7 @@ export const applicationApi = createApi({
     sanctionReject: builder.mutation({
       query: ({id,reason}) => ({
 
-        url: `sanction/reject/${id}`,
+        url: `sanction/reject/${id}/?role=${role()}`,
         method: 'PATCH',
         body:{reason}
       }),
@@ -49,7 +49,7 @@ export const applicationApi = createApi({
     unholdApplication: builder.mutation({
       query: ({id,reason}) => ({
 
-        url: `applications/unhold/${id}`,
+        url: `applications/unhold/${id}/?role=${role()}`,
         method: 'PATCH',
         body:{reason}
       }),
@@ -58,7 +58,7 @@ export const applicationApi = createApi({
     sendBack: builder.mutation({
       query: ({id,reason,sendTo}) => ({
 
-        url: `applications/sent-back/${id}`,
+        url: `applications/sent-back/${id}/?role=${role()}`,
         method: 'PATCH',
         body:{sendTo,reason}
       }),
@@ -67,7 +67,7 @@ export const applicationApi = createApi({
     sanctionSendBack: builder.mutation({
       query: ({id,reason,sendTo}) => ({
 
-        url: `sanction/sent-back/${id}`,
+        url: `sanction/sent-back/${id}/?role=${role()}`,
         method: 'PATCH',
         body:{sendTo,reason}
       }),
@@ -76,7 +76,7 @@ export const applicationApi = createApi({
     approveApplication: builder.mutation({
       query: (id) => ({
 
-        url: `sanction/approve/${id}`,
+        url: `sanction/approve/${id}/?role=${role()}`,
         method: 'PATCH',
       }),
       invalidatesTags:["getApplication","recommendedApplication"]
@@ -84,7 +84,7 @@ export const applicationApi = createApi({
     recommendApplication: builder.mutation({
       query: (id) => ({
 
-        url: `applications/recommend/${id}`,
+        url: `applications/recommend/${id}/?role=${role()}`,
         method: 'PATCH',
       }),
     }),
@@ -92,7 +92,7 @@ export const applicationApi = createApi({
 
     allocateApplication: builder.mutation({
       query: (id) => ({
-        url: `/applications/${id}`,
+        url: `/applications/${id}/?role=${role()}`,
         method: 'PATCH',
       }),
       invalidatesTags:["getApplication"]
@@ -100,7 +100,7 @@ export const applicationApi = createApi({
     addBank: builder.mutation({
       query: ({id,data}) => ({
 
-        url: `/verify/bank/${id}`,
+        url: `/verify/bank/${id}/?role=${role()}`,
         method: 'PATCH',
         body:data
       }),
@@ -109,45 +109,45 @@ export const applicationApi = createApi({
     updatePersonalDetails: builder.mutation({
       query: ({id,updates}) => ({
 
-        url: `/applicant/${id}`,
+        url: `/applicant/${id}/?role=${role()}`,
         method: 'PATCH',
         body:updates
       }),
       invalidatesTags:["getApplication","applicantDetails"]
     }),
     fetchAllApplication: builder.query({
-      query: ({ page, limit }) => `/applications/?page=${page}&limit=${limit}`,
+      query: ({ page, limit }) => `/applications/?page=${page}&limit=${limit}&role=${role()}`,
       providesTags:["getApplication"]
     }),
     fetchAllocatedApplication: builder.query({
-      query: ({page,limit}) => `/applications/allocated/?page=${page}&limit=${limit}`,
+      query: ({page,limit}) => `/applications/allocated/?page=${page}&limit=${limit}&role=${role()}`,
       providesTags: ["getApplication"]
     }),
     
     fetchSingleApplication: builder.query({
-      query: (id) => `/applications/${id}`,
+      query: (id) => `/applications/${id}/?role=${role()}`,
       providesTags: ["getProfile"]
     }),
     applicantPersonalDetails: builder.query({
-      query: (id) => `/applicant/${id}`,
+      query: (id) => `/applicant/${id}/?role=${role()}`,
       providesTags: ["applicantDetails"]
     }),
     getBankDetails: builder.query({
-      query: (id) => `/applicant/bankDetails/${id}`,
+      query: (id) => `/applicant/bankDetails/${id}/?role=${role()}`,
       providesTags:['bankDetails']
     }),
     allHoldApplication: builder.query({
-      query: () => `/applications/hold`,
+      query: () => `/applications/hold/?role=${role()}`,
       providesTags: ["applicationHeld"]
     }),
     getCamDetails : builder.query({
-      query : (id) => `/applications/cam/${id}`,
+      query : (id) => `/applications/cam/${id}/?role=${role()}`,
       providesTags:["getCamDetails"]
     }),
     updateCamDetails : builder.mutation({
       query: ({id,updates}) => ({
 
-        url: `/applications/cam/${id}`,
+        url: `/applications/cam/${id}/?role=${role()}`,
         method: 'PATCH',
         body: {
           details: updates,  // Ensure updates is sent under the 'details' key
@@ -156,32 +156,32 @@ export const applicationApi = createApi({
       invalidatesTags : ['getCamDetails']
     }),
     // getLeadDocs: builder.query({
-    //   query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
+    //   query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}/?role=${role()}`,
     // }),
     // getInternalDedupe: builder.query({
-    //   query: (id) => `/leads/old-history/${id}`,
+    //   query: (id) => `/leads/old-history/${id}/?role=${role()}`,
     // }),
     // applicationHistory: builder.query({
-    //   query: (id) => `/leads/viewleadlog/${id}`,
+    //   query: (id) => `/leads/viewleadlog/${id}/?role=${role()}`,
     // }),
     // fetchAllgetApplication: builder.query({
-    //   query: () => `/leads/hold`,
+    //   query: () => `/leads/hold/?role=${role()}`,
     //   providesTags:["getApplication"]
     // }),
     getRejectedApplications: builder.query({
-      query: () => `/applications/rejected`,
+      query: () => `/applications/rejected/?role=${role()}`,
       providesTags:["getApplication"]
     }),
     recommendedApplications: builder.query({
-      query: () => `/sanction/recommended`,
+      query: () => `/sanction/recommended/?role=${role()}`,
       providesTags:["recommendedApplicatio"]
     }),
     sanctionProfile: builder.query({
-      query: (id) => `/sanction/${id}`,
+      query: (id) => `/sanction/${id}/?role=${role()}`,
       // providesTags:["getApplication"]
     }),
     sanctionPreview: builder.query({
-      query: (id) => `/sanction/preview/${id}`,
+      query: (id) => `/sanction/preview/${id}/?role=${role()}`,
       // providesTags:["getApplication"]
     }),
     

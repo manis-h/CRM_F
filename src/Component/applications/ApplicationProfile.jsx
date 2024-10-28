@@ -20,7 +20,7 @@ const barButtonOptions = ['Application', 'Documents', 'Personal', 'Banking', 'Ve
 
 const ApplicationProfile = () => {
   const { id } = useParams();
-  const { empInfo } = useAuthStore()
+  const { empInfo,activeRole } = useAuthStore()
   const { setApplicationProfile } = useStore();
   const navigate = useNavigate();
   const [uploadedDocs, setUploadedDocs] = useState([]);
@@ -64,7 +64,7 @@ const ApplicationProfile = () => {
 
                     {/* Action Buttons */}
 
-                    {(!applicationData.isRejected && empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
+                    {(!applicationData.isRejected && activeRole !== "sanctionHead" && activeRole !== "admin") && <Box display="flex" justifyContent="center" sx={{ marginTop: '20px' }}>
                       <ActionButton
                         id={applicationData._id}
                         isHold={applicationData.onHold}

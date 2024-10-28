@@ -17,7 +17,7 @@ const LeadNew = () => {
     page: 0,
     pageSize: 10,
   });
-  const {empInfo} = useAuthStore()
+  const {empInfo,activeRole} = useAuthStore()
   const navigate = useNavigate()
   const { data: allLeads, refetch } = useFetchAllLeadsQuery({page:paginationModel.page+1,limit:paginationModel.pageSize})
 
@@ -59,7 +59,7 @@ const LeadNew = () => {
       headerName: '',
       width: 50,
       renderCell: (params) => (
-        empInfo?.empRole === "screener" &&
+        activeRole === "screener" &&
         <input
           type="checkbox"
           checked={selectedLeads === params.row.id}
@@ -119,7 +119,7 @@ const LeadNew = () => {
         </div>
 
         {/* Action button for selected leads */}
-        {empInfo?.empRole === "screener" &&  <button
+        {activeRole === "screener" &&  <button
           onClick={handleAllocate}
           style={{
             marginLeft: '20px',

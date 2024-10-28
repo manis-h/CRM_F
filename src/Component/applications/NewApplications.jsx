@@ -12,7 +12,7 @@ const NewApplications = () => {
   const [totalApplications, setTotalApplications] = useState(0);
   const [page, setPage] = useState(1);
   const [selectedApplication, setSelectedApplication] = useState(null);
-  const { empInfo } = useAuthStore()
+  const { empInfo,activeRole } = useAuthStore()
   //   const apiUrl = import.meta.env.VITE_API_URL;
   const [allocateApplication, { data: updateApplication, isSuccess }] = useAllocateApplicationMutation();
   const [paginationModel, setPaginationModel] = useState({
@@ -73,7 +73,7 @@ const NewApplications = () => {
       headerName: '',
       width: 50,
       renderCell: (params) => (
-        empInfo?.empRole === "creditManager" &&
+        activeRole === "creditManager" &&
         <input
           type="checkbox"
           checked={selectedApplication === params.row.id}
@@ -91,7 +91,7 @@ const NewApplications = () => {
     { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
     { field: 'salary', headerName: 'Salary', width: 150 },
     { field: 'source', headerName: 'Source', width: 150 },
-    ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin"
+    ...(activeRole === "sanctionHead" || activeRole === "admin"
       ? [{ field: 'recommendedBy', headerName: 'Recommended By', width: 150 }]
       : [])
   ];
@@ -107,7 +107,7 @@ const NewApplications = () => {
     loanAmount: application?.lead?.loanAmount,
     salary: application?.lead?.salary,
     source: application?.lead?.source,
-    ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+    ...((activeRole === "sanctionHead" || activeRole === "admin") &&
       { recommendedBy: `${application?.lead?.recommendedBy?.fName}${application?.lead?.recommendedBy?.mName ? ` ${application?.lead?.recommendedBy?.mName}` : ``} ${application?.lead?.recommendedBy?.lName}`, })
 
   }));
@@ -130,7 +130,7 @@ const NewApplications = () => {
         </div>
 
         {/* Action button for selected leads */}
-        {empInfo?.empRole === "creditManager" && <button
+        {activeRole === "creditManager" && <button
           onClick={handleAllocate}
           style={{
             marginLeft: '20px',

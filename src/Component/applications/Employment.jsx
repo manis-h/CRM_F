@@ -39,7 +39,7 @@ const buttonStyles = {
 
 const Employment = ({ employmentData }) => {
   const { applicationProfile } = useStore();
-  const {empInfo} = useAuthStore()
+  const {empInfo,activeRole} = useAuthStore()
   const id = applicationProfile._id;
   const [columns, setColumns] = useState(null);
   const [isEditingEmployment, setIsEditingEmployment] = useState(false);
@@ -280,7 +280,7 @@ const Employment = ({ employmentData }) => {
 
               <Divider sx={{ my: 2 }} />
 
-              {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin" ) && <Box display="flex" justifyContent="flex-end">
+              {(activeRole !== "sanctionHead" && activeRole !== "admin" ) && <Box display="flex" justifyContent="flex-end">
                 <Button
                   variant="contained"
                   style={buttonStyles}
