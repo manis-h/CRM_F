@@ -1,229 +1,237 @@
 import React, { useState } from 'react';
-import './Sidebar.css'; // Ensure this CSS file is created with the styles below
-import Accordion from 'react-bootstrap/Accordion';
-import { Link, NavLink } from 'react-router-dom';
+import {
+    Box,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Typography,
+    List,
+    ListItem,
+    ListItemText,
+    IconButton
+} from '@mui/material';
+import { NavLink, Link } from 'react-router-dom';
 import useAuthStore from '../Component/store/authStore';
-
+import { FaBars } from 'react-icons/fa';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { CSSTransition } from 'react-transition-group';
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
-    const { empInfo } = useAuthStore()
-    // const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const { empInfo } = useAuthStore();
+    
+    // State to control the expanded accordions
+    const [expanded, setExpanded] = useState(null);
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+    // Function to handle accordion toggle
+    const handleAccordionToggle = (panel) => (event, isExpanded) => {
+        setExpanded(isExpanded ? panel : false);
+    };
+
     return (
-        <>
-            {isSidebarOpen && <div className={`sidebar ${isSidebarOpen ? 'open' : 'closed'}`}>
+        <Box
+            sx={{
+                width: isSidebarOpen ? 250 : 0,
+                height: '100vh',
+                color: '#fff',
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                transition: 'width 0.3s ease',
+                overflowY: 'auto',
+                boxShadow: isSidebarOpen ? '2px 0 5px rgba(0, 0, 0, 0.1)' : 'none',
+                zIndex: 0,
+                backgroundColor: '#001f3f',
+            }}
+        >
+            {/* Heading for the sidebar */}
+            <Box sx={{ backgroundColor: '#001f3f', padding: 2, textAlign: 'left' }}>
+                <Typography variant="h6" sx={{ color: '#fff', fontWeight: 'bold', marginTop: '5px', marginLeft: '20px' }}>
+                    QuickMoney4You
+                </Typography>
+            </Box>
 
-                <div className='sidebar-margin'>
-                    <ul className="sidebar-links">
-                        {(empInfo?.empRole === "screener" || empInfo?.empRole === "admin" || empInfo?.empRole === "sanctionHead") && <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="0">
-                                <Accordion.Header> <i className="bi bi-person" style={{ marginRight: '8px' }}></i>  Lead</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text  '>
-                                        <li ><NavLink to="/lead-new" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>New Lead</NavLink>    </li>
-                                        <li><NavLink to="/lead-process" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Lead-Inprocess</NavLink></li>
-                                        <li> <NavLink to="/lead-hold" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Hold Lead </NavLink>   </li>
-                                        <li> <NavLink to="/rejected-leads" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Rejected Lead</NavLink>   </li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>}
-
-                        {(empInfo?.empRole === "creditManager" || empInfo?.empRole === "sanctionHead") &&
-                            <Accordion defaultActiveKey="0">
-                                <Accordion.Item eventKey="1">
-                                    <Accordion.Header>  Application</Accordion.Header>
-                                    <Accordion.Body>
-                                        <ul className='sidebar-text'>
-                                            <li><Link to="/new-applications"> New</Link></li>
-                                            <li><Link to="/application-process">Inprocess</Link></li>
-                                            <li><Link to="/application-hold">Hold</Link></li>
-                                            <li><Link to="/rejected-applications">Rejected Applications</Link></li>
-                                        </ul>
-                                    </Accordion.Body>
-                                </Accordion.Item>
-                            </Accordion>
-                        }
-
-
-                        <>
-                            {empInfo?.empRole === "sanctionHead" && (
-                                <Accordion defaultActiveKey="0">
-                                <Accordion.Item eventKey="4">
-                                    <Accordion.Header>
-                                        <i className="bi bi-check" style={{ marginRight: '8px' }}></i> Sanction
-                                    </Accordion.Header>
-                                    <Accordion.Body>
-                                        <ul className="sidebar-text">
-                                            <li>
-                                                <Link to="/recommended-application">Recommended </Link>
-                                            </li>
-                                            {/* <li>
-                                                <Link to="/sanction-reject">Rejected Application</Link>
-                                            </li>
-                                            <li>
-                                                <Link to="/sanction-sentback">SentBack</Link>
-                                            </li> */}
-                                        </ul>
-                                    </Accordion.Body>
-                                </Accordion.Item>
-                            </Accordion>
-                            )}
-
-                            
-                        </>
-
-
-                        {/* {
-                            empInfo?.empRole === "sanctionHead" && <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="1">
-                                <Accordion.Header> <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Application</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/new-application"> New</Link></li>
-                                        <li><Link to="/application-process">Inprocess</Link></li>
-                                        <li><Link to="/application-hold">Hold</Link></li>
-                                        <li><Link to="/application-sent-back">Sent-Back</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion> || <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="4">
-                                <Accordion.Header> <i className="bi bi-check" style={{ marginRight: '8px' }}></i> Sanction</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to='/sanction'>Sanction</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
+            <Box sx={{ marginTop: '0px', padding: isSidebarOpen ? 2 : 0 }}>
+                <List sx={{ padding: 0, margin: 0 }}>
+                    {(empInfo?.empRole === "screener" || empInfo?.empRole === "admin" || empInfo?.empRole === "sanctionHead") && (
+                        <Accordion 
+                            expanded={expanded === 'lead'} 
+                            onChange={handleAccordionToggle('lead')}
+                            sx={{
+                                '&:before': {
+                                    display: 'none',
+                                },
+                                transition: 'background-color 0.3s ease, transform 0.3s ease',
+                                '&:hover': {
+                                    backgroundColor: '#002b5c',
+                                    transform: 'scale(1.03)',
+                                }
+                            }}
+                        >
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: '#001f3f', color: '#fff' }}>
+                                <Typography variant="subtitle1">
+                                    <i className="bi bi-person" style={{ marginRight: '8px' }}></i> Lead
+                                </Typography>
+                            </AccordionSummary>
+                            <CSSTransition
+                                in={expanded === 'lead'}
+                                timeout={300}
+                                classNames={{
+                                    enter: 'accordion-enter',
+                                    enterActive: 'accordion-enter-active',
+                                    exit: 'accordion-exit',
+                                    exitActive: 'accordion-exit-active',
+                                }}
+                                unmountOnExit
+                            >
+                                <AccordionDetails sx={{ backgroundColor: '#001f3f', padding: 0 }}>
+                                    <List>
+                                        <ListItem component={NavLink} to="/lead-new" sx={{ color: '#fff', textDecoration: 'none', padding: '10px 15px' }}>
+                                            <ListItemText primary="New Lead" sx={{ color: '#fff' }} />
+                                        </ListItem>
+                                        <ListItem component={NavLink} to="/lead-process" sx={{ color: '#fff', textDecoration: 'none', padding: '10px 15px' }}>
+                                            <ListItemText primary="Lead-Inprocess" sx={{ color: '#fff' }} />
+                                        </ListItem>
+                                        <ListItem component={NavLink} to="/lead-hold" sx={{ color: '#fff', textDecoration: 'none', padding: '10px 15px' }}>
+                                            <ListItemText primary="Hold Lead" sx={{ color: '#fff' }} />
+                                        </ListItem>
+                                        <ListItem component={NavLink} to="/rejected-leads" sx={{ color: '#fff', textDecoration: 'none', padding: '10px 15px' }}>
+                                            <ListItemText primary="Rejected Lead" sx={{ color: '#fff' }} />
+                                        </ListItem>
+                                    </List>
+                                </AccordionDetails>
+                            </CSSTransition>
                         </Accordion>
-                        
-                        } */}
-                        {/* <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="3">
-                                <Accordion.Header> <i className="bi bi-x" style={{ marginRight: '8px' }}></i> Reject App</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/reject">Reject</Link></li>
+                    )}
 
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
+                    {(empInfo?.empRole === "creditManager" || empInfo?.empRole === "sanctionHead") && (
+                        <Accordion expanded={expanded === 'application'} onChange={handleAccordionToggle('application')}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: 'transparent', color: '#fff' }}>
+                                <Typography variant="subtitle1">Application</Typography>
+                            </AccordionSummary>
+                            <CSSTransition
+                                in={expanded === 'application'}
+                                timeout={300}
+                                classNames={{
+                                    enter: 'accordion-enter',
+                                    enterActive: 'accordion-enter-active',
+                                    exit: 'accordion-exit',
+                                    exitActive: 'accordion-exit-active',
+                                }}
+                                unmountOnExit
+                            >
+                                <AccordionDetails sx={{ backgroundColor: 'transparent', padding: 0 }}>
+                                    <List>
+                                        {[
+                                            { text: 'New', link: '/new-applications' },
+                                            { text: 'Inprocess', link: '/application-process' },
+                                            { text: 'Hold', link: '/application-hold' },
+                                            { text: 'Rejected Applications', link: '/rejected-applications' }
+                                        ].map((item, index) => (
+                                            <ListItem
+                                                key={index}
+                                                component={Link}
+                                                to={item.link}
+                                                sx={{
+                                                    color: '#fff',
+                                                    textDecoration: 'none',
+                                                    padding: '10px 15px',
+                                                    transition: 'transform 0.3s ease, opacity 0.3s ease',
+                                                    opacity: 0,
+                                                    animation: `fadeIn 0.5s forwards ${index * 0.2}s`,
+                                                    '&:hover': {
+                                                        transform: 'scale(1.05)',
+                                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                                    },
+                                                    marginBottom: '10px',
+                                                }}
+                                            >
+                                                <ListItemText primary={item.text} sx={{ color: '#fff' }} />
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </AccordionDetails>
+                            </CSSTransition>
                         </Accordion>
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="4">
-                                <Accordion.Header> <i className="bi bi-check" style={{ marginRight: '8px' }}></i> Sanction</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to='/sanction'>Sanction</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
+                    )}
+
+                    {empInfo?.empRole === "sanctionHead" && (
+                        <Accordion expanded={expanded === 'sanction'} onChange={handleAccordionToggle('sanction')}>
+                            <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: 'transparent', color: '#fff' }}>
+                                <Typography variant="subtitle1">
+                                    <i className="bi bi-check" style={{ marginRight: '8px' }}></i> Sanction
+                                </Typography>
+                            </AccordionSummary>
+                            <CSSTransition
+                                in={expanded === 'sanction'}
+                                timeout={300}
+                                classNames={{
+                                    enter: 'accordion-enter',
+                                    enterActive: 'accordion-enter-active',
+                                    exit: 'accordion-exit',
+                                    exitActive: 'accordion-exit-active',
+                                }}
+                                unmountOnExit
+                            >
+                                <AccordionDetails sx={{ backgroundColor: 'transparent', padding: 0 }}>
+                                    <List>
+                                        <ListItem component={Link} to="/recommended-application" sx={{ color: '#fff', textDecoration: 'none', padding: '10px 15px' }}>
+                                            <ListItemText primary="Recommended" sx={{ color: '#fff' }} />
+                                        </ListItem>
+                                    </List>
+                                </AccordionDetails>
+                            </CSSTransition>
                         </Accordion>
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="5">
-                                <Accordion.Header> <i className="bi bi-currency-dollar" style={{ marginRight: '8px' }}></i> Disbursal</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/disbursal-new">Disbursal-New</Link></li>
-                                        <li><Link to="/disbursal-inprocess">Disbursal-Inprocess</Link></li>
-                                        <li><Link to="/disbursal-hold">Disbursal-Hold</Link></li>
-                                        <li><Link to="/disbursal-send-back">Disbursal-Send-Back</Link></li>
+                    )}
+                </List>
+            </Box>
 
-                                        <li><Link to="/disbursal-pending">Disbursal-Pending</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="6">
-                                <Accordion.Header> <i className="bi bi-archive" style={{ marginRight: '8px' }}></i> Disbursed</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/disbursed">Disbursed</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="7">
-                                <Accordion.Header> <i className="bi bi-bag" style={{ marginRight: '8px' }}></i> Collection</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/write-off">Write-Off</Link></li>
-                                        <li><Link to="/settlement">Settlement</Link></li>
+            <IconButton
+                sx={{
+                    position: 'fixed',
+                    top: 13,
+                    left: isSidebarOpen ? 220 : 10,
+                    color: '#fff',
+                    borderRadius: 1,
+                    transition: 'background-color 0.3s, color 0.3s, left 0.3s',
+                    zIndex: 1001,
+                }}
+                onClick={toggleSidebar}
+            >
+                <FaBars />
+            </IconButton>
 
-                                        <li><Link to="/pre-collection">Pre-Collection</Link></li>
-                                        <li><Link to="/collection-pending">Collection-Pending</Link></li>
-                                        <li><Link to="/recovery-pending">Recovery-Pending</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="8">
-                                <Accordion.Header> <i className="bi bi-people" style={{ marginRight: '8px' }}></i> Legal</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/legal">Legal</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="9">
-                                <Accordion.Header> <i className="bi bi-wallet" style={{ marginRight: '8px' }}></i> Accounts</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/pre-closure">Pre-Closure</Link></li>
-                                        <li><Link to="/closure">Closure</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="2">
-                                <Accordion.Header> <i className="bi bi-file-earmark-text" style={{ marginRight: '8px' }}></i>Visit</Accordion.Header>
-                                <Accordion.Body>
-                                    <ul className='sidebar-text'>
-                                        <li><Link to="/visit-request">Visit-Request</Link></li>
-                                        <li><Link to="/visit-pending">Visit-Pending</Link></li>
-                                        <li><Link to="/visit-completed">Visit-Completed</Link></li>
-                                    </ul>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion>
+            <style jsx>{`
+                .accordion-enter {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
 
+                .accordion-enter-active {
+                    opacity: 1;
+                    transform: translateY(0);
+                    transition: opacity 300ms, transform 300ms;
+                }
 
-                        <Accordion defaultActiveKey="0">
-                            <Accordion.Item eventKey="10">
-                                <Accordion.Header> <i className="bi bi-app" style={{ marginRight: '8px' }}></i> Others</Accordion.Header>
-                                <Accordion.Body>
-                                    <div className='sidebar-text'>
-                                        <li><Link to="/feedback">Costumer FeadBack</Link></li>
-                                        <li><Link to="/export-form">Export</Link></li>
-                                        <li><Link to="/mis-report">MIS Report</Link></li>
-                                        <li><Link to="/enquiry">Enquiry</Link></li>
-                                        <li><Link to="/search">Search</Link></li>
+                .accordion-exit {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
 
-                                    </div>
-                                </Accordion.Body>
-                            </Accordion.Item>
-                        </Accordion> */}
-
-
-                    </ul></div>
-            </div>}
-
-            <button className="sidebar-toggle-btn" data-toggle="offcanvas" onClick={toggleSidebar}>
-                <i className={`bi ${isSidebarOpen ? ' bi bi-toggle-on' : 'bi bi-toggle-off'}`}></i>
-            </button>
-        </>
+                .accordion-exit-active {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                    transition: opacity 300ms, transform 300ms;
+                }
+            `}</style>
+        </Box>
     );
 };
 
 export default Sidebar;
+

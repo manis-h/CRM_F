@@ -174,7 +174,7 @@ export const leadsApi = createApi({
       providesTags: ["leadProfile"]
     }),
     getLeadDocs: builder.query({
-      query: (data) => `/leads/docs/${data.id}/?docType=${data.docType}`,
+      query: ({id,docId,docType,role}) =>`/leads/docs/${id}/?docType=${docType}&docId=${docId}`,
     }),
     getInternalDedupe: builder.query({
       query: (id) => `/leads/old-history/${id}`,
