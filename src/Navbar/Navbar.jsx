@@ -1,201 +1,124 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import './Navbar.css';
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  MenuItem,
+  Avatar,
+} from '@mui/material';
+import { Logout, Person } from '@mui/icons-material';
 import useStore from '../Store';
-import { useLoginUserMutation, useLogoutMutation } from '../Service/Query';
+import { useLogoutMutation } from '../Service/Query';
 import useAuthStore from '../Component/store/authStore';
 
 const Navbar = () => {
-  const [clientRole, setClientRole] = useState('Client');
   const cookies = new Cookies();
   const navigate = useNavigate();
-  const { setEmployeeDetails,  } = useStore();
-  const {setLogin,setEmpInfo , empInfo } = useAuthStore()
-  // const { } = userAuthStore();
+  const { setEmployeeDetails } = useStore();
+  const { setLogin, setEmpInfo, empInfo } = useAuthStore();
+  
+  // Add error and success flags for logout mutation
+  const [logout, { isSuccess, isError, error }] = useLogoutMutation();
+  
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null);
 
-  const [logout, { data, isSuccess }] = useLogoutMutation()
-
-  const handleLogout = () => {
-    // cookies.remove('authToken');
-    logout()
-
+  const handleLogout = async () => {
+    console.log("Logout button clicked");
+    try {
+      await logout(); // Ensure logout is awaited
+      console.log("Logout successful");
+    } catch (err) {
+      console.error("Logout failed: ", err);
+    }
   };
 
-  const handleRoleChange = (event) => {
-    setClientRole(event.target.value);
+  const handleMenuClick = (event) => {
+    setMenuAnchorEl(event.currentTarget);
   };
 
+  const handleMenuClose = () => {
+    setMenuAnchorEl(null);
+  };
+
+  // Trigger navigation on successful logout
   useEffect(() => {
     if (isSuccess) {
       setLogin(false);
       setEmpInfo(null);
       setEmployeeDetails(null);
       navigate('/login');
-
     }
 
-  }, [isSuccess])
+    if (isError) {
+      console.error("Error during logout: ", error);
+    }
+  }, [isSuccess, isError, error, setLogin, setEmpInfo, setEmployeeDetails, navigate]);
+
+  // Sidebar links
+  const sidebarLinks = [
+    { text: 'User Profile', path: '/user-profile' },
+    { text: 'Add Employee', path: '/add-users' },
+    { text: 'View Employees', path: '/employees-list' },
+    { text: 'Import CSV', path: '/import-csv' },
+    { text: 'Add Bank Details', path: '/add-bank-details' },
+    { text: 'Add Holiday Details', path: '/add-holiday-details' },
+  ];
 
   return (
-    <>
-      {
-        empInfo?.empRole === "sanctionHead" ? 
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-        <div className="container-fluid">
-          <Link className="navbar-brand" to="/">
-            QuickMoney4U
-          </Link>
-  
-          {/* Toggle button for mobile view */}
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarNav"
-            aria-controls="navbarNav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="navbar-toggler-icon"></span>
-          </button>
-  
-          <div className="collapse navbar-collapse" id="navbarNav">
-            <ul className="navbar-nav ms-auto">
-              {/* User Profile Link */}
-              <li className="nav-item">
-                <Link className="nav-link" to="/user-profile">
-                  <i className="bi bi-person-circle me-1"></i> User Profile
-                </Link>
-              </li>
-  
-              {/* Client Role Dropdown */}
-              <li className="nav-item">
-                <select
-                  className="form-select client-role-dropdown"
-                  value={clientRole}
-                  onChange={handleRoleChange}
-                >
-                  {/* <option value="Guest">AUDIT</option> */}
-                  <option value="Admin">Sanction Head</option>
-                  {/* <option value="Screener">SCREENER</option>
-                  <option value="Credit-manager">CREDIT MANAGER</option> */}
-                </select>
-              </li>
-  
-              {/* Logout Button */}
-              <li className="nav-item">
-                <button
-                  className="btn btn-danger ms-lg-3"
-                  onClick={handleLogout}
-                >
-                  <i className="bi bi-box-arrow-right"></i>
-                </button>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>  : <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
-          QuickMoney4U
-        </Link>
-
-        {/* Toggle button for mobile view */}
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+    <AppBar position="static" sx={{ backgroundColor: '#001f3f' }}> {/* Change color here */}
+      <Toolbar>
+        <Typography
+          variant="h6"
+          component={Link}
+          to="/"
+          style={{ textDecoration: 'none', color: 'inherit', marginLeft: 46 }}
         >
-          <span className="navbar-toggler-icon"></span>
-        </button>
+          QuickMoney4U
+        </Typography>
+        <div style={{ flexGrow: 1 }} />
 
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
+        {empInfo?.empRole === "sanctionHead" ? (
+          <>
             {/* User Profile Link */}
-            <li className="nav-item">
-              <Link className="nav-link" to="/user-profile">
-                <i className="bi bi-person-circle me-1"></i> User Profile
-              </Link>
-            </li>
-
-            {/* Settings Dropdown */}
-            <li className="nav-item dropdown">
-              <Link
-                className="nav-link dropdown-toggle"
-                to="#"
-                id="settingsDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i className="bi bi-gear me-1"></i>Settings
-              </Link>
-              <ul className="dropdown-menu" aria-labelledby="settingsDropdown">
-                <li>
-                  <Link className="dropdown-item" to="/add-users">
-                    Add Employee
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/employees-list">
-                    View Employees
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/import-csv">
-                    Import CSV
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/add-bank-details">
-                    Add Bank Details
-                  </Link>
-                </li>
-                <li>
-                  <Link className="dropdown-item" to="/add-holiday-details">
-                    Add Holiday Details
-                  </Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Client Role Dropdown */}
-            <li className="nav-item">
-              <select
-                className="form-select client-role-dropdown"
-                value={clientRole}
-                onChange={handleRoleChange}
-              >
-                {/* <option value="Guest">AUDIT</option> */}
-                { empInfo.empRole === 'admin' ? ( <option value="Admin">ADMIN</option>) : "" }
-                {/* <option value="Screener">SCREENER</option> */}
-                { empInfo.empRole === 'screener' ? ( <option value="Screener">SCREENER</option>) : "" }
-                { empInfo.empRole === 'creditManager' ? (<option value="Credit-manager">CREDIT MANAGER</option>) : ("") }
-                 
-              </select>
-            </li>
+            <IconButton component={Link} to="/user-profile" color="inherit">
+              <Person />
+              User Profile
+            </IconButton>
 
             {/* Logout Button */}
-            <li className="nav-item">
-              <button
-                className="btn btn-danger ms-lg-3"
-                onClick={handleLogout}
-              >
-                <i className="bi bi-box-arrow-right"></i>
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-      }
-    </>
-    
+            <IconButton color="inherit" onClick={handleLogout}>
+              <Logout />
+              Logout
+            </IconButton>
+          </>
+        ) : (
+          <>
+            {/* Replacing Settings Icon with Circle Avatar containing initials */}
+            <IconButton color="inherit" onClick={handleMenuClick}>
+              <Avatar style={{ backgroundColor: '#fff', color: '#001f3f' }}>
+                AB {/* Replace with dynamic initials */}
+              </Avatar>
+            </IconButton>
+            <Menu
+              anchorEl={menuAnchorEl}
+              open={Boolean(menuAnchorEl)}
+              onClose={handleMenuClose}
+            >
+              {sidebarLinks.map((link) => (
+                <MenuItem component={Link} to={link.path} key={link.text}>
+                  {link.text}
+                </MenuItem>
+              ))}
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+          </>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };
 
