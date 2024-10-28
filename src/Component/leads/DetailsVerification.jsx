@@ -90,14 +90,14 @@ const VerifyContactDetails = ({ isMobileVerified, isEmailVerified, isAadhaarVeri
           <AccordionDetails sx={{ backgroundColor: '#f5f5f5', borderRadius: '15px' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
               {/* Mobile Verification Section */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="body1" sx={{ color: '#898b8c' }}>
 
 
                   Mobile:<span style={{ color: isMobileVerified ? 'green' : 'red' }}> {isMobileVerified ? 'Verified' : 'Not Verified'}
                   </span>
                 </Typography>
-                {/* <Button
+                <Button
                   variant="contained"
                   onClick={handleMobileVerification}
                   sx={{
@@ -108,8 +108,8 @@ const VerifyContactDetails = ({ isMobileVerified, isEmailVerified, isAadhaarVeri
                   disabled={isMobileVerified}
                 >
                   Verify Mobile
-                </Button> */}
-              </Box>
+                </Button>
+              </Box> */}
 
               {/* Email Verification Section */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
