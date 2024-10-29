@@ -46,17 +46,17 @@ const UploadDocuments = ({ leadData }) => {
             ...prevFileInputs,
             file: selectedFile,
         }));
-        if (['salarySlip', 'bankStatement', 'others'].includes(selectedDocType)) {
-            setDocuments((prevDocs) => ({
-                ...prevDocs,
-                [selectedDocType]: [...prevDocs[selectedDocType], selectedFile],
-            }));
-        } else {
-            setDocuments((prevDocs) => ({
-                ...prevDocs,
-                [selectedDocType]: selectedFile,
-            }));
-        }
+        // if (['salarySlip', 'bankStatement', 'others'].includes(selectedDocType)) {
+        //     setDocuments((prevDocs) => ({
+        //         ...prevDocs,
+        //         [selectedDocType]: [...prevDocs[selectedDocType], selectedFile],
+        //     }));
+        // } else {
+        //     setDocuments((prevDocs) => ({
+        //         ...prevDocs,
+        //         [selectedDocType]: selectedFile,
+        //     }));
+        // }
     };
 
     // Handle remarks input
@@ -123,6 +123,7 @@ const UploadDocuments = ({ leadData }) => {
                 bankStatement: [],
             });
             setFileInputs([{ file: null, remarks: '' }]); // Reset file inputs
+            setSelectedDocType(null)
 
             // Fetch the updated list of documents if necessary
             // const docs = await getLeadDocs(id).unwrap();
@@ -145,9 +146,9 @@ const UploadDocuments = ({ leadData }) => {
     useEffect(() => {
         if (leadData.document && Object.keys(leadData.document)) {
             const merged = [
-                ...leadData?.document?.multipleDocuments.salarySlip,
-                ...leadData?.document?.multipleDocuments.bankStatement,
-                ...leadData?.document?.multipleDocuments.others,
+                ...leadData?.document?.multipleDocuments?.salarySlip,
+                ...leadData?.document?.multipleDocuments?.bankStatement,
+                ...leadData?.document?.multipleDocuments?.others,
                 ...leadData?.document?.singleDocuments
             ];
             setUploadedDocs(merged)
@@ -165,15 +166,14 @@ const UploadDocuments = ({ leadData }) => {
 
             <Box display="flex" flexDirection="column" gap={2}>
                 <Box display="flex" alignItems="center" gap={2}>
-                    {['aadhaarFront', 'aadhaarBack', 'panCard', 'salarySlip', 'bankStatement', "others"].map((key) => (
+                    {['aadhaarFront', 'aadhaarBack', 'panCard', 'salarySlip', 'bankStatement', 'others'].map((key) => (
                         <Box key={key} display="flex" alignItems="center" gap={1}>
                             <Checkbox
                                 checked={selectedDocType === key}
                                 onChange={(e) => {
-                                    setSelectedDocType(null); // Clear the current selection
-                                    setFileInputs([{ file: null, remarks: '' }]); // Reset file inputs
-                                
-                                    // Set new document type if the checkbox is checked
+                                    setSelectedDocType(null);
+                                    setFileInputs([{ file: null, remarks: '' }]);
+
                                     if (e.target.checked) {
                                         setSelectedDocType(key);
                                     }
@@ -302,7 +302,13 @@ const UploadDocuments = ({ leadData }) => {
             </Box>
 
 
-            <DocumentsTable leadData={leadData} uploadedDocs={uploadedDocs} />
+            {
+                uploadedDocs && uploadedDocs.length > 0 &&
+                <DocumentsTable
+                    leadData={leadData}
+                    uploadedDocs={uploadedDocs}
+                />
+            }
         </Box>
     );
 };

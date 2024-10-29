@@ -35,7 +35,7 @@ const buttonStyles = {
 
 const Residence = ({ residence }) => {
   const { applicationProfile } = useStore()
-  const { empInfo } = useAuthStore()
+  const { empInfo ,activeRole} = useAuthStore()
   const id = applicationProfile._id
   const [columns, setColumns] = useState(null)
   const [isEditingResidence, setIsEditingResidence] = useState(false);
@@ -235,7 +235,7 @@ const Residence = ({ residence }) => {
                 </TableContainer>
                 <Divider sx={{ my: 2 }} />
 
-                {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "sanctionHead") && <Box display="flex" justifyContent="flex-end">
+                {(activeRole !== "sanctionHead" && activeRole !== "sanctionHead") && <Box display="flex" justifyContent="flex-end">
                   <Button
                     variant="contained"
                     style={buttonStyles}

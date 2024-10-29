@@ -20,12 +20,12 @@ import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import useStore from "../../Store";
 import { useVerifyAadhaarMutation } from "../../Service/Query";
 import { useNavigate } from "react-router-dom";
-import { compareDates } from "../../utils/helper";
+import { compareDates, formatDate } from "../../utils/helper";
 
 const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
   const navigate = useNavigate()
   const { lead } = useStore();
-  const [verifyAadhaar, {data,isSuccess,isError,error}] = useVerifyAadhaarMutation()
+  const [verifyAadhaar, { data, isSuccess, isError, error }] = useVerifyAadhaarMutation()
 
   // Handle close modal
   const handleClose = () => setOpen(false);
@@ -42,21 +42,21 @@ const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
       const year1 = value1.getFullYear();
       const month1 = value1.getMonth();
       const day1 = value1.getDate();
-  
+
       const year2 = value2.getFullYear();
       const month2 = value2.getMonth();
       const day2 = value2.getDate();
-  
+
       return year1 === year2 && month1 === month2 && day1 === day2 ? "Matched" : "Unmatched";
     }
-  
+
     if (typeof value1 === "string" && typeof value2 === "string") {
       return value1.trim().toLowerCase() === value2.trim().toLowerCase() ? "Matched" : "Unmatched";
     }
-  
+
     return value1 === value2 ? "Matched" : "Unmatched";
   };
-  
+
 
   // Function to style the comparison text color
   const getTextColor = (result) => (result === "Matched" ? "#00796b" : "#d32f2f");
@@ -68,16 +68,16 @@ const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
   // Fields to be compared
   const comparisonFields = [
     { label: "Name", leadValue: `${lead?.fName} ${lead?.mName} ${lead?.lName}`, aadhaarValue: aadhaarDetails?.name },
-    { label: "DOB", leadValue: lead?.dob, aadhaarValue: aadhaarDetails?.dob },
+    { label: "DOB", leadValue: lead?.dob && formatDate(lead?.dob) , aadhaarValue: aadhaarDetails?.dob },
   ];
 
   // Function to render table rows dynamically
   useEffect(() => {
-    if(isSuccess )
+    if (isSuccess)
       navigate(`/lead-profile/${lead._id}`)
-  },[isSuccess,data])
+  }, [isSuccess, data])
   const renderRow = ({ label, leadValue, aadhaarValue }) => {
-    const result = compareValues(label,leadValue, aadhaarValue);
+    const result = compareValues(label, leadValue, aadhaarValue);
     const textColor = getTextColor(result);
 
 
@@ -143,7 +143,7 @@ const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
             </>
           )}
         </TableCell>
-        
+
       </TableRow>
     );
   };
@@ -189,7 +189,7 @@ const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
                       padding: "12px",
                     }}
                   >
-                    User 1
+                    Lead
                   </TableCell>
                   <TableCell
                     sx={{
@@ -200,7 +200,7 @@ const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
                       padding: "12px",
                     }}
                   >
-                    User 2
+                    Aadhaar Details
                   </TableCell>
                   <TableCell
                     sx={{
@@ -216,7 +216,77 @@ const AadhaarCompare = ({ open, setOpen, aadhaarDetails }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {comparisonFields.map(renderRow)}
+                {comparisonFields?.map(({ label, leadValue, aadhaarValue }) => {
+                  const result = compareValues(label, leadValue, aadhaarValue);
+                  const textColor = getTextColor(result);
+
+
+                  return (
+
+                    <TableRow
+                      key={label}
+                      sx={{
+                        "&:nth-of-type(odd)": {
+                          backgroundColor: "#f5f5f5",
+                        },
+                      }}
+                    >
+                      <TableCell
+                        sx={{
+                          padding: "16px 24px",
+                          fontSize: 14,
+                          textAlign: "center",
+                          color: "#424242",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {label}:
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          padding: "16px 24px",
+                          fontSize: 14,
+                          textAlign: "center",
+                          color: "#424242",
+                        }}
+                      >
+                        {leadValue}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          padding: "16px 24px",
+                          fontSize: 14,
+                          textAlign: "center",
+                          color: "#424242",
+                        }}
+                      >
+                        {aadhaarValue}
+                      </TableCell>
+                      <TableCell
+                        sx={{
+                          color: textColor,
+                          fontWeight: "bold",
+                          textAlign: "center",
+                          fontSize: 14,
+                          padding: "16px 24px",
+                        }}
+                      >
+                        {result === "Matched" ? (
+                          <>
+                            <CheckCircleOutlineIcon fontSize="small" sx={{ mr: 1, color: "#00796b" }} />
+                            Matched
+                          </>
+                        ) : (
+                          <>
+                            <HighlightOffIcon fontSize="small" sx={{ mr: 1 }} />
+                            Unmatched
+                          </>
+                        )}
+                      </TableCell>
+
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>

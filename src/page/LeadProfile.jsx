@@ -19,7 +19,7 @@ const barButtonOptions = ['Lead', 'Documents', 'Verification',]
 
 const LeadProfile = () => {
     const { id } = useParams();
-    const {empInfo} = useAuthStore()
+    const {empInfo,activeRole} = useAuthStore()
     const [currentPage, setCurrentPage] = useState("lead");
     const [uploadedDocs, setUploadedDocs] = useState([]); 
     const { setLead } = useStore()
@@ -87,7 +87,7 @@ const LeadProfile = () => {
                                             {error?.data?.message}
                                         </Alert>
                                     }
-                                    {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
+                                    {(activeRole !== "sanctionHead" && activeRole !== "admin") && <Box display="flex" justifyContent="flex-end" sx={{ my: 2 }}>
                                         <Button
                                             variant="outlined"
                                             onClick={() => setLeadEdit(true)}
@@ -112,7 +112,7 @@ const LeadProfile = () => {
                                         <InternalDedupe id={leadData._id} />
                                         <ApplicationLogHistory id={leadData._id} />
                                         {/* Action Buttons */}
-                                        {(!leadData?.isRejected && empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin" ) &&
+                                        {(!leadData?.isRejected && activeRole !== "sanctionHead" && activeRole !== "admin" ) &&
                                             <div className='my-3  d-flex justify-content-center'>
                                                 <ActionButton id={leadData._id} isHold={leadData.onHold} />
                                             </div>}

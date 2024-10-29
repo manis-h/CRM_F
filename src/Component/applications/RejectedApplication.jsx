@@ -9,7 +9,7 @@ import useAuthStore from '../store/authStore';
 const RejectedApplication = () => {
     const [rejectedApplications, setRejectedApplications] = useState()
     const [totalRejectedApplcations, setTotalRejectedApplications] = useState()
-    const {empInfo} = useAuthStore()
+    const {empInfo,activeRole} = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -41,7 +41,7 @@ const RejectedApplication = () => {
         { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
         { field: 'salary', headerName: 'Salary', width: 150 },
         { field: 'source', headerName: 'Source', width: 150 },
-        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin"
+        ...(activeRole === "sanctionHead" || activeRole === "admin"
             ? [{ field: 'rejectedBy', headerName: 'Rejected By', width: 150 }]
             : [])
     ];
@@ -56,7 +56,7 @@ const RejectedApplication = () => {
         loanAmount: application?.lead?.loanAmount,
         salary: application?.lead?.salary,
         source: application?.lead?.source,
-        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        ...((activeRole === "sanctionHead" || activeRole === "admin") &&
         { rejectedBy: `${application?.rejectedBy?.fName}${application?.rejectedBy?.mName ? ` ${application?.rejectedBy?.mName}` : ``} ${application?.rejectedBy?.lName}`, })
   
     }));

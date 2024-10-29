@@ -17,7 +17,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CSSTransition } from 'react-transition-group';
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
-    const { empInfo } = useAuthStore();
+    const { empInfo,activeRole } = useAuthStore();
     
     // State to control the expanded accordions
     const [expanded, setExpanded] = useState(null);
@@ -26,8 +26,11 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
+    console.log('sidebar expand',expanded)
+
     // Function to handle accordion toggle
     const handleAccordionToggle = (panel) => (event, isExpanded) => {
+        console.log('expand',panel,isExpanded)
         setExpanded(isExpanded ? panel : false);
     };
 
@@ -58,7 +61,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
 
             <Box sx={{ marginTop: '0px', padding: isSidebarOpen ? 2 : 0 }}>
                 <List sx={{ padding: 0, margin: 0 }}>
-                    {(empInfo?.empRole === "screener" || empInfo?.empRole === "admin" || empInfo?.empRole === "sanctionHead") && (
+                    {(activeRole === "screener" || activeRole === "admin" || activeRole === "sanctionHead") && (
                         <Accordion 
                             expanded={expanded === 'lead'} 
                             onChange={handleAccordionToggle('lead')}
@@ -108,8 +111,9 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                             </CSSTransition>
                         </Accordion>
                     )}
+                    {console.log('credit manager role',activeRole)}
 
-                    {(empInfo?.empRole === "creditManager" || empInfo?.empRole === "sanctionHead") && (
+                    {(activeRole === "creditManager" || activeRole === "sanctionHead") && (
                         <Accordion expanded={expanded === 'application'} onChange={handleAccordionToggle('application')}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: 'transparent', color: '#fff' }}>
                                 <Typography variant="subtitle1">Application</Typography>
@@ -137,20 +141,9 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                                                 key={index}
                                                 component={Link}
                                                 to={item.link}
-                                                sx={{
-                                                    color: '#fff',
-                                                    textDecoration: 'none',
-                                                    padding: '10px 15px',
-                                                    transition: 'transform 0.3s ease, opacity 0.3s ease',
-                                                    opacity: 0,
-                                                    animation: `fadeIn 0.5s forwards ${index * 0.2}s`,
-                                                    '&:hover': {
-                                                        transform: 'scale(1.05)',
-                                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                                                    },
-                                                    marginBottom: '10px',
-                                                }}
+                                                sx={{ color: '#fff', textDecoration: 'none', padding: '10px 15px' }}
                                             >
+                                                {console.log('item',item)}
                                                 <ListItemText primary={item.text} sx={{ color: '#fff' }} />
                                             </ListItem>
                                         ))}
@@ -160,7 +153,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }) => {
                         </Accordion>
                     )}
 
-                    {empInfo?.empRole === "sanctionHead" && (
+                    {activeRole === "sanctionHead" && (
                         <Accordion expanded={expanded === 'sanction'} onChange={handleAccordionToggle('sanction')}>
                             <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor: 'transparent', color: '#fff' }}>
                                 <Typography variant="subtitle1">

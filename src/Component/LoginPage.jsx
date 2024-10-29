@@ -13,7 +13,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [loginUser, { data: loginData, isSuccess: loginSuccess, isLoading: loginLoading, isError: loginError, error }] = useLoginUserMutation()
   const navigate = useNavigate();
-  const { isLoggedIn, setLogin, setEmpInfo } = useAuthStore()
+  const { isLoggedIn, setLogin, setEmpInfo,setActiveRole } = useAuthStore()
 
   if (isLoggedIn) {
     // Redirect to dashboard or homepage if the user is already logged in
@@ -42,6 +42,7 @@ const LoginPage = () => {
     if (loginSuccess) {
       setLogin(true)
       setEmpInfo(loginData)
+      setActiveRole(loginData?.empRole[0])
 
       navigate('/')
 

@@ -11,7 +11,7 @@ const HoldLead = () => {
     const [holdLeads, setHoldLeads] = useState()
     const [totalHoldLeads, setTotalHoldLeads] = useState()
     const [id, setId] = useState(null)
-    const {empInfo} = useAuthStore()
+    const {empInfo,activeRole} = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -48,7 +48,7 @@ const HoldLead = () => {
         { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
         { field: 'salary', headerName: 'Salary', width: 150 },
         { field: 'source', headerName: 'Source', width: 150 },
-        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin" 
+        ...(activeRole === "sanctionHead" || activeRole === "admin" 
             ? [{ field: 'heldBy', headerName: 'Held By', width: 150 }] 
             : [])
     ];
@@ -65,7 +65,7 @@ const HoldLead = () => {
         loanAmount: lead?.loanAmount,
         salary: lead?.salary,
         source: lead?.source,
-        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        ...((activeRole === "sanctionHead" || activeRole === "admin") &&
         { heldBy: `${lead?.heldBy?.fName}${lead?.heldBy?.mName ? ` ${lead?.heldBy?.mName}` :``} ${lead?.heldBy?.lName}`,})
         
     }));

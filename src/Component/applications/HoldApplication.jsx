@@ -9,7 +9,7 @@ const HoldApplication = () => {
     const [holdApplications, setHoldApplications] = useState()
     const [totalHoldApplications, setTotalHoldApplications] = useState()
     const [id, setId] = useState(null)
-    const {empInfo} = useAuthStore()
+    const {empInfo,activeRole} = useAuthStore()
     const navigate = useNavigate()
     const [paginationModel, setPaginationModel] = useState({
         page: 0,
@@ -48,7 +48,7 @@ const HoldApplication = () => {
         { field: 'loanAmount', headerName: 'Loan Amount', width: 150 },
         { field: 'salary', headerName: 'Salary', width: 150 },
         { field: 'source', headerName: 'Source', width: 150 },
-        ...(empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin"
+        ...(activeRole === "sanctionHead" || activeRole === "admin"
             ? [{ field: 'heldBy', headerName: 'Hold By', width: 150 }]
             : [])
     ];
@@ -64,7 +64,7 @@ const HoldApplication = () => {
         loanAmount: application?.lead?.loanAmount,
         salary: application?.lead?.salary,
         source: application?.lead?.source,
-        ...((empInfo?.empRole === "sanctionHead" || empInfo?.empRole === "admin") &&
+        ...((activeRole === "sanctionHead" || activeRole === "admin") &&
         { heldBy: `${application?.heldBy?.fName}${application?.heldBy?.mName ? ` ${application?.heldBy?.mName}` : ``} ${application?.heldBy?.lName}`, })
   
     }));

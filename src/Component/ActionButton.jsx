@@ -31,7 +31,7 @@ const loanRejectReasons = [
 const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview,setForceRender }) => {
 
     const navigate = useNavigate()
-    const { empInfo } = useAuthStore()
+    const { empInfo,activeRole } = useAuthStore()
     const { applicationProfile } = useStore()
 
     const [actionType, setActionType] = useState(''); // To track which action is selected: 'hold', 'reject', 'approve'
@@ -59,9 +59,9 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview,setForceRe
 
 
     const handleApprove = () => {
-        if (empInfo.empRole === "screener") {
+        if (activeRole === "screener") {
             recommendLead(id)
-        } else if (empInfo.empRole === "creditManager") {
+        } else if (activeRole === "creditManager") {
             recommendApplication(id)
         }
     }
@@ -90,34 +90,34 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview,setForceRe
     const handleSubmit = () => {
         // Submit logic for hold/reject based on actionType
         if (actionType === 'hold') {
-            if (empInfo.empRole === "screener") {
+            if (activeRole === "screener") {
 
                 holdLead({ id, reason: remarks })
-            } else if (empInfo.empRole === "creditManager") {
+            } else if (activeRole === "creditManager") {
                 holdApplication({ id, reason: remarks })
             }
 
         } else if (actionType === 'reject') {
-            if (empInfo.empRole === "screener") {
+            if (activeRole === "screener") {
                 rejectLead({ id, reason: remarks })
-            } else if (empInfo.empRole === "creditManager") {
+            } else if (activeRole === "creditManager") {
                 rejectApplication({ id, reason: remarks })
             } else {
                 sanctionReject({ id, reason: remarks })
             }
 
         } else if (actionType === "unhold") {
-            if (empInfo.empRole === "screener") {
+            if (activeRole === "screener") {
 
                 unholdLead({ id, reason: remarks })
-            } else if (empInfo.empRole === "creditManager") {
+            } else if (activeRole === "creditManager") {
                 unholdApplication({ id, reason: remarks })
             }
         } else if (actionType === "sendBack") {
-            if (empInfo.empRole === "sanctionHead") {
+            if (activeRole === "sanctionHead") {
 
                 sanctionSendBack({ id: applicationProfile.lead._id, reason: remarks, sendTo: selectedRecipient })
-            } else if (empInfo.empRole === "creditManager") {
+            } else if (activeRole === "creditManager") {
                 sendBack({ id: applicationProfile.lead._id, reason: remarks, sendTo: selectedRecipient })
             }
 
@@ -252,14 +252,14 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview,setForceRe
                 {/* Render buttons if no action is selected */}
                 {(!actionType) && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: 2 }}>
-                        {empInfo?.empRole === "sanctionHead" && <Button
+                        {activeRole === "sanctionHead" && <Button
                             variant="contained"
                             color="success"
                             onClick={() => handlePreview()}
                         >
                             Preview
                         </Button>}
-                        {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && 
+                        {(activeRole !== "sanctionHead" && activeRole !== "admin") && 
                         <>
                         <Button
                             variant="contained"
@@ -284,7 +284,7 @@ const ActionButton = ({ id, isHold,setPreviewSanction,sanctionPreview,setForceRe
                         >
                             Reject
                         </Button>
-                        {empInfo?.empRole !== "screener" &&
+                        {activeRole !== "screener" &&
                             <Button
                                 variant="contained"
                                 color="secondary"

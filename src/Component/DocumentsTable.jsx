@@ -19,7 +19,7 @@ const DocumentsTable = ({ leadData,uploadedDocs }) => {
             docType = doc.url.split("/")[1]
         }
 
-        getLeadDocs({id:leadData._id,docType,docId:doc._id,role:"screener"})
+        getLeadDocs({id:leadData._id,docType,docId:doc._id})
 
     }
 
@@ -48,7 +48,7 @@ const DocumentsTable = ({ leadData,uploadedDocs }) => {
                         {uploadedDocs?.map((doc,index) => (
                             <TableRow key={doc?._id}>
                                 <TableCell sx={{ color: '#454443'}}>{index + 1}</TableCell>
-                                <TableCell sx={{ color: '#454443'}}>{doc?.type ? doc?.type:doc.url.split("/")[1]}</TableCell>
+                                <TableCell sx={{ color: '#454443'}}>{doc?.name}</TableCell>
                                 <TableCell sx={{ color: '#454443'}}>{doc?.remarks}</TableCell>
                                 <TableCell >
                                     {/* <IconButton sx={{ color: '#454443'}} onClick={() => handleDownload(doc)}>

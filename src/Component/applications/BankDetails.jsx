@@ -26,7 +26,7 @@ import Swal from 'sweetalert2';
 
 const BankDetails = ({ id }) => {
     const { applicationProfile } = useStore()
-    const { empInfo } = useAuthStore()
+    const { empInfo,activeRole } = useAuthStore()
     const [bankDetails, setBankDetails] = useState(null)
     const [isAddingBank, setIsAddingBank] = useState(false);
 
@@ -207,7 +207,7 @@ const BankDetails = ({ id }) => {
                         </Table>
                     </TableContainer>
 
-                    {(empInfo?.empRole !== "sanctionHead" && empInfo?.empRole !== "admin") && <Box display="flex" justifyContent="flex-end" marginTop="20px">
+                    {(activeRole !== "sanctionHead" && activeRole !== "admin") && <Box display="flex" justifyContent="flex-end" marginTop="20px">
                         <Button
                             variant="outlined"
                             onClick={handleOpenForm}
