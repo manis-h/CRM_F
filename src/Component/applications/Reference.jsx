@@ -40,9 +40,8 @@ const Reference = ({ reference }) => {
 
 
     // Call API or mutation here
-    // updatePersonalDetails({ id, updates: newData })
+    updatePersonalDetails({ id, updates: newData })
     setOpenEdit(false)
-    console.log('new data',newData)
   };
 
   useEffect(() => {

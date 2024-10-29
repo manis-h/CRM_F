@@ -12,6 +12,7 @@ import { employmentSchema } from '../../utils/validations';
 import { Alert } from '@mui/material'; // Import Alert component
 import dayjs from 'dayjs';
 import useAuthStore from '../store/authStore';
+import { formatDate } from '../../utils/helper';
 
 const accordionStyles = {
   borderRadius: '12px',
@@ -104,7 +105,7 @@ const Employment = ({ employmentData }) => {
         { label: 'Company Name', value: employmentData?.companyName || '', label2: 'Company Address', value2: employmentData?.companyAddress || '' },
         { label: 'State', value: employmentData?.state || '', label2: 'City', value2: employmentData?.city || '' },
         { label: 'Pincode', value: employmentData?.pincode || '', label2: 'Department', value2: employmentData?.department || '' },
-        { label: 'Designation', value: employmentData?.designation || '', label2: 'Employed Since', value2: employmentData?.employedSince || '' },
+        { label: 'Designation', value: employmentData?.designation || '', label2: 'Employed Since', value2: employmentData?.employedSince && formatDate(employmentData?.employedSince)  || '' },
       ]);
     }
   }, [employmentData]);

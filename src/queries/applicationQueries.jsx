@@ -6,7 +6,8 @@ const role = () => JSON.parse(localStorage.getItem("auth-storage")).state.active
 export const applicationApi = createApi({
   reducerPath: 'applicationApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api", 
+    baseUrl: "http://api.fintechbasket.com/api", 
+    // baseUrl: "http://localhost:3000/api", 
     // baseUrl: "http://192.168.0.119:3000/api", 
     // 'https://crm-backend-wui1.onrender.com/api/leads'
 
@@ -101,7 +102,7 @@ export const applicationApi = createApi({
       query: ({id,data}) => ({
 
         url: `/verify/bank/${id}/?role=${role()}`,
-        method: 'PATCH',
+        method: 'POST',
         body:data
       }),
       invalidatesTags:["getApplication","bankDetails"]

@@ -60,7 +60,7 @@ const PanCompare = ({ open, setOpen, panDetails }) => {
   // Fields to be compared
   const comparisonFields = [
     { label: "Name", leadValue: `${lead?.fName} ${lead?.mName} ${lead?.lName}`, panValue: panDetails?.FULLNAME },
-    { label: "DOB", leadValue:lead?.dob && formatDate(lead?.dob), panValue: panDetails?.DOB && formatDate(panDetails?.DOB) },
+    { label: "DOB", leadValue:lead?.dob && formatDate(lead?.dob), panValue: panDetails?.DOB  },
   ];
   const handleClose = () => {
     setOpen(false);

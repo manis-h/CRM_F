@@ -24,14 +24,14 @@ export const parseDateString = (dateString) => {
 };
 
 export const compareDates = (dateString1, dateString2) => {
-    const date1 = parseDateString(dateString1);
-    const date2 = parseDateString(dateString2);
+    const date1 = formatDate(dateString1);
+    const date2 = formatDate(dateString2);
 
     if (!date1 || !date2) {
         return "Invalid date format";
     }
 
-    return date1.getTime() === date2.getTime() 
+    return date1 === date2
 };
 
 

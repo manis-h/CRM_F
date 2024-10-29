@@ -19,7 +19,7 @@ const DocumentsTable = ({ leadData,uploadedDocs }) => {
             docType = doc.url.split("/")[1]
         }
 
-        getLeadDocs({id:leadData._id,docType,docId:doc._id,role:"screener"})
+        getLeadDocs({id:leadData._id,docType,docId:doc._id})
 
     }
 

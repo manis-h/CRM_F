@@ -6,7 +6,8 @@ const role = () => JSON.parse(localStorage.getItem("auth-storage")).state.active
 export const leadsApi = createApi({
   reducerPath: 'leadsApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3000/api/",
+    baseUrl: "http://api.fintechbasket.com:3000/api/",
+    // baseUrl: "http://localhost:3000/api/",
     // baseUrl: "http://192.168.0.119:3000/api/",
     // 'https://crm-backend-wui1.onrender.com/api/leads'
 
