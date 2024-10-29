@@ -109,21 +109,9 @@ const handleRoleChange = (e) => {
             '&:hover': { color: '#f0f0f0' },
           }}
         >
-          QuickMoney4U
+          Speedoloan
         </Typography>
 
-        {activeRole === "sanctionHead" ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton component={Link} to="/user-profile" color="inherit">
-              <Person />
-              <Typography sx={{ ml: 1 }}>User Profile</Typography>
-            </IconButton>
-            <IconButton color="inherit" onClick={handleLogout}>
-              <Logout />
-              <Typography sx={{ ml: 1 }}>Logout</Typography>
-            </IconButton>
-          </Box>
-        ) : (
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
               {/* <InputLabel id="demo-simple-select-standard-label">Age</InputLabel> */}
@@ -178,7 +166,6 @@ const handleRoleChange = (e) => {
               </MenuItem>
             </Menu>
           </Box>
-        )}
       </Toolbar>
     </AppBar>
   );

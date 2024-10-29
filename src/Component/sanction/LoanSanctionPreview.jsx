@@ -78,7 +78,7 @@ const LoanSanctionPreview = ({
         <Box sx={modalStyle}>
           <Container sx={{ padding: '20px', border: '1px solid #ddd' }}>
             {/* Header Section */}
-            <Box textAlign="center" mb={3}>
+            {/* <Box textAlign="center" mb={3}>
               <img
                 src="https://publicramlella.s3.ap-south-1.amazonaws.com/public_assets/Header.jpg"
                 alt="Sanctionletter-header"
@@ -86,7 +86,7 @@ const LoanSanctionPreview = ({
                 height="123"
                 style={{ maxWidth: '100%' }}
               />
-            </Box>
+            </Box> */}
 
             {/* Date Section */}
             <Box textAlign="right" mb={2}>
@@ -111,7 +111,7 @@ const LoanSanctionPreview = ({
 
             {/* Message Section */}
             <Typography variant="body1" mt={2}>
-              Thank you for showing your interest in Only1Loan and giving us an opportunity to serve you.
+              Thank you for showing your interest in Speedoloan and giving us an opportunity to serve you.
             </Typography>
             <Typography variant="body1" mb={2}>
               We are pleased to inform you that your loan application has been approved as per the below mentioned terms and conditions.
@@ -119,7 +119,7 @@ const LoanSanctionPreview = ({
 
             {/* Company Info */}
             <Typography variant="body2" fontWeight="bold" mb={2}>
-              Only1Loan, a brand name under Naman Finlease Private Limited (RBI approved NBFC – Reg No.14.01466) S-370, Panchsheel Park, Near Panchsheel Park Metro Station Gate NO. 1, New Delhi- 110017.
+              Speedoloan, a brand name under Naman Finlease Private Limited (RBI approved NBFC – Reg No.14.01466) S-370, Panchsheel Park, Near Panchsheel Park Metro Station Gate NO. 1, New Delhi- 110017.
             </Typography>
 
             <Typography variant="body1" mb={2}>
@@ -186,7 +186,7 @@ const LoanSanctionPreview = ({
             </TableContainer>
 
             {/* Footer */}
-            <Box textAlign="center" mt={3}>
+            {/* <Box textAlign="center" mt={3}>
               <img
                 src="https://publicramlella.s3.ap-south-1.amazonaws.com/public_assets/Footer.jpg"
                 alt="Sanctionletter-footer"
@@ -194,7 +194,7 @@ const LoanSanctionPreview = ({
                 height="104"
                 style={{ maxWidth: '100%' }}
               />
-            </Box>
+            </Box> */}
 
             {isError &&
               <Alert severity="error" style={{ marginTop: "10px" }}>
