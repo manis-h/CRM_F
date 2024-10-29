@@ -164,6 +164,7 @@ const AddUserForm = () => {
                             <option value="admin">Admin</option>
                             <option value="screener">Screener</option>
                             <option value="creditManager">Credit Manager</option>
+                            <option value="sanctionHead">Sanction Head</option>
                         </select>
                     </div>
                 </div>
