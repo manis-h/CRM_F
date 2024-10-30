@@ -12,50 +12,6 @@ const EditableForm = () => {
   const [isEditing, setIsEditing] = useState(false);
   // const response = useGetCamDetailsQuery(id, { skip: id === null });  // Fetch data
   const [formData, setFormData] = useState({
-    // leadId: data?.details?.leadId || 0,
-    // // Corrected the paths for all fields to access the nested 'details.details'
-    // loanNo: data?.details?.details?.loanNo || '-',
-    // salaryDate1: data?.details?.details?.salaryDate1 || '',
-    // salaryAmount1: data?.details?.details?.salaryAmount1 || 0,
-    // salaryDate2: data?.details?.details?.salaryDate2 || '',
-    // salaryAmount2: data?.details?.details?.salaryAmount2 || 0,
-    // salaryDate3: data?.details?.details?.salaryDate3 || '',
-    // salaryAmount3: data?.details?.details?.salaryAmount3 || 0,
-    // nextPayDate: data?.details?.details?.nextPayDate || '',
-    // averageSalary: data?.details?.details?.averageSalary || 0,
-    // actualNetSalary: data?.details?.details?.actualNetSalary || 0,
-  
-    // // Keeping these fields from 'details.details'
-    // creditBureauScore: data?.details?.details?.cibilScore || '-',
-    // customerType: data?.details?.details?.customerType || 'NEW',
-    // dedupeCheck: data?.details?.details?.dedupeCheck || 'NO',
-    // customerCategory: data?.details?.details?.customerCategory || '-',
-    // repeatTimes: data?.details?.details?.repeatTimes || 0,
-    // obligations: data?.details?.details?.obligations || 100,
-    // eligiblesalaryToIncomeRatioPercentage: data?.details?.details?.eligiblesalaryToIncomeRatioPercentage || '0%',
-    // eligibleLoan: data?.details?.details?.eligibleLoan || 0,
-    // netDisbursalAmount: data?.details?.details?.netDisbursalAmount || 0,
-    // eligibleTenure: data?.details?.details?.eligibleTenure || '-',
-    // disbursalDate: data?.details?.details?.disbursalDate || '-',
-    // repaymentDate: data?.details?.details?.repaymentDate || '-',
-    // salaryToIncomeRatio: data?.details?.details?.salaryToIncomeRatio || '0%',
-    // loanAmount: data?.details?.details?.loanAmount || 0,
-    // roi: data?.details?.details?.roi || '0%',
-    // adminFeePercentage: data?.details?.details?.adminFeePercentage || '0%',
-    // netAdminFeeAmount: data?.details?.details?.netAdminFeeAmount || 0,
-    // gstPercentage: data?.details?.details?.gstPercentage || '0%',
-    // totalAdminFeeAmount: data?.details?.details?.totalAdminFeeAmount || 0,
-    // panelRoi: data?.details?.details?.panelRoi || 0,
-    // remarks: data?.details?.details?.remarks || '-',
-  
-    // // Additional nested fields
-    // eligibleRoi: data?.details?.details?.eligibleRoi || '1%',
-    // eligibleAdminFee: data?.details?.details?.eligibleAdminFee || '10%',
-    // adminFeeGst: data?.details?.details?.adminFeeGst || '18%',
-    // adminFeeGstAmount: data?.details?.details?.adminFeeGstAmount || 0,
-    // finalsalaryToIncomeRatioPercentage: data?.details?.details?.finalsalaryToIncomeRatioPercentage || '0%',
-    // loanRecommended: data?.details?.details?.loanRecommended || 0,
-    // repaymentAmount: data?.details?.details?.repaymentAmount || 0,
     leadId: '',                // Lead ID
     salaryDate1: '',           // Salary Date 1
     salaryAmount1: '',         // Salary Amount 1
@@ -75,66 +31,13 @@ const EditableForm = () => {
     loanRecommended: '',       // Loan Recommended
     disbursalDate: '',         // Disbursal Date
     repaymentDate: '',         // Repayment Date
-    adminFeePercentage: '',    // Admin Fee Inc. GST (%)
-    roi: '',                   // ROI (Rate of Interest)
+    adminFeePercentage: '0.15%',    // Admin Fee Inc. GST (%)
+    roi: '0.5%',                   // ROI (Rate of Interest)
     netAdminFeeAmount: '',     // Net Admin Fee Amount
     eligibleTenure: '',        // Eligible Tenure
     repaymentAmount: '',       // Repayment Amount
   });
   
-  console.log("The formdata ia",formData)
-  // console.log"The for",formdaata))
-    // Use useEffect to update formData once data is fetched
-
-    // useEffect(() => {
-    //   if (getCamSuccess && data?.details) {
-    //     const details = data.details.details;  // Access the deeply nested object
-    //     setFormData({
-    //       leadId: data.details?.leadId || 0,
-    //       loanNo: data.details?.details?.loanNo || '-',
-    //       salaryDate1: details?.salaryDate1 || '',
-    //       salaryAmount1: details?.salaryAmount1 || 0,
-    //       salaryDate2: details?.salaryDate2 || '',
-    //       salaryAmount2: details?.salaryAmount2 || 0,
-    //       salaryDate3: details?.salaryDate3 || '',
-    //       salaryAmount3: details?.salaryAmount3 || 0,
-    //       nextPayDate: details?.nextPayDate || '',
-    //       averageSalary: details?.averageSalary || 0,
-    //       actualNetSalary: details?.actualNetSalary || 0,
-    //       creditBureauScore: details?.cibilScore || '-',
-    //       customerType: details?.customerType || 'NEW',
-    //       dedupeCheck: details?.dedupeCheck || 'NO',
-    //       customerCategory: details?.customerCategory || '-',
-    //       repeatTimes: details?.repeatTimes || 0,
-    //       obligations: details?.obligations || 100,
-    //       eligiblesalaryToIncomeRatioPercentage: details?.eligiblesalaryToIncomeRatioPercentage || '0%',
-    //       eligibleLoan: details?.eligibleLoan || 0,
-    //       netDisbursalAmount: details?.netDisbursalAmount || 0,
-    //       eligibleTenure: data.details?.details?.eligibleTenure || '-',
-    //       disbursalDate: details?.disbursalDate || '-',
-    //       repaymentDate: details?.repaymentDate || '-',
-    //       salaryToIncomeRatio: details?.salaryToIncomeRatio || '0%',
-    //       loanAmount: details?.loanAmount || 0,
-    //       roi: details?.roi || '0%',
-    //       adminFeePercentage: details?.adminFeePercentage || '0%',
-    //       netAdminFeeAmount: details?.netAdminFeeAmount || 0,
-    //       gstPercentage: details?.gstPercentage || '0%',
-    //       totalAdminFeeAmount: details?.totalAdminFeeAmount || 0,
-    //       panelRoi: details?.panelRoi || 0,
-    //       remarks: details?.remarks || '-',
-    //       // Missing fields added
-    //       eligibleRoi: details?.eligibleRoi || '1%',
-    //       eligibleAdminFee: details?.eligibleAdminFee || '10%',
-    //       adminFeeGst: details?.adminFeeGst || '18%',
-    //       adminFeeGstAmount: details?.adminFeeGstAmount || 0,
-    //       finalsalaryToIncomeRatioPercentage: details?.finalsalaryToIncomeRatioPercentage || '0%',
-    //       loanRecommended: details?.loanRecommended || 0,
-    //       repaymentAmount: details?.repaymentAmount || 0,
-    //     });
-    //   }
-
-
-    // }, [getCamSuccess, data]); 
     useEffect(() => {
       if (getCamSuccess && data?.details) {
         const details = data.details.details;  // Access the deeply nested object
@@ -152,13 +55,13 @@ const EditableForm = () => {
           creditBureauScore: details?.cibilScore || '-',    // Credit Bureau Score
           customerType: details?.customerType || 'NEW',     // Customer Type
           dedupeCheck: details?.dedupeCheck || 'NO',        // Dedupe Check
-          obligations: details?.obligations || 100,         // Obligations (Rs)
+          obligations: details?.obligations || 0,         // Obligations (Rs)
           salaryToIncomeRatio: details?.salaryToIncomeRatio || '0%',  // Salary to Income Ratio
           eligibleLoan: details?.eligibleLoan || 0,         // Loan Amount
           loanRecommended: details?.loanRecommended || 0,   // Loan Recommended
           disbursalDate: details?.disbursalDate || '-',     // Disbursal Date
           repaymentDate: details?.repaymentDate || '-',     // Repayment Date
-          adminFeePercentage: details?.adminFeePercentage || '0%',  // Admin Fee Inc. GST (%)
+          adminFeePercentage: details?.adminFeePercentage || '0.15%',  // Admin Fee Inc. GST (%)
           roi: details?.roi || '0%',                        // ROI (Rate of Interest)
           netAdminFeeAmount: details?.netAdminFeeAmount || 0,   // Net Admin Fee Amount
           eligibleTenure: details?.eligibleTenure || '-',   // Eligible Tenure
@@ -166,15 +69,10 @@ const EditableForm = () => {
         });
       }
     }, [getCamSuccess, data]);
-    
 
      // Re-run the effect when `isSuccess` or `data` changes
-  
-
-  
   const [errorMessage,setErrorMessage]=useState("")
   
-
   //  Initialize the mutation hook
   const [updateCamDetails,  isLoading, isSuccess, isError ] = useUpdateCamDetailsMutation();
   
@@ -197,7 +95,6 @@ const EditableForm = () => {
     return daysDiff;
   };
 
-  
   const handleChange = (e) => {
     const { name, value } = e.target;
   
@@ -216,30 +113,31 @@ const EditableForm = () => {
           : 0;
         // Add calculated fields to updatedFormData
         updatedFormData.finalsalaryToIncomeRatioPercentage = `${finalsalaryToIncomeRatioPercentage.toFixed(2)}%`;
-        updatedFormData.adminFee = recommendedLoan * 0.1;
-        updatedFormData.adminFeeGstAmount = updatedFormData.adminFee * 0.18;
-        updatedFormData.totalAdminFeeAmount = updatedFormData.adminFee * 1.18;
-        updatedFormData.netDisbursalAmount = recommendedLoan - updatedFormData.totalAdminFeeAmount;
+        updatedFormData.adminFee = recommendedLoan * 0.15;
+        updatedFormData.totalAdminFeeAmount = recommendedLoan*0.15;
+        updatedFormData.netDisbursalAmount = recommendedLoan - recommendedLoan*0.15;
       }
       // Handle repayment date change and calculate repayment amount
       if (name === 'repaymentDate') {
+
         const eligibleTenure = calculateDaysDifference(prevFormData.disbursalDate, value);
-        updatedFormData.eligibleTenure = eligibleTenure || 0;
+        updatedFormData.eligibleTenure = eligibleTenure+1 || 0;
   
         // Convert ROI to decimal
-        const roiDecimal = Number(prevFormData.eligibleRoi.replace('%', '')) / 100;
+        const roiDecimal = 0.005;
+        // ro
         // Calculate repaymentAmount using the correct formula
         const loanRecommended = Number(prevFormData.loanRecommended);
         updatedFormData.repaymentAmount = loanRecommended 
-          ? loanRecommended + (loanRecommended * roiDecimal * eligibleTenure )
+          ? loanRecommended + (loanRecommended * roiDecimal * (eligibleTenure+1)   ) 
           : 0;
       }
       // Return the updated form data
       return updatedFormData;
     });
   };
+  console.log('form data',formData)
   
-
   const handleSave = async (e) => {
     e.preventDefault();
     console.log("The form data is", formData);
@@ -278,17 +176,9 @@ const EditableForm = () => {
     }
   };
   
-
- 
   const handleCancel = () => {
     setIsEditing(false);
   };
-
-    console.log(data)
-  // if (response.isLoading) {
-  //   return <div>Loading...</div>;
-  // }
-
 
   // Function to calculate the salaryToIncomeRatio percentage based on the actual net salary
   const calculatesalaryToIncomeRatio = (salary) => {
@@ -305,8 +195,6 @@ const EditableForm = () => {
 
   // Function to calculate the eligible loan based on the actual net salary and salaryToIncomeRatio
   const calculateEligibleLoan = (salary, salaryToIncomeRatioPercentage) => {
-
-    
     const salaryToIncomeRatioDecimal = parseFloat(salaryToIncomeRatioPercentage) / 100;
     return salary * salaryToIncomeRatioDecimal;
   };
@@ -333,12 +221,10 @@ const EditableForm = () => {
     }));
   }, [formData.actualNetSalary]);
 
-
   const meanSalary = (sal1, sal2, sal3) => {
     return (sal1 + sal2 + sal3) / 3;
   };
   
-
   useEffect(() => {
     const avgSal = meanSalary(
       Number(formData.salaryAmount1), 
@@ -351,14 +237,25 @@ const EditableForm = () => {
       averageSalary: avgSal || 0,  // Ensure default value is set if avgSal is NaN
     }));
   }, [formData.salaryAmount1, formData.salaryAmount2, formData.salaryAmount3]);
-  
-  
-  
-  
 
+  useEffect(()=>{
 
+  },[formData.obligations])
+
+  useEffect(() => {
+    const calculateFOIR = (netSalary, obligations) => {
+      const foir = netSalary > 0 ? ((netSalary - obligations) / netSalary) * 100 : 0;
+      return `${foir.toFixed(2)}%`;
+    };
   
+    // Update the form data with the calculated FOIR
+    setFormData((prevData) => ({
+      ...prevData,
+      eligiblesalaryToIncomeRatioPercentage: calculateFOIR(prevData.actualNetSalary, prevData.obligations),
+    }));
 
+  }, [formData.actualNetSalary, formData.obligations]);
+  
   return (
     <>
       {
@@ -464,7 +361,7 @@ const EditableForm = () => {
             // <form>
             <form onSubmit={handleSave} style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', background: '#808080', padding: '10px' }}>
       {/* First Row (4 items) */}
-      <div style={{ flex: '1 1 46%' }}>
+      <div style={{ flex: '1 1 100%' }}>
         <TextField
           label="Lead ID"
           name="leadId"
@@ -476,16 +373,16 @@ const EditableForm = () => {
            // Makes the field read-only
         />
       </div>
-      <div style={{ flex: '1 1 46%' }}>
-        <TextField
+      {/* <div style={{ flex: '1 1 46%' }}> */}
+        {/* <TextField
           label="Loan No"
           name="loanNo"
           fullWidth
           value={formData.loanNo}
           onChange={handleChange}
           disabled
-        />
-      </div>
+        /> */}
+      {/* </div> */}
       <div style={{ flex: '1 1 46%' }}>
         <TextField
           label="Salary Date 1"
@@ -645,7 +542,7 @@ const EditableForm = () => {
           disabled
         />
       </div>
-      <div style={{ flex: '1 1 46%' }}>
+      {/* <div style={{ flex: '1 1 46%' }}>
         <TextField
           label="Repeat Times"
           name="repeatTimes"
@@ -654,7 +551,7 @@ const EditableForm = () => {
           value={formData.repeatTimes}
           onChange={handleChange}
         />
-      </div>
+      </div> */}
       {/* Fifth Row (4 items) */}
       <div style={{ flex: '1 1 46%' }}>
         <TextField
@@ -666,7 +563,7 @@ const EditableForm = () => {
           onChange={handleChange}
         />
       </div>
-      <div style={{ flex: '1 1 46%' }}>
+      {/* <div style={{ flex: '1 1 46%' }}>
         <TextField
           label="Eligible salaryToIncomeRatio Percentage"
           name="eligiblesalaryToIncomeRatioPercentage"
@@ -675,7 +572,7 @@ const EditableForm = () => {
           onChange={handleChange}
          disabled // Updated from InputProps to slotProps
         />
-      </div>
+      </div> */}
       <div style={{ flex: '1 1 46%' }}>
         <TextField
           label="Eligible Loan"
@@ -696,22 +593,23 @@ const EditableForm = () => {
           value={formData.netDisbursalAmount}
           onChange={handleChange}
           disabled
+          InputLabelProps={{ shrink: true }}
         />
       </div>
       {/* New Row (Additional Fields) */}
       <div style={{ flex: '1 1 46%' }}>
         <TextField
-          label="Eligible ROI"
-          name="eligibleRoi"
+          // label="The roi"
+          name="ROI"
           type="string"
           fullWidth
-          value={formData.eligibleRoi}
+          value= " ROI 0.5%"
           onChange={handleChange}
           //disabled // Updated from InputProps to slotProps
           disabled
         />
       </div>
-      <div style={{ flex: '1 1 46%' }}>
+      {/* <div style={{ flex: '1 1 46%' }}>
         <TextField
           label="Eligible Admin Fee"
           name="eligibleAdminFee"
@@ -721,7 +619,7 @@ const EditableForm = () => {
           onChange={handleChange}
          disabled // Updated from InputProps to slotProps
         />
-      </div>
+      </div> */}
       <div style={{ flex: '1 1 46%' }}>
         <TextField
           label="Eligible Tenure"
@@ -750,6 +648,7 @@ const EditableForm = () => {
           label="Final salaryToIncomeRatio Percentage"
           name="finalsalaryToIncomeRatioPercentage"
           fullWidth
+          InputLabelProps={{ shrink: true }}
           value={formData.finalsalaryToIncomeRatioPercentage}
           onChange={handleChange}
           disabled
@@ -767,30 +666,30 @@ const EditableForm = () => {
       </div>
       <div style={{ flex: '1 1 46%' }}>
         <TextField
-          label="Admin Fee"
+          label="Admin Fee Inc. Gst"
           name="adminFee"
-          type="number"
+          type="string"
           fullWidth
-          value={formData.adminFee}
+          InputLabelProps={{ shrink: true }}
+          value={formData.adminFeePercentage}
           onChange={handleChange}
          disabled
         />
       </div>
-      <div style={{ flex: '1 1 46%' }}>
-        <TextField
+      {/* <div style={{ flex: '1 1 46%' }}> */}
+        {/* <TextField
           label="Admin Fee GST"
           name="adminFeeGst"
           type="string"
           fullWidth
           value={formData.adminFeeGst}
           onChange={handleChange}
-         disabled 
+         disabled  */}
           
-          // Updated from InputProps to slotProps
-        />
-      </div>
+          
+      {/* </div> */}
       {/* Final Row (More Fields and Buttons) */}
-      <div style={{ flex: '1 1 46%' }}>
+      {/* <div style={{ flex: '1 1 46%' }}>
         <TextField
           label="Admin Fee GST Amount"
           name="adminFeeGstAmount"
@@ -800,13 +699,14 @@ const EditableForm = () => {
           onChange={handleChange}
          disabled
         />
-      </div>
+      </div> */}
       <div style={{ flex: '1 1 46%' }}>
         <TextField
-          label="Total Admin Fee"
-          name="totalAdminFee"
+        label="Total Admin Fee"
+          name="netAdminFeeAmount"
           type="number"
           fullWidth
+          InputLabelProps={{ shrink: true }}          
           value={formData.totalAdminFeeAmount}
           onChange={handleChange}
          disabled // Updated from InputProps to slotProps
