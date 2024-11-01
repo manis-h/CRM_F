@@ -33,7 +33,7 @@ const Cam = () => {
     disbursalDate: '',         // Disbursal Date
     repaymentDate: '',         // Repayment Date
     adminFeePercentage: '0.15%',    // Admin Fee Inc. GST (%)
-    roi: '0.5%',                   // ROI (Rate of Interest)
+    roi: '0.5',                   // ROI (Rate of Interest)
     netAdminFeeAmount: '',     // Net Admin Fee Amount
     eligibleTenure: '',        // Eligible Tenure
     repaymentAmount: '',       // Repayment Amount
@@ -59,11 +59,14 @@ const Cam = () => {
         obligations: details?.obligations || 0,         // Obligations (Rs)
         salaryToIncomeRatio: details?.salaryToIncomeRatio || '0%',  // Salary to Income Ratio
         eligibleLoan: details?.eligibleLoan || 0,         // Loan Amount
+        netDisbursalAmount: details?.netDisbursalAmount || 0,         // Loan Amount
         loanRecommended: details?.loanRecommended || 0,   // Loan Recommended
         disbursalDate: details?.disbursalDate || '-',     // Disbursal Date
+        finalsalaryToIncomeRatioPercentage: details?.finalsalaryToIncomeRatioPercentage || '-',     // Disbursal Date
         repaymentDate: details?.repaymentDate || '-',     // Repayment Date
         adminFeePercentage: details?.adminFeePercentage || '15%',  // Admin Fee Inc. GST (%)
-        roi: details?.roi || '0.5%',                        // ROI (Rate of Interest)
+        totalAdminFeeAmount: details?.totalAdminFeeAmount || '0',  // Admin Fee Inc. GST (%)
+        roi: details?.roi || '0.5',                        // ROI (Rate of Interest)
         netAdminFeeAmount: details?.netAdminFeeAmount || 0,   // Net Admin Fee Amount
         eligibleTenure: details?.eligibleTenure || '-',   // Eligible Tenure
         repaymentAmount: details?.repaymentAmount || 0,   // Repayment Amount

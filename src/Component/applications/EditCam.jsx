@@ -12,6 +12,8 @@ const EditCam = ({ camData, setIsEditing }) => {
     const [formData, setFormData] = useState(camData)
     const [errorMessage, setErrorMessage] = useState("")
 
+    console.log('edit form ', formData)
+
 
 
     const [updateCamDetails, isLoading, isSuccess, isError] = useUpdateCamDetailsMutation();
@@ -54,7 +56,7 @@ const EditCam = ({ camData, setIsEditing }) => {
                 // Add calculated fields to updatedFormData
                 updatedFormData.finalsalaryToIncomeRatioPercentage = `${finalsalaryToIncomeRatioPercentage.toFixed(2)}%`;
                 updatedFormData.adminFee = recommendedLoan * 0.15;
-                updatedFormData.totalAdminFeeAmount = recommendedLoan * 0.15;
+                updatedFormData.netAdminFeeAmount = recommendedLoan * 0.15;
                 updatedFormData.netDisbursalAmount = recommendedLoan - recommendedLoan * 0.15;
             }
             // Handle repayment date change and calculate repayment amount
@@ -409,16 +411,16 @@ const EditCam = ({ camData, setIsEditing }) => {
                         onChange={handleChange}
                     />
                 </div>
-                {/* <div style={{ flex: '1 1 46%' }}>
-        <TextField
-          label="Eligible salaryToIncomeRatio Percentage"
-          name="eligiblesalaryToIncomeRatioPercentage"
-          fullWidth
-          value={formData.eligiblesalaryToIncomeRatioPercentage}
-          onChange={handleChange}
-         disabled // Updated from InputProps to slotProps
-        />
-      </div> */}
+                <div style={{ flex: '1 1 46%' }}>
+                    <TextField
+                        label="Initial salary To Income Ratio"
+                        name="eligiblesalaryToIncomeRatioPercentage"
+                        fullWidth
+                        value={calculatesalaryToIncomeRatio(formData.netSalary)}
+                        onChange={handleChange}
+                        disabled // Updated from InputProps to slotProps
+                    />
+                </div>
                 <div style={{ flex: '1 1 46%' }}>
                     <TextField
                         label="Eligible Loan"
@@ -430,6 +432,28 @@ const EditCam = ({ camData, setIsEditing }) => {
                         disabled // Updated from InputProps to slotProps
                     />
                 </div>
+                <div style={{ flex: '1 1 46%' }}>
+                    <TextField
+                        label="Loan Recommended"
+                        name="loanRecommended"
+                        type="number"
+                        fullWidth
+                        value={formData.loanRecommended}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div style={{ flex: '1 1 46%' }}>
+                    <TextField
+                        label="Final salary To Income Ratio"
+                        name="finalsalaryToIncomeRatioPercentage"
+                        fullWidth
+                        InputLabelProps={{ shrink: true }}
+                        value={formData.finalsalaryToIncomeRatioPercentage}
+                        onChange={handleChange}
+                        disabled
+                    />
+                </div>
+                
                 <div style={{ flex: '1 1 46%' }}>
                     <TextField
                         label="Net Disbursal Amount"
@@ -449,7 +473,7 @@ const EditCam = ({ camData, setIsEditing }) => {
                         name="ROI"
                         type="string"
                         fullWidth
-                        value=" 0.5%"
+                        value={`${formData.roi} %`}
                         InputLabelProps={{ shrink: true }}
                         onChange={handleChange}
                         //disabled // Updated from InputProps to slotProps
@@ -467,17 +491,7 @@ const EditCam = ({ camData, setIsEditing }) => {
          disabled // Updated from InputProps to slotProps
         />
       </div> */}
-                <div style={{ flex: '1 1 46%' }}>
-                    <TextField
-                        label="Eligible Tenure"
-                        name="eligibleTenure"
-                        type="number"
-                        fullWidth
-                        value={formData.eligibleTenure}
-                        onChange={handleChange}
-                        disabled
-                    />
-                </div>
+                
                 <div style={{ flex: '1 1 46%' }}>
                     <TextField
                         label="Disbursal Date"
@@ -489,31 +503,35 @@ const EditCam = ({ camData, setIsEditing }) => {
                         onChange={handleChange}
                     />
                 </div>
-                {/* Sixth Row (More Fields) */}
                 <div style={{ flex: '1 1 46%' }}>
                     <TextField
-                        label="Final salaryToIncomeRatio Percentage"
-                        name="finalsalaryToIncomeRatioPercentage"
-                        fullWidth
+                        label="Repayment Date"
+                        name="repaymentDate"
+                        type="date"
                         InputLabelProps={{ shrink: true }}
-                        value={formData.finalsalaryToIncomeRatioPercentage}
+                        fullWidth
+                        value={formData.repaymentDate}
+                        onChange={handleChange}
+                        required
+                    // disabled
+                    />
+                </div>
+                <div style={{ flex: '1 1 46%' }}>
+                    <TextField
+                        label="Eligible Tenure"
+                        name="eligibleTenure"
+                        type="number"
+                        fullWidth
+                        value={formData.eligibleTenure}
                         onChange={handleChange}
                         disabled
                     />
                 </div>
+                {/* Sixth Row (More Fields) */}
+               
                 <div style={{ flex: '1 1 46%' }}>
                     <TextField
-                        label="Loan Recommended"
-                        name="loanRecommended"
-                        type="number"
-                        fullWidth
-                        value={formData.loanRecommended}
-                        onChange={handleChange}
-                    />
-                </div>
-                <div style={{ flex: '1 1 46%' }}>
-                    <TextField
-                        label="Admin Fee Inc. Gst"
+                        label="Admin Fee % Inc. Gst"
                         name="adminFee"
                         type="string"
                         fullWidth
@@ -556,31 +574,20 @@ const EditCam = ({ camData, setIsEditing }) => {
                         type="number"
                         fullWidth
                         InputLabelProps={{ shrink: true }}
-                        value={formData.totalAdminFeeAmount}
+                        value={formData.netAdminFeeAmount}
                         onChange={handleChange}
                         disabled // Updated from InputProps to slotProps
                     />
                 </div>
-                <div style={{ flex: '1 1 46%' }}>
-                    <TextField
-                        label="Repayment Date"
-                        name="repaymentDate"
-                        type="date"
-                        InputLabelProps={{ shrink: true }}
-                        fullWidth
-                        value={formData.repaymentDate}
-                        onChange={handleChange}
-                        required
-                    // disabled
-                    />
-                </div>
+                
                 <div style={{ flex: '1 1 46%' }}>
                     <TextField
                         label="Repayment Amount"
                         name="repaymentAmount"
                         type="number"
                         fullWidth
-                        value={formData.repaymentAmount}
+                        // value={formData.repaymentAmount}
+                        value={Number(formData.loanRecommended)* Number(formData.eligibleTenure) * Number(formData.roi) }
                         onChange={handleChange}
                         disabled
                     />
