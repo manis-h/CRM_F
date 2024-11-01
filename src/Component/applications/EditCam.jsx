@@ -3,10 +3,15 @@ import React, { useState, useEffect } from 'react'
 import { Button, TextField } from '@mui/material';
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { useUpdateCamDetailsMutation } from '../../queries/applicationQueries';
+import Swal from 'sweetalert2';
+import { useParams } from 'react-router-dom';
 
 const EditCam = ({ camData, setIsEditing }) => {
+    const { id } = useParams();
 
     const [formData, setFormData] = useState(camData)
+    const [errorMessage, setErrorMessage] = useState("")
+
 
 
     const [updateCamDetails, isLoading, isSuccess, isError] = useUpdateCamDetailsMutation();
@@ -94,6 +99,10 @@ const EditCam = ({ camData, setIsEditing }) => {
                 console.log("the response is ", response)
 
                 if (response?.success) {
+                    Swal.fire({
+                        text: "Cam Updated Successfuly!",
+                        icon: "success"
+                    });
                     setIsEditing(false); // Stop editing after successful update
                     setErrorMessage(""); // Clear any error message
                 } else {
@@ -175,6 +184,8 @@ const EditCam = ({ camData, setIsEditing }) => {
             averageSalary: avgSal || 0,  // Ensure default value is set if avgSal is NaN
         }));
     }, [formData.salaryAmount1, formData.salaryAmount2, formData.salaryAmount3]);
+
+
 
 
 

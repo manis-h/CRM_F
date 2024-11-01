@@ -72,7 +72,6 @@ const Cam = () => {
   }, [getCamSuccess, data]);
 
   // Re-run the effect when `isSuccess` or `data` changes
-  const [errorMessage, setErrorMessage] = useState("")
 
   //  Initialize the mutation hook
  
