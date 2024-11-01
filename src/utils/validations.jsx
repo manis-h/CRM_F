@@ -99,7 +99,7 @@ export const leadUpdateSchema = Yup.object().shape({
       'Mobile must be exactly 10 digits', 
       (val) => val && val.length <= 10 // Custom test to ensure it's exactly 10 digits
     ),
-  alternateMobile: Yup.string().matches(/^\d{10}$/, 'Alternate Mobile must be 10 digits').nullable(),
+  alternateMobile: Yup.string().nullable(),
   personalEmail: Yup.string().required('Personal Email is required').email('Invalid email format'),
   officeEmail: Yup.string().email('Invalid email format'),
   loanAmount: Yup.number().required('Loan Amount is required').positive('Loan Amount must be positive').integer(),
