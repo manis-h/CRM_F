@@ -134,7 +134,7 @@ const VerifyContactDetails = ({ isMobileVerified, isEmailVerified, isAadhaarVeri
                 </Button>
               </Box> */}
               {/* Aadhaar Verification Section */}
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              {/* <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="body1" sx={{ color: '#898b8c' }}>
                   Adhaar:
                   <span style={{ color: isAadhaarVerified ? 'green' : 'red' }}>
@@ -154,7 +154,7 @@ const VerifyContactDetails = ({ isMobileVerified, isEmailVerified, isAadhaarVeri
                 >
                   {aadhaarRes.isLoading ? <Loader /> : `Verify Aadhaar`}
                 </Button>
-              </Box>
+              </Box> */}
               {/* Pan Verification Section */}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="body1" sx={{ color: '#898b8c' }}>

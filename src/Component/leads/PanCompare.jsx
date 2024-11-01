@@ -35,17 +35,18 @@ const PanCompare = ({ open, setOpen, panDetails }) => {
       return compareDates(value1, value2) ? "Matched" : "Unmatched";
     }
 
-    if (value1 instanceof Date && value2 instanceof Date) {
-      const year1 = value1.getFullYear();
-      const month1 = value1.getMonth();
-      const day1 = value1.getDate();
+    // if (value1 instanceof Date && value2 instanceof Date) {
+    //   const year1 = value1.getFullYear();
+    //   const month1 = value1.getMonth();
+    //   const day1 = value1.getDate();
 
-      const year2 = value2.getFullYear();
-      const month2 = value2.getMonth();
-      const day2 = value2.getDate();
+    //   const year2 = value2.getFullYear();
+    //   const month2 = value2.getMonth();
+    //   const day2 = value2.getDate();
 
-      return year1 === year2 && month1 === month2 && day1 === day2 ? "Matched" : "Unmatched";
-    }
+    //   return year1 === year2 && month1 === month2 && day1 === day2 ? "Matched" : "Unmatched";
+    // }
+
 
     if (typeof value1 === "string" && typeof value2 === "string") {
       return value1.trim().toLowerCase() === value2.trim().toLowerCase() ? "Matched" : "Unmatched";
@@ -59,7 +60,7 @@ const PanCompare = ({ open, setOpen, panDetails }) => {
 
   // Fields to be compared
   const comparisonFields = [
-    { label: "Name", leadValue: `${lead?.fName} ${lead?.mName} ${lead?.lName}`, panValue: panDetails?.FULLNAME },
+    { label: "Name", leadValue: `${lead?.fName}${lead?.mName ? ` ${lead?.mName}` : ""} ${lead?.lName}`, panValue: panDetails?.FULLNAME },
     { label: "DOB", leadValue:lead?.dob && formatDate(lead?.dob), panValue: panDetails?.DOB  },
   ];
   const handleClose = () => {
